@@ -53,7 +53,7 @@ if [ x$1 != x ] ; then
   prefix=$1
   shift
 else
-  prefix=/home/ch33ky/toolchain/out/arm-eabi-4.7.0/20110831-1655
+  prefix=/home/ch33ky/toolchain/out/arm-eabi-4.7.0/20110901-1819
 fi
 
 # Allow for alternate isysroot in which to find headers
