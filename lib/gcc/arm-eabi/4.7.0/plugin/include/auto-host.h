@@ -48,7 +48,7 @@
 
 /* Define if building with C++. */
 #ifndef USED_FOR_TARGET
-#define ENABLE_BUILD_WITH_CXX 1
+/* #undef ENABLE_BUILD_WITH_CXX */
 #endif
 
 
