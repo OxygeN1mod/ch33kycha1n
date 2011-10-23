@@ -27,7 +27,7 @@ Using as
 ********
 
 This file is a user guide to the GNU assembler `as'
-(ch33kycha1n|20110903) version 2.21.53.
+(ch33kycha1n|20111020) version 2.22.51.
 
    This document is distributed under the terms of the GNU Free
 Documentation License.  A copy of the license is included in the
@@ -14785,10 +14785,23 @@ options:
 `-msmall-data-limit'
      This option tells the assembler that the small data limit feature
      of the RX port of GCC is being used.  This results in the assembler
-     generating an undefined reference to a symbol called __gp for use
-     by the relocations that are needed to support the small data limit
-     feature.   This option is not enabled by default as it would
+     generating an undefined reference to a symbol called `__gp' for
+     use by the relocations that are needed to support the small data
+     limit feature.   This option is not enabled by default as it would
      otherwise pollute the symbol table.
+
+`-mpid'
+     This option tells the assembler that the position independent data
+     of the RX port of GCC is being used.  This results in the assembler
+     generating an undefined reference to a symbol called `__pid_base',
+     and also setting the RX_PID flag bit in the e_flags field of the
+     ELF header of the object file.
+
+`-mint-register=NUM'
+     This option tells the assembler how many registers have been
+     reserved for use by interrupt handlers.  This is needed in order
+     to compute the correct values for the `%gpreg' and `%pidreg' meta
+     registers.
 
 
 
@@ -14797,12 +14810,33 @@ File: as.info,  Node: RX-Modifiers,  Next: RX-Directives,  Prev: RX-Opts,  Up: R
 9.31.2 Symbolic Operand Modifiers
 ---------------------------------
 
-The assembler supports several modifiers when using symbol addresses in
-RX instruction operands.  The general syntax is the following:
+The assembler supports one modifier when using symbol addresses in RX
+instruction operands.  The general syntax is the following:
 
-     %modifier(symbol)
+     %gp(symbol)
 
-`%gp'
+   The modifier returns the offset from the __GP symbol to the
+specified symbol as a 16-bit value.  The intent is that this offset
+should be used in a register+offset move instruction when generating
+references to small data.  Ie, like this:
+
+       mov.W	 %gp(_foo)[%gpreg], r1
+
+   The assembler also supports two meta register names which can be used
+to refer to registers whose values may not be known to the programmer.
+These meta register names are:
+
+`%gpreg'
+     The small data address register.
+
+`%pidreg'
+     The PID base address register.
+
+
+   Both registers normally have the value r13, but this can change if
+some registers have been reserved for use by interrupt handlers or if
+both the small data limit and position independent data features are
+being used at the same time.
 
 
 File: as.info,  Node: RX-Directives,  Next: RX-Float,  Prev: RX-Modifiers,  Up: RX-Dependent
@@ -16377,24 +16411,73 @@ architecture is explicitly requested.  SPARC v9 is always incompatible
 with sparclite.
 
 `-Av6 | -Av7 | -Av8 | -Asparclet | -Asparclite'
-`-Av8plus | -Av8plusa | -Av9 | -Av9a'
+`-Av8plus | -Av8plusa | -Av8plusb | -Av8plusc | -Av8plusd | -Av8plusv'
+`-Av9 | -Av9a | -Av9b | -Av9c | -Av9d | -Av9v'
+`-Asparc | -Asparcvis | -Asparcvis2 | -Asparcfmaf | -Asparcima'
+`-Asparcvis3 | -Asparcvis3r'
      Use one of the `-A' options to select one of the SPARC
      architectures explicitly.  If you select an architecture
      explicitly, `as' reports a fatal error if it encounters an
      instruction or feature requiring an incompatible or higher level.
 
-     `-Av8plus' and `-Av8plusa' select a 32 bit environment.
+     `-Av8plus', `-Av8plusa', `-Av8plusb', `-Av8plusc', `-Av8plusd',
+     and `-Av8plusv' select a 32 bit environment.
 
-     `-Av9' and `-Av9a' select a 64 bit environment and are not
-     available unless GAS is explicitly configured with 64 bit
-     environment support.
+     `-Av9', `-Av9a', `-Av9b', `-Av9c', `-Av9d', and `-Av9v' select a
+     64 bit environment and are not available unless GAS is explicitly
+     configured with 64 bit environment support.
 
      `-Av8plusa' and `-Av9a' enable the SPARC V9 instruction set with
-     UltraSPARC extensions.
+     UltraSPARC VIS 1.0 extensions.
 
-`-xarch=v8plus | -xarch=v8plusa'
+     `-Av8plusb' and `-Av9b' enable the UltraSPARC VIS 2.0 instructions,
+     as well as the instructions enabled by `-Av8plusa' and `-Av9a'.
+
+     `-Av8plusc' and `-Av9c' enable the UltraSPARC Niagara instructions,
+     as well as the instructions enabled by `-Av8plusb' and `-Av9b'.
+
+     `-Av8plusd' and `-Av9d' enable the floating point fused
+     multiply-add, VIS 3.0, and HPC extension instructions, as well as
+     the instructions enabled by `-Av8plusc' and `-Av9c'.
+
+     `-Av8plusv' and `-Av9v' enable the 'random', transactional memory,
+     floating point unfused multiply-add, integer multiply-add, and
+     cache sparing store instructions, as well as the instructions
+     enabled by `-Av8plusd' and `-Av9d'.
+
+     `-Asparc' specifies a v9 environment.  It is equivalent to `-Av9'
+     if the word size is 64-bit, and `-Av8plus' otherwise.
+
+     `-Asparcvis' specifies a v9a environment.  It is equivalent to
+     `-Av9a' if the word size is 64-bit, and `-Av8plusa' otherwise.
+
+     `-Asparcvis2' specifies a v9b environment.  It is equivalent to
+     `-Av9b' if the word size is 64-bit, and `-Av8plusb' otherwise.
+
+     `-Asparcfmaf' specifies a v9b environment with the floating point
+     fused multiply-add instructions enabled.
+
+     `-Asparcima' specifies a v9b environment with the integer
+     multiply-add instructions enabled.
+
+     `-Asparcvis3' specifies a v9b environment with the VIS 3.0, HPC ,
+     and floating point fused multiply-add instructions enabled.
+
+     `-Asparcvis3r' specifies a v9b environment with the VIS 3.0, HPC,
+     transactional memory, random, and floating point unfused
+     multiply-add instructions enabled.
+
+`-xarch=v8plus | -xarch=v8plusa | -xarch=v8plusb | -xarch=v8plusc'
+`-xarch=v8plusd | -xarch=v8plusv | -xarch=v9 | -xarch=v9a'
+`-xarch=v9b | -xarch=v9c | -xarch=v9d | -xarch=v9v'
+`-xarch=sparc | -xarch=sparcvis | -xarch=sparcvis2'
+`-xarch=sparcfmaf | -xarch=sparcima | -xarch=sparcvis3'
+`-xarch=sparcvis3r'
      For compatibility with the SunOS v9 assembler.  These options are
-     equivalent to -Av8plus and -Av8plusa, respectively.
+     equivalent to -Av8plus, -Av8plusa, -Av8plusb, -Av8plusc, -Av8plusd,
+     -Av8plusv, -Av9, -Av9a, -Av9b, -Av9c, -Av9d, -Av9v, -Asparc,
+     -Asparcvis, -Asparcvis2, -Asparcfmaf, -Asparcima, -Asparcvis3, and
+     -Asparcvis3r, respectively.
 
 `-bump'
      Warn whenever it is necessary to switch to another level.  If an
@@ -21367,6 +21450,9 @@ AS Index
 * $tan math builtin, TIC54X:             TIC54X-Builtins.     (line  86)
 * $tanh math builtin, TIC54X:            TIC54X-Builtins.     (line  89)
 * $trunc math builtin, TIC54X:           TIC54X-Builtins.     (line  92)
+* %gp:                                   RX-Modifiers.        (line   6)
+* %gpreg:                                RX-Modifiers.        (line  22)
+* %pidreg:                               RX-Modifiers.        (line  25)
 * -+ option, VAX/VMS:                    VAX-Opts.            (line  71)
 * --:                                    Command Line.        (line  10)
 * --32 option, i386:                     i386-Options.        (line   8)
@@ -21453,12 +21539,24 @@ AS Index
 * -al:                                   a.                   (line   6)
 * -an:                                   a.                   (line   6)
 * -as:                                   a.                   (line   6)
+* -Asparc:                               Sparc-Opts.          (line  25)
+* -Asparcfmaf:                           Sparc-Opts.          (line  25)
+* -Asparcima:                            Sparc-Opts.          (line  25)
 * -Asparclet:                            Sparc-Opts.          (line  25)
 * -Asparclite:                           Sparc-Opts.          (line  25)
+* -Asparcvis:                            Sparc-Opts.          (line  25)
+* -Asparcvis2:                           Sparc-Opts.          (line  25)
+* -Asparcvis3:                           Sparc-Opts.          (line  25)
+* -Asparcvis3r:                          Sparc-Opts.          (line  25)
 * -Av6:                                  Sparc-Opts.          (line  25)
+* -Av7:                                  Sparc-Opts.          (line  25)
 * -Av8:                                  Sparc-Opts.          (line  25)
 * -Av9:                                  Sparc-Opts.          (line  25)
 * -Av9a:                                 Sparc-Opts.          (line  25)
+* -Av9b:                                 Sparc-Opts.          (line  25)
+* -Av9c:                                 Sparc-Opts.          (line  25)
+* -Av9d:                                 Sparc-Opts.          (line  25)
+* -Av9v:                                 Sparc-Opts.          (line  25)
 * -b option, i960:                       Options-i960.        (line  22)
 * -big option, M32R:                     M32R-Opts.           (line  35)
 * -D:                                    D.                   (line   6)
@@ -21589,6 +21687,7 @@ AS Index
 * -mfpu= command line option, ARM:       ARM Options.         (line  76)
 * -micache-enabled command line option, LM32: LM32 Options.   (line  21)
 * -mimplicit-it command line option, ARM: ARM Options.        (line 106)
+* -mint-register:                        RX-Opts.             (line  57)
 * -mip2022 option, IP2K:                 IP2K-Opts.           (line  14)
 * -mip2022ext option, IP2022:            IP2K-Opts.           (line   9)
 * -mj11:                                 PDP-11-Options.      (line 126)
@@ -21644,6 +21743,7 @@ AS Index
 * -mnopic command line option, Blackfin: Blackfin Options.    (line  22)
 * -mpic:                                 PDP-11-Options.      (line  11)
 * -mpic command line option, TIC6X:      TIC6X Options.       (line  36)
+* -mpid:                                 RX-Opts.             (line  50)
 * -mpid= command line option, TIC6X:     TIC6X Options.       (line  23)
 * -mregnames option, s390:               s390 Options.        (line  32)
 * -mrelax command line option, V850:     V850 Options.        (line  63)
@@ -22002,7 +22102,6 @@ AS Index
 * attributes, symbol:                    Symbol Attributes.   (line   6)
 * auxiliary attributes, COFF symbols:    COFF Symbols.        (line  19)
 * auxiliary symbol information, COFF:    Dim.                 (line   6)
-* Av7:                                   Sparc-Opts.          (line  25)
 * AVR line comment character:            AVR-Chars.           (line   6)
 * AVR line separator:                    AVR-Chars.           (line  14)
 * AVR modifiers:                         AVR-Modifiers.       (line   6)
@@ -23383,10 +23482,9 @@ AS Index
 * symbol attributes, COFF:               COFF Symbols.        (line   6)
 * symbol attributes, SOM:                SOM Symbols.         (line   6)
 * symbol descriptor, COFF:               Desc.                (line   6)
-* symbol modifiers <1>:                  RX-Modifiers.        (line  11)
-* symbol modifiers <2>:                  M68HC11-Modifiers.   (line  12)
-* symbol modifiers <3>:                  M32C-Modifiers.      (line  11)
-* symbol modifiers <4>:                  LM32-Modifiers.      (line  12)
+* symbol modifiers <1>:                  M68HC11-Modifiers.   (line  12)
+* symbol modifiers <2>:                  M32C-Modifiers.      (line  11)
+* symbol modifiers <3>:                  LM32-Modifiers.      (line  12)
 * symbol modifiers:                      AVR-Modifiers.       (line  12)
 * symbol modifiers, TILE-Gx:             TILE-Gx Modifiers.   (line   6)
 * symbol modifiers, TILEPro:             TILEPro Modifiers.   (line   6)
@@ -24058,157 +24156,157 @@ Node: PowerPC-Syntax527018
 Node: PowerPC-Chars527208
 Node: RX-Dependent527959
 Node: RX-Opts528389
-Node: RX-Modifiers530415
-Node: RX-Directives530746
-Node: RX-Float531062
-Node: RX-Syntax531703
-Node: RX-Chars531882
-Node: S/390-Dependent532434
-Node: s390 Options533142
-Node: s390 Characters534688
-Node: s390 Syntax535209
-Node: s390 Register536110
-Node: s390 Mnemonics536923
-Node: s390 Operands539943
-Node: s390 Formats542562
-Node: s390 Aliases550408
-Node: s390 Operand Modifier554305
-Node: s390 Instruction Marker558106
-Node: s390 Literal Pool Entries559122
-Node: s390 Directives561045
-Node: s390 Floating Point565473
-Node: SCORE-Dependent565919
-Node: SCORE-Opts566224
-Node: SCORE-Pseudo567512
-Node: SCORE-Syntax569589
-Node: SCORE-Chars569771
-Node: SH-Dependent570329
-Node: SH Options570740
-Node: SH Syntax571795
-Node: SH-Chars572068
-Node: SH-Regs572611
-Node: SH-Addressing573225
-Node: SH Floating Point574134
-Node: SH Directives575228
-Node: SH Opcodes575598
-Node: SH64-Dependent579920
-Node: SH64 Options580283
-Node: SH64 Syntax582080
-Node: SH64-Chars582363
-Node: SH64-Regs582912
-Node: SH64-Addressing584008
-Node: SH64 Directives585191
-Node: SH64 Opcodes586301
-Node: Sparc-Dependent587017
-Node: Sparc-Opts587429
-Node: Sparc-Aligned-Data589686
-Node: Sparc-Syntax590518
-Node: Sparc-Chars591092
-Node: Sparc-Regs591655
-Node: Sparc-Constants596766
-Node: Sparc-Relocs601526
-Node: Sparc-Size-Translations606206
-Node: Sparc-Float607855
-Node: Sparc-Directives608050
-Node: TIC54X-Dependent610010
-Node: TIC54X-Opts610773
-Node: TIC54X-Block611816
-Node: TIC54X-Env612176
-Node: TIC54X-Constants612524
-Node: TIC54X-Subsyms612926
-Node: TIC54X-Locals614835
-Node: TIC54X-Builtins615579
-Node: TIC54X-Ext618050
-Node: TIC54X-Directives618621
-Node: TIC54X-Macros629522
-Node: TIC54X-MMRegs631633
-Node: TIC54X-Syntax631871
-Node: TIC54X-Chars632061
-Node: TIC6X-Dependent632752
-Node: TIC6X Options633055
-Node: TIC6X Syntax635056
-Node: TIC6X Directives636158
-Node: TILE-Gx-Dependent638459
-Node: TILE-Gx Options638769
-Node: TILE-Gx Syntax639025
-Node: TILE-Gx Opcodes641259
-Node: TILE-Gx Registers641547
-Node: TILE-Gx Modifiers642319
-Node: TILE-Gx Directives647467
-Node: TILEPro-Dependent648371
-Node: TILEPro Options648680
-Node: TILEPro Syntax648864
-Node: TILEPro Opcodes651098
-Node: TILEPro Registers651389
-Node: TILEPro Modifiers652159
-Node: TILEPro Directives655864
-Node: Z80-Dependent656768
-Node: Z80 Options657156
-Node: Z80 Syntax658579
-Node: Z80-Chars659251
-Node: Z80-Regs660101
-Node: Z80-Case660453
-Node: Z80 Floating Point660898
-Node: Z80 Directives661092
-Node: Z80 Opcodes662717
-Node: Z8000-Dependent664061
-Node: Z8000 Options665022
-Node: Z8000 Syntax665239
-Node: Z8000-Chars665529
-Node: Z8000-Regs666011
-Node: Z8000-Addressing666801
-Node: Z8000 Directives667918
-Node: Z8000 Opcodes669527
-Node: Vax-Dependent679469
-Node: VAX-Opts680029
-Node: VAX-float683764
-Node: VAX-directives684396
-Node: VAX-opcodes685257
-Node: VAX-branch685646
-Node: VAX-operands688153
-Node: VAX-no688916
-Node: VAX-Syntax689172
-Node: VAX-Chars689338
-Node: V850-Dependent689892
-Node: V850 Options690294
-Node: V850 Syntax693145
-Node: V850-Chars693385
-Node: V850-Regs693929
-Node: V850 Floating Point695497
-Node: V850 Directives695703
-Node: V850 Opcodes697306
-Node: XSTORMY16-Dependent703198
-Node: XStormy16 Syntax703543
-Node: XStormy16-Chars703733
-Node: XStormy16 Directives704346
-Node: XStormy16 Opcodes705001
-Node: Xtensa-Dependent706057
-Node: Xtensa Options706791
-Node: Xtensa Syntax709528
-Node: Xtensa Opcodes711672
-Node: Xtensa Registers713466
-Node: Xtensa Optimizations714099
-Node: Density Instructions714551
-Node: Xtensa Automatic Alignment715653
-Node: Xtensa Relaxation718100
-Node: Xtensa Branch Relaxation719008
-Node: Xtensa Call Relaxation720380
-Node: Xtensa Immediate Relaxation722166
-Node: Xtensa Directives724740
-Node: Schedule Directive726449
-Node: Longcalls Directive726789
-Node: Transform Directive727333
-Node: Literal Directive728075
-Ref: Literal Directive-Footnote-1731614
-Node: Literal Position Directive731756
-Node: Literal Prefix Directive733455
-Node: Absolute Literals Directive734353
-Node: Reporting Bugs735660
-Node: Bug Criteria736386
-Node: Bug Reporting737153
-Node: Acknowledgements743802
-Ref: Acknowledgements-Footnote-1748768
-Node: GNU Free Documentation License748794
-Node: AS Index773963
+Node: RX-Modifiers530994
+Node: RX-Directives532098
+Node: RX-Float532414
+Node: RX-Syntax533055
+Node: RX-Chars533234
+Node: S/390-Dependent533786
+Node: s390 Options534494
+Node: s390 Characters536040
+Node: s390 Syntax536561
+Node: s390 Register537462
+Node: s390 Mnemonics538275
+Node: s390 Operands541295
+Node: s390 Formats543914
+Node: s390 Aliases551760
+Node: s390 Operand Modifier555657
+Node: s390 Instruction Marker559458
+Node: s390 Literal Pool Entries560474
+Node: s390 Directives562397
+Node: s390 Floating Point566825
+Node: SCORE-Dependent567271
+Node: SCORE-Opts567576
+Node: SCORE-Pseudo568864
+Node: SCORE-Syntax570941
+Node: SCORE-Chars571123
+Node: SH-Dependent571681
+Node: SH Options572092
+Node: SH Syntax573147
+Node: SH-Chars573420
+Node: SH-Regs573963
+Node: SH-Addressing574577
+Node: SH Floating Point575486
+Node: SH Directives576580
+Node: SH Opcodes576950
+Node: SH64-Dependent581272
+Node: SH64 Options581635
+Node: SH64 Syntax583432
+Node: SH64-Chars583715
+Node: SH64-Regs584264
+Node: SH64-Addressing585360
+Node: SH64 Directives586543
+Node: SH64 Opcodes587653
+Node: Sparc-Dependent588369
+Node: Sparc-Opts588781
+Node: Sparc-Aligned-Data593439
+Node: Sparc-Syntax594271
+Node: Sparc-Chars594845
+Node: Sparc-Regs595408
+Node: Sparc-Constants600519
+Node: Sparc-Relocs605279
+Node: Sparc-Size-Translations609959
+Node: Sparc-Float611608
+Node: Sparc-Directives611803
+Node: TIC54X-Dependent613763
+Node: TIC54X-Opts614526
+Node: TIC54X-Block615569
+Node: TIC54X-Env615929
+Node: TIC54X-Constants616277
+Node: TIC54X-Subsyms616679
+Node: TIC54X-Locals618588
+Node: TIC54X-Builtins619332
+Node: TIC54X-Ext621803
+Node: TIC54X-Directives622374
+Node: TIC54X-Macros633275
+Node: TIC54X-MMRegs635386
+Node: TIC54X-Syntax635624
+Node: TIC54X-Chars635814
+Node: TIC6X-Dependent636505
+Node: TIC6X Options636808
+Node: TIC6X Syntax638809
+Node: TIC6X Directives639911
+Node: TILE-Gx-Dependent642212
+Node: TILE-Gx Options642522
+Node: TILE-Gx Syntax642778
+Node: TILE-Gx Opcodes645012
+Node: TILE-Gx Registers645300
+Node: TILE-Gx Modifiers646072
+Node: TILE-Gx Directives651220
+Node: TILEPro-Dependent652124
+Node: TILEPro Options652433
+Node: TILEPro Syntax652617
+Node: TILEPro Opcodes654851
+Node: TILEPro Registers655142
+Node: TILEPro Modifiers655912
+Node: TILEPro Directives659617
+Node: Z80-Dependent660521
+Node: Z80 Options660909
+Node: Z80 Syntax662332
+Node: Z80-Chars663004
+Node: Z80-Regs663854
+Node: Z80-Case664206
+Node: Z80 Floating Point664651
+Node: Z80 Directives664845
+Node: Z80 Opcodes666470
+Node: Z8000-Dependent667814
+Node: Z8000 Options668775
+Node: Z8000 Syntax668992
+Node: Z8000-Chars669282
+Node: Z8000-Regs669764
+Node: Z8000-Addressing670554
+Node: Z8000 Directives671671
+Node: Z8000 Opcodes673280
+Node: Vax-Dependent683222
+Node: VAX-Opts683782
+Node: VAX-float687517
+Node: VAX-directives688149
+Node: VAX-opcodes689010
+Node: VAX-branch689399
+Node: VAX-operands691906
+Node: VAX-no692669
+Node: VAX-Syntax692925
+Node: VAX-Chars693091
+Node: V850-Dependent693645
+Node: V850 Options694047
+Node: V850 Syntax696898
+Node: V850-Chars697138
+Node: V850-Regs697682
+Node: V850 Floating Point699250
+Node: V850 Directives699456
+Node: V850 Opcodes701059
+Node: XSTORMY16-Dependent706951
+Node: XStormy16 Syntax707296
+Node: XStormy16-Chars707486
+Node: XStormy16 Directives708099
+Node: XStormy16 Opcodes708754
+Node: Xtensa-Dependent709810
+Node: Xtensa Options710544
+Node: Xtensa Syntax713281
+Node: Xtensa Opcodes715425
+Node: Xtensa Registers717219
+Node: Xtensa Optimizations717852
+Node: Density Instructions718304
+Node: Xtensa Automatic Alignment719406
+Node: Xtensa Relaxation721853
+Node: Xtensa Branch Relaxation722761
+Node: Xtensa Call Relaxation724133
+Node: Xtensa Immediate Relaxation725919
+Node: Xtensa Directives728493
+Node: Schedule Directive730202
+Node: Longcalls Directive730542
+Node: Transform Directive731086
+Node: Literal Directive731828
+Ref: Literal Directive-Footnote-1735367
+Node: Literal Position Directive735509
+Node: Literal Prefix Directive737208
+Node: Absolute Literals Directive738106
+Node: Reporting Bugs739413
+Node: Bug Criteria740139
+Node: Bug Reporting740906
+Node: Acknowledgements747555
+Ref: Acknowledgements-Footnote-1752521
+Node: GNU Free Documentation License752547
+Node: AS Index777716
 
 End Tag Table

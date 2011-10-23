@@ -693,6 +693,14 @@ option.
      specified where to install part of GCC.  Perhaps they make this
      assumption because installing GCC creates the directory.
 
+`--with-native-system-header-dir=DIRNAME'
+     Specifies that DIRNAME is the directory that contains native system
+     header files, rather than `/usr/include'.  This option is most
+     useful if you are creating a compiler that should be isolated from
+     the system as much as possible.  It is most commonly used with the
+     `--with-sysroot' option and will cause GCC to search DIRNAME
+     inside the system root specified by that option.
+
 `--enable-shared[=PACKAGE[,...]]'
      Build shared versions of libraries, if shared libraries are
      supported on the target platform.  Unlike GCC 2.95.x and earlier,
@@ -1509,6 +1517,10 @@ The following options only apply to building cross compilers.
      newly installed with `make install'; it does not affect the
      compiler which is used to build GCC itself.
 
+     If you specify the `--with-native-system-header-dir=DIRNAME'
+     option then the compiler will search that directory within DIRNAME
+     for native system headers rather than the default `/usr/include'.
+
 `--with-build-sysroot'
 `--with-build-sysroot=DIR'
      Tells GCC to consider DIR as the system root (see
@@ -1522,6 +1534,10 @@ The following options only apply to building cross compilers.
      This option affects the system root for the compiler used to build
      target libraries (which runs on the build system); it does not
      affect the compiler which is used to build GCC itself.
+
+     If you specify the `--with-native-system-header-dir=DIRNAME'
+     option then the compiler will search that directory within DIRNAME
+     for native system headers rather than the default `/usr/include'.
 
 `--with-headers'
 `--with-headers=DIR'
@@ -4516,7 +4532,7 @@ Concept Index
 * Menu:
 
 * Binaries:                              Binaries.           (line    6)
-* build_configargs:                      Configuration.      (line 1419)
+* build_configargs:                      Configuration.      (line 1435)
 * Configuration:                         Configuration.      (line    6)
 * configurations supported by GCC:       Configurations.     (line    6)
 * Downloading GCC:                       Downloading the source.
@@ -4526,7 +4542,7 @@ Concept Index
 * FDL, GNU Free Documentation License:   GNU Free Documentation License.
                                                              (line    6)
 * Host specific installation:            Specific.           (line    6)
-* host_configargs:                       Configuration.      (line 1423)
+* host_configargs:                       Configuration.      (line 1439)
 * Installing GCC: Binaries:              Binaries.           (line    6)
 * Installing GCC: Building:              Building.           (line    6)
 * Installing GCC: Configuration:         Configuration.      (line    6)
@@ -4536,7 +4552,7 @@ Concept Index
 * Specific installation notes:           Specific.           (line    6)
 * Target specific installation:          Specific.           (line    6)
 * Target specific installation notes:    Specific.           (line    6)
-* target_configargs:                     Configuration.      (line 1427)
+* target_configargs:                     Configuration.      (line 1443)
 * Testing:                               Testing.            (line    6)
 * Testsuite:                             Testing.            (line    6)
 
@@ -4548,83 +4564,83 @@ Node: Installing GCC2531
 Node: Prerequisites4046
 Node: Downloading the source14105
 Node: Configuration16042
-Ref: with-gnu-as30600
-Ref: with-as31498
-Ref: with-gnu-ld32911
-Node: Building78556
-Node: Testing94041
-Node: Final install101738
-Node: Binaries107052
-Node: Specific108653
-Ref: alpha-x-x109159
-Ref: alpha-dec-osf51109648
-Ref: amd64-x-solaris210112184
-Ref: arm-x-elf112287
-Ref: avr112507
-Ref: bfin113147
-Ref: cris113389
-Ref: dos114205
-Ref: x-x-freebsd114528
-Ref: h8300-hms116365
-Ref: hppa-hp-hpux116717
-Ref: hppa-hp-hpux10119088
-Ref: hppa-hp-hpux11119501
-Ref: x-x-linux-gnu125160
-Ref: ix86-x-linux125353
-Ref: ix86-x-solaris289125666
-Ref: ix86-x-solaris210126510
-Ref: ia64-x-linux127770
-Ref: ia64-x-hpux128540
-Ref: x-ibm-aix129095
-Ref: iq2000-x-elf135865
-Ref: lm32-x-elf136005
-Ref: lm32-x-uclinux136109
-Ref: m32c-x-elf136237
-Ref: m32r-x-elf136339
-Ref: m68k-x-x136441
-Ref: m68k-x-uclinux137479
-Ref: mep-x-elf137725
-Ref: microblaze-x-elf137835
-Ref: mips-x-x137954
-Ref: mips-sgi-irix5140350
-Ref: mips-sgi-irix6140430
-Ref: moxie-x-elf143654
-Ref: powerpc-x-x143774
-Ref: powerpc-x-darwin143979
-Ref: powerpc-x-elf144473
-Ref: powerpc-x-linux-gnu144558
-Ref: powerpc-x-netbsd144653
-Ref: powerpc-x-eabisim144741
-Ref: powerpc-x-eabi144867
-Ref: powerpcle-x-elf144943
-Ref: powerpcle-x-eabisim145035
-Ref: powerpcle-x-eabi145168
-Ref: rx-x-elf145251
-Ref: s390-x-linux145450
-Ref: s390x-x-linux145522
-Ref: s390x-ibm-tpf145609
-Ref: x-x-solaris2145740
-Ref: sparc-x-x151045
-Ref: sparc-sun-solaris2151547
-Ref: sparc-sun-solaris210154301
-Ref: sparc-x-linux154677
-Ref: sparc64-x-solaris2154902
-Ref: sparcv9-x-solaris2155538
-Ref: c6x-x-x155625
-Ref: x-x-vxworks155716
-Ref: x86-64-x-x157238
-Ref: x86-64-x-solaris2.10157566
-Ref: xtensa-x-elf158228
-Ref: xtensa-x-linux158899
-Ref: windows159240
-Ref: x-x-cygwin161197
-Ref: x-x-interix161750
-Ref: x-x-mingw32162059
-Ref: older162285
-Ref: elf164402
-Node: Old164660
-Node: Configurations167797
-Node: GNU Free Documentation License171338
-Node: Concept Index196485
+Ref: with-gnu-as31048
+Ref: with-as31946
+Ref: with-gnu-ld33359
+Node: Building79424
+Node: Testing94909
+Node: Final install102606
+Node: Binaries107920
+Node: Specific109521
+Ref: alpha-x-x110027
+Ref: alpha-dec-osf51110516
+Ref: amd64-x-solaris210113052
+Ref: arm-x-elf113155
+Ref: avr113375
+Ref: bfin114015
+Ref: cris114257
+Ref: dos115073
+Ref: x-x-freebsd115396
+Ref: h8300-hms117233
+Ref: hppa-hp-hpux117585
+Ref: hppa-hp-hpux10119956
+Ref: hppa-hp-hpux11120369
+Ref: x-x-linux-gnu126028
+Ref: ix86-x-linux126221
+Ref: ix86-x-solaris289126534
+Ref: ix86-x-solaris210127378
+Ref: ia64-x-linux128638
+Ref: ia64-x-hpux129408
+Ref: x-ibm-aix129963
+Ref: iq2000-x-elf136733
+Ref: lm32-x-elf136873
+Ref: lm32-x-uclinux136977
+Ref: m32c-x-elf137105
+Ref: m32r-x-elf137207
+Ref: m68k-x-x137309
+Ref: m68k-x-uclinux138347
+Ref: mep-x-elf138593
+Ref: microblaze-x-elf138703
+Ref: mips-x-x138822
+Ref: mips-sgi-irix5141218
+Ref: mips-sgi-irix6141298
+Ref: moxie-x-elf144522
+Ref: powerpc-x-x144642
+Ref: powerpc-x-darwin144847
+Ref: powerpc-x-elf145341
+Ref: powerpc-x-linux-gnu145426
+Ref: powerpc-x-netbsd145521
+Ref: powerpc-x-eabisim145609
+Ref: powerpc-x-eabi145735
+Ref: powerpcle-x-elf145811
+Ref: powerpcle-x-eabisim145903
+Ref: powerpcle-x-eabi146036
+Ref: rx-x-elf146119
+Ref: s390-x-linux146318
+Ref: s390x-x-linux146390
+Ref: s390x-ibm-tpf146477
+Ref: x-x-solaris2146608
+Ref: sparc-x-x151913
+Ref: sparc-sun-solaris2152415
+Ref: sparc-sun-solaris210155169
+Ref: sparc-x-linux155545
+Ref: sparc64-x-solaris2155770
+Ref: sparcv9-x-solaris2156406
+Ref: c6x-x-x156493
+Ref: x-x-vxworks156584
+Ref: x86-64-x-x158106
+Ref: x86-64-x-solaris2.10158434
+Ref: xtensa-x-elf159096
+Ref: xtensa-x-linux159767
+Ref: windows160108
+Ref: x-x-cygwin162065
+Ref: x-x-interix162618
+Ref: x-x-mingw32162927
+Ref: older163153
+Ref: elf165270
+Node: Old165528
+Node: Configurations168665
+Node: GNU Free Documentation License172206
+Node: Concept Index197353
 
 End Tag Table

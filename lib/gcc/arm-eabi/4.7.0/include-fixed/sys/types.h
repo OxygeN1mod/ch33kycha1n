@@ -2,7 +2,7 @@
 
     It has been auto-edited by fixincludes from:
 
-	"/home/ch33ky/android/ndk/platforms/android-9/arch-arm/usr/include/sys/types.h"
+	"/home/ch33ky/android-ndk-r5c/platforms/android-9/arch-arm/usr/include/sys/types.h"
 
     This had to be done to correct non-standard usages in the
     original, manufacturer supplied header file.  */

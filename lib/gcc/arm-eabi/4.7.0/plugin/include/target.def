@@ -456,7 +456,7 @@ DEFHOOK
 (output_addr_const_extra,
  "",
  bool, (FILE *file, rtx x),
- default_asm_output_addr_const_extra)
+ hook_bool_FILEptr_rtx_false)
 
 /* ??? The TARGET_PRINT_OPERAND* hooks are part of the asm_out struct,
    even though that is not reflected in the macro name to override their
@@ -912,6 +912,16 @@ DEFHOOKPOD
 the order of instructions is important for correctness when scheduling, but\n\
 also the latencies of operations.",
 bool, false)
+
+/* The following member value is a function that returns number
+   of operations reassociator should try to put in parallel for
+   statements of the given type.  By default 1 is used.  */
+DEFHOOK
+(reassociation_width,
+"This hook is called by tree reassociator to determine a level of\n\
+parallelism required in output calculations chain.",
+int, (unsigned int opc, enum machine_mode mode),
+hook_int_uint_mode_1)
 
 HOOK_VECTOR_END (sched)
 
@@ -1536,7 +1546,7 @@ DEFHOOK
 DEFHOOK
 (subset_p,
  "",
- bool, (addr_space_t superset, addr_space_t subset),
+ bool, (addr_space_t subset, addr_space_t superset),
  default_addr_space_subset_p)
 
 /* Function to convert an rtl expression from one address space to another.  */

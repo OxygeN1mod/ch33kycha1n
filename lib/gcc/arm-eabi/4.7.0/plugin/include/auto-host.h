@@ -48,7 +48,7 @@
 
 /* Define if building with C++. */
 #ifndef USED_FOR_TARGET
-/* #undef ENABLE_BUILD_WITH_CXX */
+#define ENABLE_BUILD_WITH_CXX 1
 #endif
 
 
@@ -264,6 +264,12 @@
 /* Define if your assembler supports explicit relocations. */
 #ifndef USED_FOR_TARGET
 /* #undef HAVE_AS_EXPLICIT_RELOCS */
+#endif
+
+
+/* Define if your assembler supports FMAF, HPC, and VIS 3.0 instructions. */
+#ifndef USED_FOR_TARGET
+/* #undef HAVE_AS_FMAF_HPC_VIS3 */
 #endif
 
 
@@ -748,6 +754,13 @@
 #endif
 
 
+/* Define to 1 if we found a declaration for 'madvise', otherwise define to 0.
+   */
+#ifndef USED_FOR_TARGET
+#define HAVE_DECL_MADVISE 1
+#endif
+
+
 /* Define to 1 if we found a declaration for 'malloc', otherwise define to 0.
    */
 #ifndef USED_FOR_TARGET
@@ -1010,6 +1023,12 @@
 #endif
 
 
+/* Define if your assembler supports specifying the section flag e. */
+#ifndef USED_FOR_TARGET
+/* #undef HAVE_GAS_SECTION_EXCLUDE */
+#endif
+
+
 /* Define 0/1 if your assembler supports marking sections with SHF_MERGE flag.
    */
 #ifndef USED_FOR_TARGET
@@ -1045,12 +1064,6 @@
 /* Define to 1 if you have the `getc_unlocked' function. */
 #ifndef USED_FOR_TARGET
 #define HAVE_GETC_UNLOCKED 1
-#endif
-
-
-/* Define if _Unwind_GetIPInfo is available. */
-#ifndef USED_FOR_TARGET
-/* #undef HAVE_GETIPINFO */
 #endif
 
 
@@ -1268,6 +1281,12 @@
 /* Define to the level of your linker's plugin support. */
 #ifndef USED_FOR_TARGET
 #define HAVE_LTO_PLUGIN 2
+#endif
+
+
+/* Define to 1 if you have the `madvise' function. */
+#ifndef USED_FOR_TARGET
+#define HAVE_MADVISE 1
 #endif
 
 
@@ -1687,7 +1706,7 @@
 
 /* The size of `long', as computed by sizeof. */
 #ifndef USED_FOR_TARGET
-#define SIZEOF_LONG 8
+#define SIZEOF_LONG 4
 #endif
 
 
@@ -1705,7 +1724,7 @@
 
 /* The size of `void *', as computed by sizeof. */
 #ifndef USED_FOR_TARGET
-#define SIZEOF_VOID_P 8
+#define SIZEOF_VOID_P 4
 #endif
 
 
@@ -1826,7 +1845,7 @@
 
 /* Number of bits in a file offset, on hosts where this is settable. */
 #ifndef USED_FOR_TARGET
-/* #undef _FILE_OFFSET_BITS */
+#define _FILE_OFFSET_BITS 64
 #endif
 
 

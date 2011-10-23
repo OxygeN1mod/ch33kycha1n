@@ -8262,6 +8262,16 @@ Search an elf version script tree for symbol versioning info and export
 / don't-export status for a given symbol.  Return non-NULL on success
 and NULL on failure; also sets the output `hide' boolean parameter.
 
+2.17.3.8 `bfd_hide_sym_by_version'
+..................................
+
+*Synopsis*
+     bfd_boolean bfd_hide_sym_by_version
+        (struct bfd_elf_version_tree *verdefs, const char *sym_name);
+   *Description*
+Search an elf version script tree for symbol versioning info for a
+given symbol.  Return TRUE if the symbol is hidden.
+
 
 File: bfd.info,  Node: Hash Tables,  Prev: Linker Functions,  Up: BFD front end
 
@@ -10389,6 +10399,8 @@ BFD Index
                                                              (line    6)
 * bfd_hash_traverse:                     Traversing a Hash Table.
                                                              (line    6)
+* bfd_hide_sym_by_version:               Writing the symbol table.
+                                                             (line   93)
 * bfd_init:                              Initialization.     (line   11)
 * bfd_install_relocation:                typedef arelent.    (line  389)
 * bfd_is_local_label:                    symbol handling functions.
@@ -12111,24 +12123,24 @@ Node: Performing the Final Link294770
 Node: Information provided by the linker296012
 Node: Relocating the section contents297166
 Node: Writing the symbol table298917
-Node: Hash Tables302973
-Node: Creating and Freeing a Hash Table304171
-Node: Looking Up or Entering a String305421
-Node: Traversing a Hash Table306674
-Node: Deriving a New Hash Table Type307463
-Node: Define the Derived Structures308529
-Node: Write the Derived Creation Routine309610
-Node: Write Other Derived Routines312234
-Node: BFD back ends313549
-Node: What to Put Where313819
-Node: aout313999
-Node: coff320317
-Node: elf348750
-Node: mmo349151
-Node: File layout350079
-Node: Symbol-table355726
-Node: mmo section mapping359495
-Node: GNU Free Documentation License363147
-Node: BFD Index388230
+Node: Hash Tables303303
+Node: Creating and Freeing a Hash Table304501
+Node: Looking Up or Entering a String305751
+Node: Traversing a Hash Table307004
+Node: Deriving a New Hash Table Type307793
+Node: Define the Derived Structures308859
+Node: Write the Derived Creation Routine309940
+Node: Write Other Derived Routines312564
+Node: BFD back ends313879
+Node: What to Put Where314149
+Node: aout314329
+Node: coff320647
+Node: elf349080
+Node: mmo349481
+Node: File layout350409
+Node: Symbol-table356056
+Node: mmo section mapping359825
+Node: GNU Free Documentation License363477
+Node: BFD Index388560
 
 End Tag Table

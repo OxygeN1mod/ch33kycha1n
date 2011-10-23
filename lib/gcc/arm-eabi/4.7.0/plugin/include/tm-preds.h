@@ -38,6 +38,7 @@ extern int const0_operand (rtx, enum machine_mode);
 extern int arm_rhs_operand (rtx, enum machine_mode);
 extern int arm_rhsm_operand (rtx, enum machine_mode);
 extern int shift_amount_operand (rtx, enum machine_mode);
+extern int const_neon_scalar_shift_amount_operand (rtx, enum machine_mode);
 extern int arm_add_operand (rtx, enum machine_mode);
 extern int arm_addimm_operand (rtx, enum machine_mode);
 extern int arm_not_operand (rtx, enum machine_mode);
@@ -58,6 +59,7 @@ extern int sat_shift_operator (rtx, enum machine_mode);
 extern int mult_operator (rtx, enum machine_mode);
 extern int thumb_16bit_operator (rtx, enum machine_mode);
 extern int equality_operator (rtx, enum machine_mode);
+extern int expandable_comparison_operator (rtx, enum machine_mode);
 extern int arm_comparison_operator (rtx, enum machine_mode);
 extern int lt_ge_comparison_operator (rtx, enum machine_mode);
 extern int noov_comparison_operator (rtx, enum machine_mode);
@@ -71,7 +73,6 @@ extern int nonimmediate_di_operand (rtx, enum machine_mode);
 extern int di_operand (rtx, enum machine_mode);
 extern int nonimmediate_soft_df_operand (rtx, enum machine_mode);
 extern int soft_df_operand (rtx, enum machine_mode);
-extern int const_shift_operand (rtx, enum machine_mode);
 extern int load_multiple_operation (rtx, enum machine_mode);
 extern int store_multiple_operation (rtx, enum machine_mode);
 extern int multi_register_push (rtx, enum machine_mode);
@@ -160,6 +161,7 @@ enum constraint_num
   CONSTRAINT_Uq,
   CONSTRAINT_Q,
   CONSTRAINT_Uu,
+  CONSTRAINT_Uw,
   CONSTRAINT__LIMIT
 };
 

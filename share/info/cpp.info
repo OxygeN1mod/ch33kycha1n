@@ -4484,6 +4484,32 @@ single-letter options may _not_ be grouped: `-dM' is very different from
      appear on the line.  If the value is less than 1 or greater than
      100, the option is ignored.  The default is 8.
 
+`-fdebug-cpp'
+     This option is only useful for debugging GCC.  When used with
+     `-E', dumps debugging information about location maps.  Every
+     token in the output is preceded by the dump of the map its location
+     belongs to.  The dump of the map holding the location of a token
+     would be:
+          {`P':`/file/path';`F':`/includer/path';`L':LINE_NUM;`C':COL_NUM;`S':SYSTEM_HEADER_P;`M':MAP_ADDRESS;`E':MACRO_EXPANSION_P,`loc':LOCATION}
+
+     When used without `-E', this option has no effect.
+
+`-ftrack-macro-expansion[=LEVEL]'
+     Track locations of tokens across macro expansions. This allows the
+     compiler to emit diagnostic about the current macro expansion stack
+     when a compilation error occurs in a macro expansion. Using this
+     option makes the preprocessor and the compiler consume more
+     memory. The LEVEL parameter can be used to choose the level of
+     precision of token location tracking thus decreasing the memory
+     consumption if necessary. Value `0' of LEVEL de-activates this
+     option just as if no `-ftrack-macro-expansion' was present on the
+     command line. Value `1' tracks tokens locations in a degraded mode
+     for the sake of minimal memory overhead. In this mode all tokens
+     resulting from the expansion of an argument of a function-like
+     macro have the same location. Value `2' tracks tokens locations
+     completely. This value is the most memory hungry.  When this
+     option is given no argument, the default parameter value is `2'.
+
 `-fexec-charset=CHARSET'
      Set the execution character set, used for string and character
      constants.  The default is UTF-8.  CHARSET can be any encoding
@@ -5242,9 +5268,9 @@ without any initial `-' or `--'.
  [index ]
 * Menu:
 
-* A:                                     Invocation.          (line 534)
+* A:                                     Invocation.          (line 560)
 * ansi:                                  Invocation.          (line 308)
-* C:                                     Invocation.          (line 593)
+* C:                                     Invocation.          (line 619)
 * C_INCLUDE_PATH:                        Environment Variables.
                                                               (line  16)
 * CPATH:                                 Environment Variables.
@@ -5252,26 +5278,28 @@ without any initial `-' or `--'.
 * CPLUS_INCLUDE_PATH:                    Environment Variables.
                                                               (line  17)
 * D:                                     Invocation.          (line  39)
-* dD:                                    Invocation.          (line 566)
+* dD:                                    Invocation.          (line 592)
 * DEPENDENCIES_OUTPUT:                   Environment Variables.
                                                               (line  44)
-* dI:                                    Invocation.          (line 575)
-* dM:                                    Invocation.          (line 550)
-* dN:                                    Invocation.          (line 572)
-* dU:                                    Invocation.          (line 579)
+* dI:                                    Invocation.          (line 601)
+* dM:                                    Invocation.          (line 576)
+* dN:                                    Invocation.          (line 598)
+* dU:                                    Invocation.          (line 605)
+* fdebug-cpp:                            Invocation.          (line 491)
 * fdirectives-only:                      Invocation.          (line 442)
 * fdollars-in-identifiers:               Invocation.          (line 464)
-* fexec-charset:                         Invocation.          (line 491)
+* fexec-charset:                         Invocation.          (line 517)
 * fextended-identifiers:                 Invocation.          (line 467)
-* finput-charset:                        Invocation.          (line 504)
-* fno-show-column:                       Invocation.          (line 529)
-* fno-working-directory:                 Invocation.          (line 514)
+* finput-charset:                        Invocation.          (line 530)
+* fno-show-column:                       Invocation.          (line 555)
+* fno-working-directory:                 Invocation.          (line 540)
 * fpreprocessed:                         Invocation.          (line 472)
 * ftabstop:                              Invocation.          (line 485)
-* fwide-exec-charset:                    Invocation.          (line 496)
-* fworking-directory:                    Invocation.          (line 514)
-* H:                                     Invocation.          (line 638)
-* help:                                  Invocation.          (line 630)
+* ftrack-macro-expansion:                Invocation.          (line 501)
+* fwide-exec-charset:                    Invocation.          (line 522)
+* fworking-directory:                    Invocation.          (line 540)
+* H:                                     Invocation.          (line 664)
+* help:                                  Invocation.          (line 656)
 * I:                                     Invocation.          (line  71)
 * I-:                                    Invocation.          (line 355)
 * idirafter:                             Invocation.          (line 397)
@@ -5298,20 +5326,20 @@ without any initial `-' or `--'.
 * o:                                     Invocation.          (line  82)
 * OBJC_INCLUDE_PATH:                     Environment Variables.
                                                               (line  18)
-* P:                                     Invocation.          (line 586)
+* P:                                     Invocation.          (line 612)
 * pedantic:                              Invocation.          (line 170)
 * pedantic-errors:                       Invocation.          (line 175)
-* remap:                                 Invocation.          (line 625)
+* remap:                                 Invocation.          (line 651)
 * std=:                                  Invocation.          (line 308)
 * SUNPRO_DEPENDENCIES:                   Environment Variables.
                                                               (line  60)
-* target-help:                           Invocation.          (line 630)
-* traditional-cpp:                       Invocation.          (line 618)
-* trigraphs:                             Invocation.          (line 622)
+* target-help:                           Invocation.          (line 656)
+* traditional-cpp:                       Invocation.          (line 644)
+* trigraphs:                             Invocation.          (line 648)
 * U:                                     Invocation.          (line  62)
 * undef:                                 Invocation.          (line  66)
-* v:                                     Invocation.          (line 634)
-* version:                               Invocation.          (line 647)
+* v:                                     Invocation.          (line 660)
+* version:                               Invocation.          (line 673)
 * w:                                     Invocation.          (line 166)
 * Wall:                                  Invocation.          (line  88)
 * Wcomment:                              Invocation.          (line  96)
@@ -5346,9 +5374,9 @@ Concept Index
 * block comments:                        Initial processing.  (line  77)
 * C++ named operators:                   C++ Named Operators. (line   6)
 * character constants:                   Tokenization.        (line  85)
-* character set, execution:              Invocation.          (line 491)
-* character set, input:                  Invocation.          (line 504)
-* character set, wide execution:         Invocation.          (line 496)
+* character set, execution:              Invocation.          (line 517)
+* character set, input:                  Invocation.          (line 530)
+* character set, wide execution:         Invocation.          (line 522)
 * command line:                          Invocation.          (line   6)
 * commenting out code:                   Deleted Code.        (line   6)
 * comments:                              Initial processing.  (line  77)
@@ -5540,10 +5568,10 @@ Node: Invocation163779
 Ref: Wtrigraphs168231
 Ref: dashMF173006
 Ref: fdollars-in-identifiers182717
-Node: Environment Variables190880
-Node: GNU Free Documentation License193846
-Node: Index of Directives219010
-Node: Option Index220944
-Node: Concept Index227128
+Node: Environment Variables192398
+Node: GNU Free Documentation License195364
+Node: Index of Directives220528
+Node: Option Index222462
+Node: Concept Index228792
 
 End Tag Table

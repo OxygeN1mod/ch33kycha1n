@@ -45,7 +45,7 @@ Introduction
 ************
 
 This brief manual contains documentation for the GNU binary utilities
-(ch33kycha1n|20110903) version 2.21.53:
+(ch33kycha1n|20111020) version 2.22.51:
 
    This document is distributed under the terms of the GNU Free
 Documentation License version 1.3.  A copy of the license is included
@@ -2584,11 +2584,25 @@ standard output.  In this mode, `addr2line' may be used in a pipe to
 convert dynamically chosen addresses.
 
    The format of the output is `FILENAME:LINENO'.  The file name and
-line number for each address is printed on a separate line.  If the
-`-f' option is used, then each `FILENAME:LINENO' line is preceded by a
-`FUNCTIONNAME' line which is the name of the function containing the
-address.  If the `-a' option is used, then the address read is first
-printed.
+line number for each input address is printed on separate lines.
+
+   If the `-f' option is used, then each `FILENAME:LINENO' line is
+preceded by `FUNCTIONNAME' which is the name of the function containing
+the address.
+
+   If the `-i' option is used and the code at the given address is
+present there because of inlining by the compiler then the
+`{FUNCTIONNAME} FILENAME:LINENO' information for the inlining function
+will be displayed afterwards.  This continues recursively until there
+is no more inlining to report.
+
+   If the `-a' option is used then the output is prefixed by the input
+address.
+
+   If the `-p' option is used then the output for each input address is
+displayed on one, possibly quite long, line.  If `-p' is not used then
+the output is broken up into multiple lines, based on the paragraphs
+above.
 
    If the file name or function name can not be determined, `addr2line'
 will print two question marks in their place.  If the line number can
@@ -2599,7 +2613,7 @@ equivalent.
 
 `-a'
 `--addresses'
-     Display address before function names or file and line number
+     Display the address before the function name, file and line number
      information.  The address is printed with a `0x' prefix to easily
      identify it.
 
@@ -4574,7 +4588,7 @@ Binutils Index
 * deleting from archive:                 ar cmdline.          (line  26)
 * demangling C++ symbols:                c++filt.             (line   6)
 * demangling in nm:                      nm.                  (line 151)
-* demangling in objdump <1>:             addr2line.           (line  64)
+* demangling in objdump <1>:             addr2line.           (line  78)
 * demangling in objdump:                 objdump.             (line  95)
 * deterministic archives:                ar cmdline.          (line 148)
 * disassembling object code:             objdump.             (line 117)
@@ -4625,7 +4639,7 @@ Binutils Index
 * nm format:                             nm.                  (line 147)
 * not writing archive index:             ar cmdline.          (line 196)
 * objdump:                               objdump.             (line   6)
-* object code format <1>:                addr2line.           (line  59)
+* object code format <1>:                addr2line.           (line  73)
 * object code format <2>:                strings.             (line  67)
 * object code format <3>:                size.                (line  84)
 * object code format <4>:                objdump.             (line  81)
@@ -4705,21 +4719,21 @@ Node: strip89606
 Node: c++filt95557
 Ref: c++filt-Footnote-1100404
 Node: addr2line100510
-Node: nlmconv104310
-Node: windmc106916
-Node: windres110565
-Node: dlltool116926
-Node: def file format129812
-Node: readelf131743
-Node: elfedit139288
-Node: Common Options141533
-Node: Selecting the Target System142573
-Node: Target Selection143505
-Node: Architecture Selection145487
-Node: Reporting Bugs146315
-Node: Bug Criteria147094
-Node: Bug Reporting147647
-Node: GNU Free Documentation License154517
-Node: Binutils Index179696
+Node: nlmconv104847
+Node: windmc107453
+Node: windres111102
+Node: dlltool117463
+Node: def file format130349
+Node: readelf132280
+Node: elfedit139825
+Node: Common Options142070
+Node: Selecting the Target System143110
+Node: Target Selection144042
+Node: Architecture Selection146024
+Node: Reporting Bugs146852
+Node: Bug Criteria147631
+Node: Bug Reporting148184
+Node: GNU Free Documentation License155054
+Node: Binutils Index180233
 
 End Tag Table

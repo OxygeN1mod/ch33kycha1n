@@ -17,7 +17,11 @@
 #define HAVE_arm_ashldi3_1bit (TARGET_32BIT)
 #define HAVE_arm_ashrdi3_1bit (TARGET_32BIT)
 #define HAVE_arm_lshrdi3_1bit (TARGET_32BIT)
-#define HAVE_extv (arm_arch_thumb2)
+#define HAVE_unaligned_loadsi (unaligned_access && TARGET_32BIT)
+#define HAVE_unaligned_loadhis (unaligned_access && TARGET_32BIT)
+#define HAVE_unaligned_loadhiu (unaligned_access && TARGET_32BIT)
+#define HAVE_unaligned_storesi (unaligned_access && TARGET_32BIT)
+#define HAVE_unaligned_storehi (unaligned_access && TARGET_32BIT)
 #define HAVE_extzv_t2 (arm_arch_thumb2)
 #define HAVE_divsi3 (TARGET_IDIV)
 #define HAVE_udivsi3 (TARGET_IDIV)
@@ -381,18 +385,6 @@
 #define HAVE_quad_halves_smaxv16qi (TARGET_NEON)
 #define HAVE_quad_halves_uminv16qi (TARGET_NEON)
 #define HAVE_quad_halves_umaxv16qi (TARGET_NEON)
-#define HAVE_neon_move_lo_quad_v2di (TARGET_NEON)
-#define HAVE_neon_move_lo_quad_v2df (TARGET_NEON)
-#define HAVE_neon_move_lo_quad_v16qi (TARGET_NEON)
-#define HAVE_neon_move_lo_quad_v8hi (TARGET_NEON)
-#define HAVE_neon_move_lo_quad_v4si (TARGET_NEON)
-#define HAVE_neon_move_lo_quad_v4sf (TARGET_NEON)
-#define HAVE_neon_move_hi_quad_v2di (TARGET_NEON)
-#define HAVE_neon_move_hi_quad_v2df (TARGET_NEON)
-#define HAVE_neon_move_hi_quad_v16qi (TARGET_NEON)
-#define HAVE_neon_move_hi_quad_v8hi (TARGET_NEON)
-#define HAVE_neon_move_hi_quad_v4si (TARGET_NEON)
-#define HAVE_neon_move_hi_quad_v4sf (TARGET_NEON)
 #define HAVE_reduc_splus_v2di (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_neon_vpadd_internalv8qi (TARGET_NEON)
 #define HAVE_neon_vpadd_internalv4hi (TARGET_NEON)
@@ -705,16 +697,6 @@
 #define HAVE_neon_vcombinev2si (TARGET_NEON)
 #define HAVE_neon_vcombinev2sf (TARGET_NEON)
 #define HAVE_neon_vcombinedi (TARGET_NEON)
-#define HAVE_neon_vget_highv16qi (TARGET_NEON)
-#define HAVE_neon_vget_highv8hi (TARGET_NEON)
-#define HAVE_neon_vget_highv4si (TARGET_NEON)
-#define HAVE_neon_vget_highv4sf (TARGET_NEON)
-#define HAVE_neon_vget_highv2di (TARGET_NEON)
-#define HAVE_neon_vget_lowv16qi (TARGET_NEON)
-#define HAVE_neon_vget_lowv8hi (TARGET_NEON)
-#define HAVE_neon_vget_lowv4si (TARGET_NEON)
-#define HAVE_neon_vget_lowv4sf (TARGET_NEON)
-#define HAVE_neon_vget_lowv2di (TARGET_NEON)
 #define HAVE_neon_vcvtv2sf (TARGET_NEON)
 #define HAVE_neon_vcvtv4sf (TARGET_NEON)
 #define HAVE_neon_vcvtv2si (TARGET_NEON)
@@ -1121,6 +1103,12 @@
 #define HAVE_neon_vec_umult_hi_v8hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_neon_vec_smult_hi_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_neon_vec_umult_hi_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_neon_vec_sshiftl_v8qi (TARGET_NEON)
+#define HAVE_neon_vec_ushiftl_v8qi (TARGET_NEON)
+#define HAVE_neon_vec_sshiftl_v4hi (TARGET_NEON)
+#define HAVE_neon_vec_ushiftl_v4hi (TARGET_NEON)
+#define HAVE_neon_vec_sshiftl_v2si (TARGET_NEON)
+#define HAVE_neon_vec_ushiftl_v2si (TARGET_NEON)
 #define HAVE_neon_unpacks_v8qi (TARGET_NEON)
 #define HAVE_neon_unpacku_v8qi (TARGET_NEON)
 #define HAVE_neon_unpacks_v4hi (TARGET_NEON)
@@ -1139,48 +1127,150 @@
 #define HAVE_neon_vec_pack_trunc_v8hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_neon_vec_pack_trunc_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_neon_vec_pack_trunc_v2di (TARGET_NEON && !BYTES_BIG_ENDIAN)
-#define HAVE_arm_sync_compare_and_swapsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_compare_and_swapqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_compare_and_swaphi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_lock_test_and_setsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_lock_test_and_setqi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_lock_test_and_sethi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_addsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_subsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_iorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_xorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_andsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_nandsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_addqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_subqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_iorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_xorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_andqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_addhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_subhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_iorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_xorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_andhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_nandqi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_new_nandhi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_addsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_subsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_iorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_xorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_andsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_nandsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_addqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_subqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_iorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_xorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_andqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_addhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_subhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_iorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_xorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_andhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_nandqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_arm_sync_old_nandhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_neon_vabdv8qi_2 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv16qi_2 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv4hi_2 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv8hi_2 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv2si_2 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv4si_2 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv2sf_2 (TARGET_NEON && (!true || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv4sf_2 (TARGET_NEON && (!true || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv2di_2 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv8qi_3 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv16qi_3 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv4hi_3 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv8hi_3 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv2si_3 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv4si_3 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv2sf_3 (TARGET_NEON && (!true || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv4sf_3 (TARGET_NEON && (!true || flag_unsafe_math_optimizations))
+#define HAVE_neon_vabdv2di_3 (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_arm_sync_compare_and_swapsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_compare_and_swapdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_compare_and_swapqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_compare_and_swaphi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_lock_test_and_setsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_lock_test_and_setdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_lock_test_and_setqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_lock_test_and_sethi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_addsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_subsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_iorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_xorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_andsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_adddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_subdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_iordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_xordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_anddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_addqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_subqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_iorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_xorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_andqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_addhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_subhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_iorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_xorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_andhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_nandsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_nanddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_nandqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_new_nandhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_addsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_subsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_iorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_xorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_andsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_adddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_subdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_iordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_xordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_anddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_addqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_subqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_iorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_xorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_andqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_addhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_subhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_iorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_xorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_andhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_nandsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_nanddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_nandqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_arm_sync_old_nandhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
 #define HAVE_addqq3 (TARGET_32BIT)
 #define HAVE_addhq3 (TARGET_32BIT)
 #define HAVE_addsq3 (TARGET_32BIT)
@@ -1282,6 +1372,9 @@
 #define HAVE_rotlsi3 (TARGET_32BIT)
 #define HAVE_rotrsi3 1
 #define HAVE_extzv (TARGET_THUMB1 || arm_arch_thumb2)
+#define HAVE_extzv_t1 (TARGET_THUMB1)
+#define HAVE_extv (arm_arch_thumb2)
+#define HAVE_extv_regsi 1
 #define HAVE_negdi2 1
 #define HAVE_negsi2 1
 #define HAVE_negsf2 (TARGET_32BIT && TARGET_HARD_FLOAT && (TARGET_FPA || TARGET_VFP))
@@ -1671,20 +1764,20 @@
 #define HAVE_reduc_umax_v16qi (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_reduc_umax_v8hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_reduc_umax_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
-#define HAVE_vcondv8qi (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
-#define HAVE_vcondv16qi (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
-#define HAVE_vcondv4hi (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
-#define HAVE_vcondv8hi (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
-#define HAVE_vcondv2si (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
-#define HAVE_vcondv4si (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
-#define HAVE_vcondv2sf (TARGET_NEON && (!true || flag_unsafe_math_optimizations))
-#define HAVE_vcondv4sf (TARGET_NEON && (!true || flag_unsafe_math_optimizations))
-#define HAVE_vconduv8qi (TARGET_NEON)
-#define HAVE_vconduv16qi (TARGET_NEON)
-#define HAVE_vconduv4hi (TARGET_NEON)
-#define HAVE_vconduv8hi (TARGET_NEON)
-#define HAVE_vconduv2si (TARGET_NEON)
-#define HAVE_vconduv4si (TARGET_NEON)
+#define HAVE_vcondv8qiv8qi (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_vcondv16qiv16qi (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_vcondv4hiv4hi (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_vcondv8hiv8hi (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_vcondv2siv2si (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_vcondv4siv4si (TARGET_NEON && (!false || flag_unsafe_math_optimizations))
+#define HAVE_vcondv2sfv2sf (TARGET_NEON && (!true || flag_unsafe_math_optimizations))
+#define HAVE_vcondv4sfv4sf (TARGET_NEON && (!true || flag_unsafe_math_optimizations))
+#define HAVE_vconduv8qiv8qi (TARGET_NEON)
+#define HAVE_vconduv16qiv16qi (TARGET_NEON)
+#define HAVE_vconduv4hiv4hi (TARGET_NEON)
+#define HAVE_vconduv8hiv8hi (TARGET_NEON)
+#define HAVE_vconduv2siv2si (TARGET_NEON)
+#define HAVE_vconduv4siv4si (TARGET_NEON)
 #define HAVE_neon_vaddv8qi (TARGET_NEON)
 #define HAVE_neon_vaddv16qi (TARGET_NEON)
 #define HAVE_neon_vaddv4hi (TARGET_NEON)
@@ -1791,6 +1884,16 @@
 #define HAVE_neon_vdup_lanev4sf (TARGET_NEON)
 #define HAVE_neon_vdup_lanedi (TARGET_NEON)
 #define HAVE_neon_vdup_lanev2di (TARGET_NEON)
+#define HAVE_neon_vget_highv16qi (TARGET_NEON)
+#define HAVE_neon_vget_highv8hi (TARGET_NEON)
+#define HAVE_neon_vget_highv4si (TARGET_NEON)
+#define HAVE_neon_vget_highv4sf (TARGET_NEON)
+#define HAVE_neon_vget_highv2di (TARGET_NEON)
+#define HAVE_neon_vget_lowv16qi (TARGET_NEON)
+#define HAVE_neon_vget_lowv8hi (TARGET_NEON)
+#define HAVE_neon_vget_lowv4si (TARGET_NEON)
+#define HAVE_neon_vget_lowv4sf (TARGET_NEON)
+#define HAVE_neon_vget_lowv2di (TARGET_NEON)
 #define HAVE_neon_vmul_nv4hi (TARGET_NEON)
 #define HAVE_neon_vmul_nv2si (TARGET_NEON)
 #define HAVE_neon_vmul_nv2sf (TARGET_NEON)
@@ -2073,6 +2176,18 @@
 #define HAVE_vec_widen_umult_hi_v8hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_vec_widen_smult_hi_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_vec_widen_umult_hi_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_sshiftl_lo_v16qi (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_ushiftl_lo_v16qi (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_sshiftl_lo_v8hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_ushiftl_lo_v8hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_sshiftl_lo_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_ushiftl_lo_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_sshiftl_hi_v16qi (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_ushiftl_hi_v16qi (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_sshiftl_hi_v8hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_ushiftl_hi_v8hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_sshiftl_hi_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
+#define HAVE_vec_widen_ushiftl_hi_v4si (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_vec_unpacks_lo_v8qi (TARGET_NEON)
 #define HAVE_vec_unpacku_lo_v8qi (TARGET_NEON)
 #define HAVE_vec_unpacks_lo_v4hi (TARGET_NEON)
@@ -2097,70 +2212,202 @@
 #define HAVE_vec_widen_umult_lo_v4hi (TARGET_NEON)
 #define HAVE_vec_widen_smult_lo_v2si (TARGET_NEON)
 #define HAVE_vec_widen_umult_lo_v2si (TARGET_NEON)
+#define HAVE_vec_widen_sshiftl_hi_v8qi (TARGET_NEON)
+#define HAVE_vec_widen_ushiftl_hi_v8qi (TARGET_NEON)
+#define HAVE_vec_widen_sshiftl_hi_v4hi (TARGET_NEON)
+#define HAVE_vec_widen_ushiftl_hi_v4hi (TARGET_NEON)
+#define HAVE_vec_widen_sshiftl_hi_v2si (TARGET_NEON)
+#define HAVE_vec_widen_ushiftl_hi_v2si (TARGET_NEON)
+#define HAVE_vec_widen_sshiftl_lo_v8qi (TARGET_NEON)
+#define HAVE_vec_widen_ushiftl_lo_v8qi (TARGET_NEON)
+#define HAVE_vec_widen_sshiftl_lo_v4hi (TARGET_NEON)
+#define HAVE_vec_widen_ushiftl_lo_v4hi (TARGET_NEON)
+#define HAVE_vec_widen_sshiftl_lo_v2si (TARGET_NEON)
+#define HAVE_vec_widen_ushiftl_lo_v2si (TARGET_NEON)
 #define HAVE_vec_pack_trunc_v4hi (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_vec_pack_trunc_v2si (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_vec_pack_trunc_di (TARGET_NEON && !BYTES_BIG_ENDIAN)
 #define HAVE_memory_barrier (TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_compare_and_swapsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_compare_and_swapqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_compare_and_swaphi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_lock_test_and_setsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_lock_test_and_setqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_lock_test_and_sethi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_addsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_subsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_iorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_xorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_andsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_nandsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_addqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_subqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_iorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_xorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_andqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_addhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_subhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_iorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_xorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_andhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_nandqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_nandhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_addsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_subsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_iorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_xorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_andsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_nandsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_addqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_subqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_iorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_xorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_andqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_addhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_subhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_iorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_xorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_andhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_nandqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_new_nandhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_addsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_subsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_iorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_xorsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_andsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_nandsi (TARGET_HAVE_LDREX && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_addqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_subqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_iorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_xorqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_andqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_addhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_subhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_iorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_xorhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_andhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_nandqi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
-#define HAVE_sync_old_nandhi (TARGET_HAVE_LDREXBHD && TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_compare_and_swapqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_compare_and_swaphi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_compare_and_swapsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_compare_and_swapdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_lock_test_and_setqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_lock_test_and_sethi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_lock_test_and_setsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_lock_test_and_setdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_addqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_subqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_iorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_xorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_andqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_addhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_subhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_iorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_xorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_andhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_addsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_subsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_iorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_xorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_andsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_adddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_subdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_iordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_xordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_anddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_nandqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_nandhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_nandsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_nanddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_addqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_subqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_iorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_xorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_andqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_addhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_subhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_iorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_xorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_andhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_addsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_subsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_iorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_xorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_andsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_adddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_subdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_iordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_xordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_anddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_nandqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_nandhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_nandsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_new_nanddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_addqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_subqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_iorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_xorqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_andqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_addhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_subhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_iorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_xorhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_andhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_addsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_subsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_iorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_xorsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_andsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_adddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_subdi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_iordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_xordi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_anddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_nandqi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_nandhi (TARGET_HAVE_LDREXBH && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_nandsi (TARGET_HAVE_LDREX && \
+					TARGET_HAVE_MEMORY_BARRIER)
+#define HAVE_sync_old_nanddi (TARGET_HAVE_LDREXD && \
+					ARM_DOUBLEWORD_ALIGN && \
+					TARGET_HAVE_MEMORY_BARRIER)
 #define HAVE_mulqq3 (TARGET_DSP_MULTIPLY && arm_arch_thumb2)
 #define HAVE_mulhq3 (TARGET_DSP_MULTIPLY && arm_arch_thumb2)
 #define HAVE_mulsq3 (TARGET_32BIT && arm_arch3m)
@@ -2183,7 +2430,11 @@ extern rtx        gen_andsi_not_shiftsi_si              (rtx, rtx, rtx, rtx, rtx
 extern rtx        gen_arm_ashldi3_1bit                  (rtx, rtx);
 extern rtx        gen_arm_ashrdi3_1bit                  (rtx, rtx);
 extern rtx        gen_arm_lshrdi3_1bit                  (rtx, rtx);
-extern rtx        gen_extv                              (rtx, rtx, rtx, rtx);
+extern rtx        gen_unaligned_loadsi                  (rtx, rtx);
+extern rtx        gen_unaligned_loadhis                 (rtx, rtx);
+extern rtx        gen_unaligned_loadhiu                 (rtx, rtx);
+extern rtx        gen_unaligned_storesi                 (rtx, rtx);
+extern rtx        gen_unaligned_storehi                 (rtx, rtx);
 extern rtx        gen_extzv_t2                          (rtx, rtx, rtx, rtx);
 extern rtx        gen_divsi3                            (rtx, rtx, rtx);
 extern rtx        gen_udivsi3                           (rtx, rtx, rtx);
@@ -2571,18 +2822,6 @@ extern rtx        gen_quad_halves_sminv16qi             (rtx, rtx);
 extern rtx        gen_quad_halves_smaxv16qi             (rtx, rtx);
 extern rtx        gen_quad_halves_uminv16qi             (rtx, rtx);
 extern rtx        gen_quad_halves_umaxv16qi             (rtx, rtx);
-extern rtx        gen_neon_move_lo_quad_v2di            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_lo_quad_v2df            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_lo_quad_v16qi           (rtx, rtx, rtx);
-extern rtx        gen_neon_move_lo_quad_v8hi            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_lo_quad_v4si            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_lo_quad_v4sf            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_hi_quad_v2di            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_hi_quad_v2df            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_hi_quad_v16qi           (rtx, rtx, rtx);
-extern rtx        gen_neon_move_hi_quad_v8hi            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_hi_quad_v4si            (rtx, rtx, rtx);
-extern rtx        gen_neon_move_hi_quad_v4sf            (rtx, rtx, rtx);
 extern rtx        gen_reduc_splus_v2di                  (rtx, rtx);
 extern rtx        gen_neon_vpadd_internalv8qi           (rtx, rtx, rtx);
 extern rtx        gen_neon_vpadd_internalv4hi           (rtx, rtx, rtx);
@@ -2895,16 +3134,6 @@ extern rtx        gen_neon_vcombinev4hi                 (rtx, rtx, rtx);
 extern rtx        gen_neon_vcombinev2si                 (rtx, rtx, rtx);
 extern rtx        gen_neon_vcombinev2sf                 (rtx, rtx, rtx);
 extern rtx        gen_neon_vcombinedi                   (rtx, rtx, rtx);
-extern rtx        gen_neon_vget_highv16qi               (rtx, rtx);
-extern rtx        gen_neon_vget_highv8hi                (rtx, rtx);
-extern rtx        gen_neon_vget_highv4si                (rtx, rtx);
-extern rtx        gen_neon_vget_highv4sf                (rtx, rtx);
-extern rtx        gen_neon_vget_highv2di                (rtx, rtx);
-extern rtx        gen_neon_vget_lowv16qi                (rtx, rtx);
-extern rtx        gen_neon_vget_lowv8hi                 (rtx, rtx);
-extern rtx        gen_neon_vget_lowv4si                 (rtx, rtx);
-extern rtx        gen_neon_vget_lowv4sf                 (rtx, rtx);
-extern rtx        gen_neon_vget_lowv2di                 (rtx, rtx);
 extern rtx        gen_neon_vcvtv2sf                     (rtx, rtx, rtx);
 extern rtx        gen_neon_vcvtv4sf                     (rtx, rtx, rtx);
 extern rtx        gen_neon_vcvtv2si                     (rtx, rtx, rtx);
@@ -3311,6 +3540,12 @@ extern rtx        gen_neon_vec_smult_hi_v8hi            (rtx, rtx, rtx, rtx);
 extern rtx        gen_neon_vec_umult_hi_v8hi            (rtx, rtx, rtx, rtx);
 extern rtx        gen_neon_vec_smult_hi_v4si            (rtx, rtx, rtx, rtx);
 extern rtx        gen_neon_vec_umult_hi_v4si            (rtx, rtx, rtx, rtx);
+extern rtx        gen_neon_vec_sshiftl_v8qi             (rtx, rtx, rtx);
+extern rtx        gen_neon_vec_ushiftl_v8qi             (rtx, rtx, rtx);
+extern rtx        gen_neon_vec_sshiftl_v4hi             (rtx, rtx, rtx);
+extern rtx        gen_neon_vec_ushiftl_v4hi             (rtx, rtx, rtx);
+extern rtx        gen_neon_vec_sshiftl_v2si             (rtx, rtx, rtx);
+extern rtx        gen_neon_vec_ushiftl_v2si             (rtx, rtx, rtx);
 extern rtx        gen_neon_unpacks_v8qi                 (rtx, rtx);
 extern rtx        gen_neon_unpacku_v8qi                 (rtx, rtx);
 extern rtx        gen_neon_unpacks_v4hi                 (rtx, rtx);
@@ -3329,10 +3564,30 @@ extern rtx        gen_vec_pack_trunc_v2di               (rtx, rtx, rtx);
 extern rtx        gen_neon_vec_pack_trunc_v8hi          (rtx, rtx);
 extern rtx        gen_neon_vec_pack_trunc_v4si          (rtx, rtx);
 extern rtx        gen_neon_vec_pack_trunc_v2di          (rtx, rtx);
+extern rtx        gen_neon_vabdv8qi_2                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv16qi_2                  (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv4hi_2                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv8hi_2                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv2si_2                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv4si_2                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv2sf_2                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv4sf_2                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv2di_2                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv8qi_3                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv16qi_3                  (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv4hi_3                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv8hi_3                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv2si_3                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv4si_3                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv2sf_3                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv4sf_3                   (rtx, rtx, rtx);
+extern rtx        gen_neon_vabdv2di_3                   (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_compare_and_swapsi       (rtx, rtx, rtx, rtx);
+extern rtx        gen_arm_sync_compare_and_swapdi       (rtx, rtx, rtx, rtx);
 extern rtx        gen_arm_sync_compare_and_swapqi       (rtx, rtx, rtx, rtx);
 extern rtx        gen_arm_sync_compare_and_swaphi       (rtx, rtx, rtx, rtx);
 extern rtx        gen_arm_sync_lock_test_and_setsi      (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_lock_test_and_setdi      (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_lock_test_and_setqi      (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_lock_test_and_sethi      (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_addsi                (rtx, rtx, rtx);
@@ -3340,7 +3595,11 @@ extern rtx        gen_arm_sync_new_subsi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_iorsi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_xorsi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_andsi                (rtx, rtx, rtx);
-extern rtx        gen_arm_sync_new_nandsi               (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_new_adddi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_new_subdi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_new_iordi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_new_xordi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_new_anddi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_addqi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_subqi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_iorqi                (rtx, rtx, rtx);
@@ -3351,6 +3610,8 @@ extern rtx        gen_arm_sync_new_subhi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_iorhi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_xorhi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_andhi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_new_nandsi               (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_new_nanddi               (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_nandqi               (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_new_nandhi               (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_addsi                (rtx, rtx, rtx);
@@ -3358,7 +3619,11 @@ extern rtx        gen_arm_sync_old_subsi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_iorsi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_xorsi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_andsi                (rtx, rtx, rtx);
-extern rtx        gen_arm_sync_old_nandsi               (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_old_adddi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_old_subdi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_old_iordi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_old_xordi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_old_anddi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_addqi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_subqi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_iorqi                (rtx, rtx, rtx);
@@ -3369,6 +3634,8 @@ extern rtx        gen_arm_sync_old_subhi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_iorhi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_xorhi                (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_andhi                (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_old_nandsi               (rtx, rtx, rtx);
+extern rtx        gen_arm_sync_old_nanddi               (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_nandqi               (rtx, rtx, rtx);
 extern rtx        gen_arm_sync_old_nandhi               (rtx, rtx, rtx);
 extern rtx        gen_addqq3                            (rtx, rtx, rtx);
@@ -3472,6 +3739,9 @@ extern rtx        gen_lshrsi3                           (rtx, rtx, rtx);
 extern rtx        gen_rotlsi3                           (rtx, rtx, rtx);
 extern rtx        gen_rotrsi3                           (rtx, rtx, rtx);
 extern rtx        gen_extzv                             (rtx, rtx, rtx, rtx);
+extern rtx        gen_extzv_t1                          (rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_extv                              (rtx, rtx, rtx, rtx);
+extern rtx        gen_extv_regsi                        (rtx, rtx, rtx, rtx);
 extern rtx        gen_negdi2                            (rtx, rtx);
 extern rtx        gen_negsi2                            (rtx, rtx);
 extern rtx        gen_negsf2                            (rtx, rtx);
@@ -3748,20 +4018,20 @@ extern rtx        gen_reduc_umax_v2si                   (rtx, rtx);
 extern rtx        gen_reduc_umax_v16qi                  (rtx, rtx);
 extern rtx        gen_reduc_umax_v8hi                   (rtx, rtx);
 extern rtx        gen_reduc_umax_v4si                   (rtx, rtx);
-extern rtx        gen_vcondv8qi                         (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vcondv16qi                        (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vcondv4hi                         (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vcondv8hi                         (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vcondv2si                         (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vcondv4si                         (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vcondv2sf                         (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vcondv4sf                         (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vconduv8qi                        (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vconduv16qi                       (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vconduv4hi                        (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vconduv8hi                        (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vconduv2si                        (rtx, rtx, rtx, rtx, rtx, rtx);
-extern rtx        gen_vconduv4si                        (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vcondv8qiv8qi                     (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vcondv16qiv16qi                   (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vcondv4hiv4hi                     (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vcondv8hiv8hi                     (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vcondv2siv2si                     (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vcondv4siv4si                     (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vcondv2sfv2sf                     (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vcondv4sfv4sf                     (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vconduv8qiv8qi                    (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vconduv16qiv16qi                  (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vconduv4hiv4hi                    (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vconduv8hiv8hi                    (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vconduv2siv2si                    (rtx, rtx, rtx, rtx, rtx, rtx);
+extern rtx        gen_vconduv4siv4si                    (rtx, rtx, rtx, rtx, rtx, rtx);
 extern rtx        gen_neon_vaddv8qi                     (rtx, rtx, rtx, rtx);
 extern rtx        gen_neon_vaddv16qi                    (rtx, rtx, rtx, rtx);
 extern rtx        gen_neon_vaddv4hi                     (rtx, rtx, rtx, rtx);
@@ -3868,6 +4138,16 @@ extern rtx        gen_neon_vdup_lanev2sf                (rtx, rtx, rtx);
 extern rtx        gen_neon_vdup_lanev4sf                (rtx, rtx, rtx);
 extern rtx        gen_neon_vdup_lanedi                  (rtx, rtx, rtx);
 extern rtx        gen_neon_vdup_lanev2di                (rtx, rtx, rtx);
+extern rtx        gen_neon_vget_highv16qi               (rtx, rtx);
+extern rtx        gen_neon_vget_highv8hi                (rtx, rtx);
+extern rtx        gen_neon_vget_highv4si                (rtx, rtx);
+extern rtx        gen_neon_vget_highv4sf                (rtx, rtx);
+extern rtx        gen_neon_vget_highv2di                (rtx, rtx);
+extern rtx        gen_neon_vget_lowv16qi                (rtx, rtx);
+extern rtx        gen_neon_vget_lowv8hi                 (rtx, rtx);
+extern rtx        gen_neon_vget_lowv4si                 (rtx, rtx);
+extern rtx        gen_neon_vget_lowv4sf                 (rtx, rtx);
+extern rtx        gen_neon_vget_lowv2di                 (rtx, rtx);
 extern rtx        gen_neon_vmul_nv4hi                   (rtx, rtx, rtx, rtx);
 extern rtx        gen_neon_vmul_nv2si                   (rtx, rtx, rtx, rtx);
 extern rtx        gen_neon_vmul_nv2sf                   (rtx, rtx, rtx, rtx);
@@ -4150,6 +4430,18 @@ extern rtx        gen_vec_widen_smult_hi_v8hi           (rtx, rtx, rtx);
 extern rtx        gen_vec_widen_umult_hi_v8hi           (rtx, rtx, rtx);
 extern rtx        gen_vec_widen_smult_hi_v4si           (rtx, rtx, rtx);
 extern rtx        gen_vec_widen_umult_hi_v4si           (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_lo_v16qi        (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_lo_v16qi        (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_lo_v8hi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_lo_v8hi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_lo_v4si         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_lo_v4si         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_hi_v16qi        (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_hi_v16qi        (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_hi_v8hi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_hi_v8hi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_hi_v4si         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_hi_v4si         (rtx, rtx, rtx);
 extern rtx        gen_vec_unpacks_lo_v8qi               (rtx, rtx);
 extern rtx        gen_vec_unpacku_lo_v8qi               (rtx, rtx);
 extern rtx        gen_vec_unpacks_lo_v4hi               (rtx, rtx);
@@ -4174,22 +4466,30 @@ extern rtx        gen_vec_widen_smult_lo_v4hi           (rtx, rtx, rtx);
 extern rtx        gen_vec_widen_umult_lo_v4hi           (rtx, rtx, rtx);
 extern rtx        gen_vec_widen_smult_lo_v2si           (rtx, rtx, rtx);
 extern rtx        gen_vec_widen_umult_lo_v2si           (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_hi_v8qi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_hi_v8qi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_hi_v4hi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_hi_v4hi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_hi_v2si         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_hi_v2si         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_lo_v8qi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_lo_v8qi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_lo_v4hi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_lo_v4hi         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_sshiftl_lo_v2si         (rtx, rtx, rtx);
+extern rtx        gen_vec_widen_ushiftl_lo_v2si         (rtx, rtx, rtx);
 extern rtx        gen_vec_pack_trunc_v4hi               (rtx, rtx, rtx);
 extern rtx        gen_vec_pack_trunc_v2si               (rtx, rtx, rtx);
 extern rtx        gen_vec_pack_trunc_di                 (rtx, rtx, rtx);
 extern rtx        gen_memory_barrier                    (void);
-extern rtx        gen_sync_compare_and_swapsi           (rtx, rtx, rtx, rtx);
 extern rtx        gen_sync_compare_and_swapqi           (rtx, rtx, rtx, rtx);
 extern rtx        gen_sync_compare_and_swaphi           (rtx, rtx, rtx, rtx);
-extern rtx        gen_sync_lock_test_and_setsi          (rtx, rtx, rtx);
+extern rtx        gen_sync_compare_and_swapsi           (rtx, rtx, rtx, rtx);
+extern rtx        gen_sync_compare_and_swapdi           (rtx, rtx, rtx, rtx);
 extern rtx        gen_sync_lock_test_and_setqi          (rtx, rtx, rtx);
 extern rtx        gen_sync_lock_test_and_sethi          (rtx, rtx, rtx);
-extern rtx        gen_sync_addsi                        (rtx, rtx);
-extern rtx        gen_sync_subsi                        (rtx, rtx);
-extern rtx        gen_sync_iorsi                        (rtx, rtx);
-extern rtx        gen_sync_xorsi                        (rtx, rtx);
-extern rtx        gen_sync_andsi                        (rtx, rtx);
-extern rtx        gen_sync_nandsi                       (rtx, rtx);
+extern rtx        gen_sync_lock_test_and_setsi          (rtx, rtx, rtx);
+extern rtx        gen_sync_lock_test_and_setdi          (rtx, rtx, rtx);
 extern rtx        gen_sync_addqi                        (rtx, rtx);
 extern rtx        gen_sync_subqi                        (rtx, rtx);
 extern rtx        gen_sync_iorqi                        (rtx, rtx);
@@ -4200,14 +4500,20 @@ extern rtx        gen_sync_subhi                        (rtx, rtx);
 extern rtx        gen_sync_iorhi                        (rtx, rtx);
 extern rtx        gen_sync_xorhi                        (rtx, rtx);
 extern rtx        gen_sync_andhi                        (rtx, rtx);
+extern rtx        gen_sync_addsi                        (rtx, rtx);
+extern rtx        gen_sync_subsi                        (rtx, rtx);
+extern rtx        gen_sync_iorsi                        (rtx, rtx);
+extern rtx        gen_sync_xorsi                        (rtx, rtx);
+extern rtx        gen_sync_andsi                        (rtx, rtx);
+extern rtx        gen_sync_adddi                        (rtx, rtx);
+extern rtx        gen_sync_subdi                        (rtx, rtx);
+extern rtx        gen_sync_iordi                        (rtx, rtx);
+extern rtx        gen_sync_xordi                        (rtx, rtx);
+extern rtx        gen_sync_anddi                        (rtx, rtx);
 extern rtx        gen_sync_nandqi                       (rtx, rtx);
 extern rtx        gen_sync_nandhi                       (rtx, rtx);
-extern rtx        gen_sync_new_addsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_new_subsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_new_iorsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_new_xorsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_new_andsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_new_nandsi                   (rtx, rtx, rtx);
+extern rtx        gen_sync_nandsi                       (rtx, rtx);
+extern rtx        gen_sync_nanddi                       (rtx, rtx);
 extern rtx        gen_sync_new_addqi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_new_subqi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_new_iorqi                    (rtx, rtx, rtx);
@@ -4218,14 +4524,20 @@ extern rtx        gen_sync_new_subhi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_new_iorhi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_new_xorhi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_new_andhi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_addsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_subsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_iorsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_xorsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_andsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_adddi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_subdi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_iordi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_xordi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_new_anddi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_new_nandqi                   (rtx, rtx, rtx);
 extern rtx        gen_sync_new_nandhi                   (rtx, rtx, rtx);
-extern rtx        gen_sync_old_addsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_old_subsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_old_iorsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_old_xorsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_old_andsi                    (rtx, rtx, rtx);
-extern rtx        gen_sync_old_nandsi                   (rtx, rtx, rtx);
+extern rtx        gen_sync_new_nandsi                   (rtx, rtx, rtx);
+extern rtx        gen_sync_new_nanddi                   (rtx, rtx, rtx);
 extern rtx        gen_sync_old_addqi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_old_subqi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_old_iorqi                    (rtx, rtx, rtx);
@@ -4236,8 +4548,20 @@ extern rtx        gen_sync_old_subhi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_old_iorhi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_old_xorhi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_old_andhi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_addsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_subsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_iorsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_xorsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_andsi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_adddi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_subdi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_iordi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_xordi                    (rtx, rtx, rtx);
+extern rtx        gen_sync_old_anddi                    (rtx, rtx, rtx);
 extern rtx        gen_sync_old_nandqi                   (rtx, rtx, rtx);
 extern rtx        gen_sync_old_nandhi                   (rtx, rtx, rtx);
+extern rtx        gen_sync_old_nandsi                   (rtx, rtx, rtx);
+extern rtx        gen_sync_old_nanddi                   (rtx, rtx, rtx);
 extern rtx        gen_mulqq3                            (rtx, rtx, rtx);
 extern rtx        gen_mulhq3                            (rtx, rtx, rtx);
 extern rtx        gen_mulsq3                            (rtx, rtx, rtx);
