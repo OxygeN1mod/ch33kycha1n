@@ -18452,25 +18452,25 @@ nil 0 nil )
 (!type already_seen 793)
 )
  gc_pointed_to "VEC_tree_gc_vec_gc"
-(!srcfileloc  "c-family/c-common.c" 9730)
+(!srcfileloc  "c-family/c-common.c" 9719)
 
 (!fields 1 
 (!pair  "base"
 (!type struct 795 nil  gc_used "VEC_tree_gc_vec_base"
-(!srcfileloc  "c-family/c-common.c" 9729)
+(!srcfileloc  "c-family/c-common.c" 9718)
 
 (!fields 2 
 (!pair  "prefix"
 (!type already_seen 56)
 
-(!srcfileloc  "c-family/c-common.c" 9729)
+(!srcfileloc  "c-family/c-common.c" 9718)
 nil )
 (!pair  "vec"
 (!type array 796 nil  gc_used "1" 
 (!type already_seen 53)
 )
 
-(!srcfileloc  "c-family/c-common.c" 9729)
+(!srcfileloc  "c-family/c-common.c" 9718)
 
 (!options 
 (!option length string  "%h.prefix.num")
@@ -18478,18 +18478,18 @@ nil )
 ))
 nil 450 nil )
 
-(!srcfileloc  "c-family/c-common.c" 9730)
+(!srcfileloc  "c-family/c-common.c" 9719)
 nil ))
 nil 450 nil )
 
 (!type struct 797 nil  gc_unused "VEC_tree_gc_vec_none"
-(!srcfileloc  "c-family/c-common.c" 9729)
+(!srcfileloc  "c-family/c-common.c" 9718)
 
 (!fields 1 
 (!pair  "base"
 (!type already_seen 795)
 
-(!srcfileloc  "c-family/c-common.c" 9729)
+(!srcfileloc  "c-family/c-common.c" 9718)
 nil ))
 nil 450 nil )
 
@@ -18504,25 +18504,25 @@ nil 0 nil )
 (!type already_seen 799)
 )
  gc_pointed_to "VEC_const_char_p_gc"
-(!srcfileloc  "c-family/c-common.c" 7844)
+(!srcfileloc  "c-family/c-common.c" 7833)
 
 (!fields 1 
 (!pair  "base"
 (!type struct 801 nil  gc_used "VEC_const_char_p_base"
-(!srcfileloc  "c-family/c-common.c" 7843)
+(!srcfileloc  "c-family/c-common.c" 7832)
 
 (!fields 2 
 (!pair  "prefix"
 (!type already_seen 56)
 
-(!srcfileloc  "c-family/c-common.c" 7843)
+(!srcfileloc  "c-family/c-common.c" 7832)
 nil )
 (!pair  "vec"
 (!type array 802 nil  gc_used "1" 
 (!type already_seen 2)
 )
 
-(!srcfileloc  "c-family/c-common.c" 7843)
+(!srcfileloc  "c-family/c-common.c" 7832)
 
 (!options 
 (!option length string  "%h.prefix.num")
@@ -18530,18 +18530,18 @@ nil )
 ))
 nil 450 nil )
 
-(!srcfileloc  "c-family/c-common.c" 7844)
+(!srcfileloc  "c-family/c-common.c" 7833)
 nil ))
 nil 450 nil )
 
 (!type struct 803 nil  gc_unused "VEC_const_char_p_none"
-(!srcfileloc  "c-family/c-common.c" 7843)
+(!srcfileloc  "c-family/c-common.c" 7832)
 
 (!fields 1 
 (!pair  "base"
 (!type already_seen 801)
 
-(!srcfileloc  "c-family/c-common.c" 7843)
+(!srcfileloc  "c-family/c-common.c" 7832)
 nil ))
 nil 450 nil )
 
@@ -20914,7 +20914,7 @@ nil 0 nil )
 (!type struct 1007 
 (!type already_seen 1006)
  gc_used "target_rtl"
-(!srcfileloc  "rtl.h" 2198)
+(!srcfileloc  "rtl.h" 2205)
 
 (!fields 7 
 (!pair  "x_global_rtl"
@@ -20922,45 +20922,45 @@ nil 0 nil )
 (!type already_seen 156)
 )
 
-(!srcfileloc  "rtl.h" 2173)
+(!srcfileloc  "rtl.h" 2180)
 nil )
 (!pair  "x_pic_offset_table_rtx"
 (!type already_seen 156)
 
-(!srcfileloc  "rtl.h" 2176)
+(!srcfileloc  "rtl.h" 2183)
 nil )
 (!pair  "x_return_address_pointer_rtx"
 (!type already_seen 156)
 
-(!srcfileloc  "rtl.h" 2181)
+(!srcfileloc  "rtl.h" 2188)
 nil )
 (!pair  "x_initial_regno_reg_rtx"
 (!type array 1009 nil  gc_used "FIRST_PSEUDO_REGISTER" 
 (!type already_seen 156)
 )
 
-(!srcfileloc  "rtl.h" 2187)
+(!srcfileloc  "rtl.h" 2194)
 nil )
 (!pair  "x_top_of_stack"
 (!type array 1010 nil  gc_used "MAX_MACHINE_MODE" 
 (!type already_seen 156)
 )
 
-(!srcfileloc  "rtl.h" 2190)
+(!srcfileloc  "rtl.h" 2197)
 nil )
 (!pair  "x_static_reg_base_value"
 (!type array 1011 nil  gc_used "FIRST_PSEUDO_REGISTER" 
 (!type already_seen 156)
 )
 
-(!srcfileloc  "rtl.h" 2194)
+(!srcfileloc  "rtl.h" 2201)
 nil )
 (!pair  "x_mode_mem_attrs"
 (!type array 1012 nil  gc_used "(int) MAX_MACHINE_MODE" 
 (!type already_seen 280)
 )
 
-(!srcfileloc  "rtl.h" 2197)
+(!srcfileloc  "rtl.h" 2204)
 nil ))
 nil 511 nil )
 )
@@ -29229,47 +29229,47 @@ nil )
 (!pair  "VEC_tree_gc_vec_gc"
 (!type already_seen 793)
 
-(!srcfileloc  "c-family/c-common.c" 9730)
+(!srcfileloc  "c-family/c-common.c" 9719)
 nil )
 (!pair  "VEC_tree_gc_vec_none"
 (!type already_seen 797)
 
-(!srcfileloc  "c-family/c-common.c" 9729)
+(!srcfileloc  "c-family/c-common.c" 9718)
 nil )
 (!pair  "VEC_tree_gc_vec_base"
 (!type already_seen 795)
 
-(!srcfileloc  "c-family/c-common.c" 9729)
+(!srcfileloc  "c-family/c-common.c" 9718)
 nil )
 (!pair  "tree_gc_vec"
 (!type already_seen 53)
 
-(!srcfileloc  "c-family/c-common.c" 9728)
+(!srcfileloc  "c-family/c-common.c" 9717)
 nil )
 (!pair  "VEC_const_char_p_gc"
 (!type already_seen 799)
 
-(!srcfileloc  "c-family/c-common.c" 7844)
+(!srcfileloc  "c-family/c-common.c" 7833)
 nil )
 (!pair  "VEC_const_char_p_none"
 (!type already_seen 803)
 
-(!srcfileloc  "c-family/c-common.c" 7843)
+(!srcfileloc  "c-family/c-common.c" 7832)
 nil )
 (!pair  "VEC_const_char_p_base"
 (!type already_seen 801)
 
-(!srcfileloc  "c-family/c-common.c" 7843)
+(!srcfileloc  "c-family/c-common.c" 7832)
 nil )
 (!pair  "const_char_p"
 (!type already_seen 15)
 
-(!srcfileloc  "c-family/c-common.c" 7842)
+(!srcfileloc  "c-family/c-common.c" 7831)
 nil )
 (!pair  "disabled_builtin"
 (!type already_seen 804)
 
-(!srcfileloc  "c-family/c-common.c" 5107)
+(!srcfileloc  "c-family/c-common.c" 5096)
 nil )
 (!pair  "mangling_flags"
 (!type already_seen 11)
@@ -31981,22 +31981,22 @@ nil )
 (!pair  "hash_rtx_callback_function"
 (!type already_seen 11)
 
-(!srcfileloc  "rtl.h" 1999)
+(!srcfileloc  "rtl.h" 2004)
 nil )
 (!pair  "rtx_equal_p_callback_function"
 (!type already_seen 11)
 
-(!srcfileloc  "rtl.h" 1994)
+(!srcfileloc  "rtl.h" 1999)
 nil )
 (!pair  "for_each_inc_dec_fn"
 (!type already_seen 11)
 
-(!srcfileloc  "rtl.h" 1990)
+(!srcfileloc  "rtl.h" 1995)
 nil )
 (!pair  "rtx_function"
 (!type already_seen 11)
 
-(!srcfileloc  "rtl.h" 1979)
+(!srcfileloc  "rtl.h" 1984)
 nil )
 (!pair  "replace_label_data"
 (!type already_seen 1621)
@@ -33339,12 +33339,12 @@ nil )
 (!pair  "lto_eh_personality_decl"
 (!type already_seen 26)
 
-(!srcfileloc  "lto/lto.c" 2879)
+(!srcfileloc  "lto/lto.c" 2881)
 nil )
 (!pair  "real_file_decl_data"
 (!type already_seen 1132)
 
-(!srcfileloc  "lto/lto.c" 2581)
+(!srcfileloc  "lto/lto.c" 2583)
 
 (!options 
 (!option length string  "real_file_count + 1")
@@ -33353,7 +33353,7 @@ nil )
 (!pair  "all_file_decl_data"
 (!type already_seen 1132)
 
-(!srcfileloc  "lto/lto.c" 2549)
+(!srcfileloc  "lto/lto.c" 2551)
 
 (!options 
 (!option length string  "lto_stats.num_input_files + 1")
@@ -34283,7 +34283,7 @@ nil )
 (!pair  "tree_vector_cache"
 (!type already_seen 794)
 
-(!srcfileloc  "c-family/c-common.c" 9731)
+(!srcfileloc  "c-family/c-common.c" 9720)
 
 (!options 
 (!option deletable string  "")
@@ -34292,24 +34292,24 @@ nil )
 (!pair  "optimize_args"
 (!type already_seen 800)
 
-(!srcfileloc  "c-family/c-common.c" 7845)
+(!srcfileloc  "c-family/c-common.c" 7834)
 nil )
 (!pair  "compound_literal_number"
 (!type already_seen 11)
 
-(!srcfileloc  "c-family/c-common.c" 5078)
+(!srcfileloc  "c-family/c-common.c" 5067)
 nil )
 (!pair  "built_in_attributes"
 (!type array 1785 nil  gc_used "(int) ATTR_LAST" 
 (!type already_seen 26)
 )
 
-(!srcfileloc  "c-family/c-common.c" 4455)
+(!srcfileloc  "c-family/c-common.c" 4444)
 nil )
 (!pair  "type_hash_table"
 (!type already_seen 64)
 
-(!srcfileloc  "c-family/c-common.c" 4204)
+(!srcfileloc  "c-family/c-common.c" 4193)
 
 (!options 
 (!option param_is type 
@@ -34320,7 +34320,7 @@ nil )
 (!pair  "registered_builtin_types"
 (!type already_seen 26)
 
-(!srcfileloc  "c-family/c-common.c" 2881)
+(!srcfileloc  "c-family/c-common.c" 2870)
 nil )
 (!pair  "abstract_pending_vars"
 (!type already_seen 1699)
@@ -35642,12 +35642,12 @@ nil )
 (!pair  "initial_trampoline"
 (!type already_seen 156)
 
-(!srcfileloc  "function.c" 4916)
+(!srcfileloc  "function.c" 4905)
 nil )
 (!pair  "next_block_index"
 (!type already_seen 11)
 
-(!srcfileloc  "function.c" 4249)
+(!srcfileloc  "function.c" 4238)
 nil )
 (!pair  "temp_slot_address_table"
 (!type already_seen 1731)
@@ -36263,7 +36263,7 @@ nil )
 (!pair  "clone_fn_id_num"
 (!type already_seen 11)
 
-(!srcfileloc  "cgraph.c" 2186)
+(!srcfileloc  "cgraph.c" 2188)
 nil )
 (!pair  "free_edges"
 (!type already_seen 1109)
@@ -36608,12 +36608,12 @@ nil )
 (!pair  "stack_limit_rtx"
 (!type already_seen 156)
 
-(!srcfileloc  "rtl.h" 2622)
+(!srcfileloc  "rtl.h" 2629)
 nil )
 (!pair  "default_target_rtl"
 (!type already_seen 1007)
 
-(!srcfileloc  "rtl.h" 2200)
+(!srcfileloc  "rtl.h" 2207)
 nil )
 (!pair  "const_tiny_rtx"
 (!type array 1806 nil  gc_used "4" 
@@ -36622,19 +36622,19 @@ nil )
 )
 )
 
-(!srcfileloc  "rtl.h" 2086)
+(!srcfileloc  "rtl.h" 2093)
 nil )
 (!pair  "const_true_rtx"
 (!type already_seen 156)
 
-(!srcfileloc  "rtl.h" 2084)
+(!srcfileloc  "rtl.h" 2091)
 nil )
 (!pair  "const_int_rtx"
 (!type array 1808 nil  gc_used "MAX_SAVED_CONST_INT * 2 + 1" 
 (!type already_seen 156)
 )
 
-(!srcfileloc  "rtl.h" 2078)
+(!srcfileloc  "rtl.h" 2085)
 nil )
 (!pair  "tree_ctr_tables"
 (!type array 1809 nil  gc_used "GCOV_COUNTERS" 

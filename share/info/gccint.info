@@ -61,7 +61,7 @@ Introduction
 This manual documents the internals of the GNU compilers, including how
 to port them to new targets and some information about how to write
 front ends for new languages.  It corresponds to the compilers
-(ch33kycha1n|20111020) version 4.7.0.  The use of the GNU compilers is
+(ch33kycha1n|20111023) version 4.7.0.  The use of the GNU compilers is
 documented in a separate manual.  *Note Introduction: (gcc)Top.
 
  This manual is mainly a reference manual rather than a tutorial.  It
@@ -31074,13 +31074,9 @@ This is about addressing modes.
      Return true if vector alignment is reachable (by peeling N
      iterations) for the given type.
 
- -- Target Hook: tree TARGET_VECTORIZE_BUILTIN_VEC_PERM (tree TYPE,
-          tree *MASK_ELEMENT_TYPE)
-     Target builtin that implements vector permute.
-
- -- Target Hook: bool TARGET_VECTORIZE_BUILTIN_VEC_PERM_OK (tree
+ -- Target Hook: bool TARGET_VECTORIZE_VEC_PERM_CONST_OK (tree
           VEC_TYPE, tree MASK)
-     Return true if a vector created for `builtin_vec_perm' is valid.
+     Return true if a vector created for `vec_perm_const' is valid.
 
  -- Target Hook: tree TARGET_VECTORIZE_BUILTIN_CONVERSION (unsigned
           CODE, tree DEST_TYPE, tree SRC_TYPE)
@@ -47350,20 +47346,19 @@ Concept Index
 * TARGET_VALID_POINTER_MODE:             Register Arguments. (line  306)
 * TARGET_VECTOR_MODE_SUPPORTED_P:        Register Arguments. (line  331)
 * TARGET_VECTORIZE_AUTOVECTORIZE_VECTOR_SIZES: Addressing Modes.
-                                                             (line  386)
-* TARGET_VECTORIZE_BUILTIN_CONVERSION:   Addressing Modes.   (line  348)
+                                                             (line  382)
+* TARGET_VECTORIZE_BUILTIN_CONVERSION:   Addressing Modes.   (line  344)
 * TARGET_VECTORIZE_BUILTIN_MASK_FOR_LOAD: Addressing Modes.  (line  278)
 * TARGET_VECTORIZE_BUILTIN_MUL_WIDEN_EVEN: Addressing Modes. (line  304)
 * TARGET_VECTORIZE_BUILTIN_MUL_WIDEN_ODD: Addressing Modes.  (line  316)
-* TARGET_VECTORIZE_BUILTIN_VEC_PERM:     Addressing Modes.   (line  340)
-* TARGET_VECTORIZE_BUILTIN_VEC_PERM_OK:  Addressing Modes.   (line  344)
 * TARGET_VECTORIZE_BUILTIN_VECTORIZATION_COST: Addressing Modes.
                                                              (line  329)
 * TARGET_VECTORIZE_BUILTIN_VECTORIZED_FUNCTION: Addressing Modes.
-                                                             (line  360)
-* TARGET_VECTORIZE_PREFERRED_SIMD_MODE:  Addressing Modes.   (line  379)
+                                                             (line  356)
+* TARGET_VECTORIZE_PREFERRED_SIMD_MODE:  Addressing Modes.   (line  375)
 * TARGET_VECTORIZE_SUPPORT_VECTOR_MISALIGNMENT: Addressing Modes.
-                                                             (line  370)
+                                                             (line  366)
+* TARGET_VECTORIZE_VEC_PERM_CONST_OK:    Addressing Modes.   (line  340)
 * TARGET_VECTORIZE_VECTOR_ALIGNMENT_REACHABLE: Addressing Modes.
                                                              (line  335)
 * TARGET_VTABLE_DATA_ENTRY_DISTANCE:     Type Layout.        (line  338)
@@ -48100,67 +48095,67 @@ Node: Varargs1308608
 Node: Trampolines1315304
 Node: Library Calls1321347
 Node: Addressing Modes1325955
-Node: Anchored Addresses1345020
-Node: Condition Code1347669
-Node: CC0 Condition Codes1349798
-Node: MODE_CC Condition Codes1353044
-Node: Cond Exec Macros1359271
-Node: Costs1360248
-Node: Scheduling1376666
-Node: Sections1396072
-Node: PIC1411612
-Node: Assembler Format1413672
-Node: File Framework1414810
-Ref: TARGET_HAVE_SWITCHABLE_BSS_SECTIONS1421706
-Node: Data Output1424971
-Node: Uninitialized Data1432747
-Node: Label Output1437758
-Node: Initialization1460830
-Node: Macros for Initialization1466792
-Node: Instruction Output1473515
-Node: Dispatch Tables1484017
-Node: Exception Region Output1488395
-Node: Alignment Output1494753
-Node: Debugging Info1499298
-Node: All Debuggers1499968
-Node: DBX Options1502823
-Node: DBX Hooks1508272
-Node: File Names and DBX1510198
-Node: SDB and DWARF1512310
-Node: VMS Debug1518157
-Node: Floating Point1518744
-Node: Mode Switching1523567
-Node: Target Attributes1527493
-Node: Emulated TLS1535405
-Node: MIPS Coprocessors1538795
-Node: PCH Target1540364
-Node: C++ ABI1541906
-Node: Named Address Spaces1546698
-Node: Misc1551637
-Ref: TARGET_SHIFT_TRUNCATION_MASK1559065
-Node: Host Config1601996
-Node: Host Common1603064
-Node: Filesystem1605443
-Node: Host Misc1609558
-Node: Fragments1612007
-Node: Target Fragment1613202
-Node: Host Fragment1618089
-Node: Collect21618329
-Node: Header Dirs1620965
-Node: Type Information1622388
-Node: GTY Options1624745
-Node: GGC Roots1638573
-Node: Files1639293
-Node: Invoking the garbage collector1642039
-Node: Troubleshooting1643542
-Node: Plugins1644618
-Node: LTO1661496
-Node: Funding1686542
-Node: GNU Project1689025
-Node: Copying1689674
-Node: GNU Free Documentation License1727205
-Node: Contributors1752345
-Node: Option Index1789349
-Node: Concept Index1790153
+Node: Anchored Addresses1344860
+Node: Condition Code1347509
+Node: CC0 Condition Codes1349638
+Node: MODE_CC Condition Codes1352884
+Node: Cond Exec Macros1359111
+Node: Costs1360088
+Node: Scheduling1376506
+Node: Sections1395912
+Node: PIC1411452
+Node: Assembler Format1413512
+Node: File Framework1414650
+Ref: TARGET_HAVE_SWITCHABLE_BSS_SECTIONS1421546
+Node: Data Output1424811
+Node: Uninitialized Data1432587
+Node: Label Output1437598
+Node: Initialization1460670
+Node: Macros for Initialization1466632
+Node: Instruction Output1473355
+Node: Dispatch Tables1483857
+Node: Exception Region Output1488235
+Node: Alignment Output1494593
+Node: Debugging Info1499138
+Node: All Debuggers1499808
+Node: DBX Options1502663
+Node: DBX Hooks1508112
+Node: File Names and DBX1510038
+Node: SDB and DWARF1512150
+Node: VMS Debug1517997
+Node: Floating Point1518584
+Node: Mode Switching1523407
+Node: Target Attributes1527333
+Node: Emulated TLS1535245
+Node: MIPS Coprocessors1538635
+Node: PCH Target1540204
+Node: C++ ABI1541746
+Node: Named Address Spaces1546538
+Node: Misc1551477
+Ref: TARGET_SHIFT_TRUNCATION_MASK1558905
+Node: Host Config1601836
+Node: Host Common1602904
+Node: Filesystem1605283
+Node: Host Misc1609398
+Node: Fragments1611847
+Node: Target Fragment1613042
+Node: Host Fragment1617929
+Node: Collect21618169
+Node: Header Dirs1620805
+Node: Type Information1622228
+Node: GTY Options1624585
+Node: GGC Roots1638413
+Node: Files1639133
+Node: Invoking the garbage collector1641879
+Node: Troubleshooting1643382
+Node: Plugins1644458
+Node: LTO1661336
+Node: Funding1686382
+Node: GNU Project1688865
+Node: Copying1689514
+Node: GNU Free Documentation License1727045
+Node: Contributors1752185
+Node: Option Index1789189
+Node: Concept Index1789993
 
 End Tag Table
