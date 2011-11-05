@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "GCC 1"
-.TH GCC 1 "2011-10-23" "gcc-4.7.0" "GNU"
+.TH GCC 1 "2011-11-05" "gcc-4.7.0" "GNU"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -254,7 +254,7 @@ in the following sections.
 \&\-pedantic\-errors 
 \&\-w  \-Wextra  \-Wall  \-Waddress  \-Waggregate\-return  \-Warray\-bounds 
 \&\-Wno\-attributes \-Wno\-builtin\-macro\-redefined 
-\&\-Wc++\-compat \-Wc++0x\-compat \-Wcast\-align  \-Wcast\-qual  
+\&\-Wc++\-compat \-Wc++11\-compat \-Wcast\-align  \-Wcast\-qual  
 \&\-Wchar\-subscripts \-Wclobbered  \-Wcomment 
 \&\-Wconversion  \-Wcoverage\-mismatch  \-Wno\-cpp  \-Wno\-deprecated  
 \&\-Wno\-deprecated\-declarations \-Wdisabled\-optimization  
@@ -1569,17 +1569,14 @@ The 1998 \s-1ISO\s0 \*(C+ standard plus amendments. Same as \fB\-ansi\fR for
 .IX Item "gnu++98"
 \&\s-1GNU\s0 dialect of \fB\-std=c++98\fR.  This is the default for
 \&\*(C+ code.
-.IP "\fBc++0x\fR" 4
-.IX Item "c++0x"
-The working draft of the upcoming \s-1ISO\s0 \*(C+0x standard. This option
-enables experimental features that are likely to be included in
-\&\*(C+0x. The working draft is constantly changing, and any feature that is
-enabled by this flag may be removed from future versions of \s-1GCC\s0 if it is
-not part of the \*(C+0x standard.
-.IP "\fBgnu++0x\fR" 4
-.IX Item "gnu++0x"
-\&\s-1GNU\s0 dialect of \fB\-std=c++0x\fR. This option enables
-experimental features that may be removed in future versions of \s-1GCC\s0.
+.IP "\fBc++11\fR" 4
+.IX Item "c++11"
+The 2011 \s-1ISO\s0 \*(C+ standard plus amendments.  Support for \*(C+11 is still
+experimental, and may change in incompatible ways in future releases.
+.IP "\fBgnu++11\fR" 4
+.IX Item "gnu++11"
+\&\s-1GNU\s0 dialect of \fB\-std=c++11\fR. Support for \*(C+11 is still
+experimental, and may change in incompatible ways in future releases.
 .RE
 .RS 4
 .RE
@@ -1830,7 +1827,7 @@ Version 5 corrects the mangling of attribute const/volatile on
 function pointer types, decltype of a plain decl, and use of a
 function parameter in the declaration of another parameter.
 .Sp
-Version 6 corrects the promotion behavior of \*(C+0x scoped enums.
+Version 6 corrects the promotion behavior of \*(C+11 scoped enums.
 .Sp
 See also \fB\-Wabi\fR.
 .IP "\fB\-fno\-access\-control\fR" 4
@@ -1861,13 +1858,13 @@ This option is no longer useful on most targets, now that support has
 been added for putting variables into \s-1BSS\s0 without making them common.
 .IP "\fB\-fconstexpr\-depth=\fR\fIn\fR" 4
 .IX Item "-fconstexpr-depth=n"
-Set the maximum nested evaluation depth for \*(C+0x constexpr functions
+Set the maximum nested evaluation depth for \*(C+11 constexpr functions
 to \fIn\fR.  A limit is needed to detect endless recursion during
 constant expression evaluation.  The minimum specified by the standard
 is 512.
-.IP "\fB\-fno\-deduce\-init\-list\fR" 4
-.IX Item "-fno-deduce-init-list"
-Disable deduction of a template type parameter as
+.IP "\fB\-fdeduce\-init\-list\fR" 4
+.IX Item "-fdeduce-init-list"
+Enable deduction of a template type parameter as
 std::initializer_list from a brace-enclosed initializer list, i.e.
 .Sp
 .Vb 4
@@ -1882,9 +1879,10 @@ std::initializer_list from a brace-enclosed initializer list, i.e.
 \&        }
 .Ve
 .Sp
-This option is present because this deduction is an extension to the
-current specification in the \*(C+0x working draft, and there was
-some concern about potential overload resolution problems.
+This deduction was implemented as a possible extension to the
+originally proposed semantics for the \*(C+11 standard, but was not part
+of the final standard, so it is disabled by default.  This option is
+deprecated, and may be removed in a future version of G++.
 .IP "\fB\-ffriend\-injection\fR" 4
 .IX Item "-ffriend-injection"
 Inject friend functions into the enclosing namespace, so that they are
@@ -2028,7 +2026,7 @@ Set the maximum instantiation depth for template classes to \fIn\fR.
 A limit on the template instantiation depth is needed to detect
 endless recursions during template class instantiation.  \s-1ANSI/ISO\s0 \*(C+
 conforming programs must not rely on a maximum depth greater than 17
-(changed to 1024 in \*(C+0x).  The default value is 900, as the compiler
+(changed to 1024 in \*(C+11).  The default value is 900, as the compiler
 can run out of stack space before hitting 1024 in some situations.
 .IP "\fB\-fno\-threadsafe\-statics\fR" 4
 .IX Item "-fno-threadsafe-statics"
@@ -2051,7 +2049,7 @@ if the runtime routine is not available.
 .IP "\fB\-fvisibility\-inlines\-hidden\fR" 4
 .IX Item "-fvisibility-inlines-hidden"
 This switch declares that the user does not attempt to compare
-pointers to inline methods where the addresses of the two functions
+pointers to inline functions or methods where the addresses of the two functions
 were taken in different shared objects.
 .Sp
 The effect of this is that \s-1GCC\s0 may, effectively, mark inline methods with
@@ -2265,16 +2263,21 @@ has virtual functions and non-virtual destructor. It is unsafe to delete
 an instance of a derived class through a pointer to a base class if the
 base class does not have a virtual destructor.  This warning is enabled
 by \fB\-Wall\fR.
-.IP "\fB\-Wno\-narrowing\fR (\*(C+ and Objective\-\*(C+ only)" 4
-.IX Item "-Wno-narrowing ( and Objective- only)"
-With \-std=c++0x, suppress the diagnostic required by the standard for
-narrowing conversions within \fB{ }\fR, e.g.
+.IP "\fB\-Wnarrowing\fR (\*(C+ and Objective\-\*(C+ only)" 4
+.IX Item "-Wnarrowing ( and Objective- only)"
+Warn when a narrowing conversion prohibited by \*(C+11 occurs within
+\&\fB{ }\fR, e.g.
 .Sp
 .Vb 1
 \&        int i = { 2.2 }; // error: narrowing from double to int
 .Ve
 .Sp
-This flag can be useful for compiling valid \*(C+98 code in \*(C+0x mode.
+This flag is included in \fB\-Wall\fR and \fB\-Wc++11\-compat\fR.
+.Sp
+With \-std=c++11, \fB\-Wno\-narrowing\fR suppresses the diagnostic
+required by the standard.  Note that this does not affect the meaning
+of well-formed code; narrowing conversions are still considered
+ill-formed in \s-1SFINAE\s0 context.
 .IP "\fB\-Wnoexcept\fR (\*(C+ and Objective\-\*(C+ only)" 4
 .IX Item "-Wnoexcept ( and Objective- only)"
 Warn when a noexcept-expression evaluates to false because of a call
@@ -2785,7 +2788,7 @@ Options\fR and \fBObjective-C and Objective\-\*(C+ Dialect Options\fR.
 .Sp
 \&\fB\-Waddress   
 \&\-Warray\-bounds\fR (only with\fB \fR\fB\-O2\fR)  
-\&\fB\-Wc++0x\-compat  
+\&\fB\-Wc++11\-compat  
 \&\-Wchar\-subscripts  
 \&\-Wenum\-compare\fR (in C/Objc; this is on by default in \*(C+) 
 \&\fB\-Wimplicit\-int\fR (C and Objective-C only) 
@@ -3685,11 +3688,12 @@ For example, warn if \f(CW\*(C`int malloc()\*(C'\fR is cast to \f(CW\*(C`anythin
 Warn about \s-1ISO\s0 C constructs that are outside of the common subset of
 \&\s-1ISO\s0 C and \s-1ISO\s0 \*(C+, e.g. request for implicit conversion from
 \&\f(CW\*(C`void *\*(C'\fR to a pointer to non\-\f(CW\*(C`void\*(C'\fR type.
-.IP "\fB\-Wc++0x\-compat\fR (\*(C+ and Objective\-\*(C+ only)" 4
-.IX Item "-Wc++0x-compat ( and Objective- only)"
-Warn about \*(C+ constructs whose meaning differs between \s-1ISO\s0 \*(C+ 1998 and
-\&\s-1ISO\s0 \*(C+ 200x, e.g., identifiers in \s-1ISO\s0 \*(C+ 1998 that will become keywords
-in \s-1ISO\s0 \*(C+ 200x.  This warning is enabled by \fB\-Wall\fR.
+.IP "\fB\-Wc++11\-compat\fR (\*(C+ and Objective\-\*(C+ only)" 4
+.IX Item "-Wc++11-compat ( and Objective- only)"
+Warn about \*(C+ constructs whose meaning differs between \s-1ISO\s0 \*(C+ 1998
+and \s-1ISO\s0 \*(C+ 2011, e.g., identifiers in \s-1ISO\s0 \*(C+ 1998 that are keywords
+in \s-1ISO\s0 \*(C+ 2011.  This warning turns on \fB\-Wnarrowing\fR and is
+enabled by \fB\-Wall\fR.
 .IP "\fB\-Wcast\-qual\fR" 4
 .IX Item "-Wcast-qual"
 Warn whenever a pointer is cast so as to remove a type qualifier from
@@ -3754,6 +3758,10 @@ unsigned integers are disabled by default in \*(C+ unless
 .IX Item "-Wno-conversion-null ( and Objective- only)"
 Do not warn for conversions between \f(CW\*(C`NULL\*(C'\fR and non-pointer
 types. \fB\-Wconversion\-null\fR is enabled by default.
+.IP "\fB\-Wzero\-as\-null\-pointer\-constant\fR (\*(C+ and Objective\-\*(C+ only)" 4
+.IX Item "-Wzero-as-null-pointer-constant ( and Objective- only)"
+Warn when a literal '0' is used as null pointer constant.  This can
+be useful to facilitate the conversion to \f(CW\*(C`nullptr\*(C'\fR in \*(C+11.
 .IP "\fB\-Wempty\-body\fR" 4
 .IX Item "-Wempty-body"
 Warn if an empty body occurs in an \fBif\fR, \fBelse\fR or \fBdo
@@ -8380,6 +8388,13 @@ partitions.
 .IX Item "cxx-max-namespaces-for-diagnostic-help"
 The maximum number of namespaces to consult for suggestions when \*(C+
 name lookup fails for an identifier.  The default is 1000.
+.IP "\fBsink-frequency-threshold\fR" 4
+.IX Item "sink-frequency-threshold"
+The maximum relative execution frequency (in percents) of the target block
+relative to a statement's original block to allow statement sinking of a
+statement.  Larger numbers result in more aggressive statement sinking.
+The default value is 75.  A small positive adjustment is applied for
+statements with memory operands as those are even more profitable so sink.
 .IP "\fBmax-stores-to-sink\fR" 4
 .IX Item "max-stores-to-sink"
 The maximum number of conditional stores paires that can be sunk.  Set to 0
@@ -9949,6 +9964,123 @@ small \f(CW\*(C`const <= 63\*(C'\fR to a register \fIRn\fR will be printed as
 \&        ld   <Rn>, X
 \&        sbiw r26, const
 .Ve
+.PP
+\f(CW\*(C`EIND\*(C'\fR and Devices with more than 128k Bytes of Flash
+.IX Subsection "EIND and Devices with more than 128k Bytes of Flash"
+.PP
+Pointers in the implementation are 16 bits wide.
+The address of a function or label is represented as word address so
+that indirect jumps and calls can address any code address in the
+range of 64k words.
+.PP
+In order to faciliate indirect jump on devices with more than 128k
+bytes of program memory space, there is a special function register called
+\&\f(CW\*(C`EIND\*(C'\fR that serves as most significant part of the target address
+when \f(CW\*(C`EICALL\*(C'\fR or \f(CW\*(C`EIJMP\*(C'\fR instructions are used.
+.PP
+Indirect jumps and calls on these devices are handled as follows and
+are subject to some limitations:
+.IP "\(bu" 4
+The compiler never sets \f(CW\*(C`EIND\*(C'\fR.
+.IP "\(bu" 4
+The startup code from libgcc never sets \f(CW\*(C`EIND\*(C'\fR.
+Notice that startup code is a blend of code from libgcc and avr-libc.
+For the impact of avr-libc on \f(CW\*(C`EIND\*(C'\fR, see the
+avr-libc\ user\ manual (\f(CW\*(C`http://nongnu.org/avr\-libc/user\-manual\*(C'\fR).
+.IP "\(bu" 4
+The compiler uses \f(CW\*(C`EIND\*(C'\fR implicitely in \f(CW\*(C`EICALL\*(C'\fR/\f(CW\*(C`EIJMP\*(C'\fR
+instructions or might read \f(CW\*(C`EIND\*(C'\fR directly.
+.IP "\(bu" 4
+The compiler assumes that \f(CW\*(C`EIND\*(C'\fR never changes during the startup
+code or run of the application. In particular, \f(CW\*(C`EIND\*(C'\fR is not
+saved/restored in function or interrupt service routine
+prologue/epilogue.
+.IP "\(bu" 4
+It is legitimate for user-specific startup code to set up \f(CW\*(C`EIND\*(C'\fR
+early, for example by means of initialization code located in
+section \f(CW\*(C`.init3\*(C'\fR, and thus prior to general startup code that
+initializes \s-1RAM\s0 and calls constructors.
+.IP "\(bu" 4
+For indirect calls to functions and computed goto, the linker will
+generate \fIstubs\fR. Stubs are jump pads sometimes also called
+\&\fItrampolines\fR. Thus, the indirect call/jump will jump to such a stub.
+The stub contains a direct jump to the desired address.
+.IP "\(bu" 4
+Stubs will be generated automatically by the linker if
+the following two conditions are met:
+.RS 4
+.ie n .IP "\-<The address of a label is taken by means of the ""gs"" modifier>" 4
+.el .IP "\-<The address of a label is taken by means of the \f(CWgs\fR modifier>" 4
+.IX Item "-<The address of a label is taken by means of the gs modifier>"
+(short for \fIgenerate stubs\fR) like so:
+.Sp
+.Vb 2
+\&        LDI r24, lo8(gs(<func>))
+\&        LDI r25, hi8(gs(<func>))
+.Ve
+.IP "\-<The final location of that label is in a code segment>" 4
+.IX Item "-<The final location of that label is in a code segment>"
+\&\fIoutside\fR the segment where the stubs are located.
+.RE
+.RS 4
+.RE
+.IP "\(bu" 4
+The compiler will emit such \f(CW\*(C`gs\*(C'\fR modifiers for code labels in the
+following situations:
+.RS 4
+.IP "\-<Taking address of a function or code label.>" 4
+.IX Item "-<Taking address of a function or code label.>"
+.PD 0
+.IP "\-<Computed goto.>" 4
+.IX Item "-<Computed goto.>"
+.IP "\-<If prologue-save function is used, see \fB\-mcall\-prologues\fR>" 4
+.IX Item "-<If prologue-save function is used, see -mcall-prologues>"
+.PD
+command line option.
+.IP "\-<Switch/case dispatch tables. If you do not want such dispatch>" 4
+.IX Item "-<Switch/case dispatch tables. If you do not want such dispatch>"
+tables you can specify the \fB\-fno\-jump\-tables\fR command line option.
+.IP "\-<C and \*(C+ constructors/destructors called during startup/shutdown.>" 4
+.IX Item "-<C and  constructors/destructors called during startup/shutdown.>"
+.PD 0
+.ie n .IP "\-<If the tools hit a ""gs()"" modifier explained above.>" 4
+.el .IP "\-<If the tools hit a \f(CWgs()\fR modifier explained above.>" 4
+.IX Item "-<If the tools hit a gs() modifier explained above.>"
+.RE
+.RS 4
+.RE
+.IP "\(bu" 4
+.PD
+The default linker script is arranged for code with \f(CW\*(C`EIND = 0\*(C'\fR.
+If code is supposed to work for a setup with \f(CW\*(C`EIND != 0\*(C'\fR, a custom
+linker script has to be used in order to place the sections whose
+name start with \f(CW\*(C`.trampolines\*(C'\fR into the segment where \f(CW\*(C`EIND\*(C'\fR
+points to.
+.IP "\(bu" 4
+Jumping to non-symbolic addresses like so is \fInot\fR supported:
+.Sp
+.Vb 5
+\&        int main (void)
+\&        {
+\&            /* Call function at word address 0x2 */
+\&            return ((int(*)(void)) 0x2)();
+\&        }
+.Ve
+.Sp
+Instead, a stub has to be set up:
+.Sp
+.Vb 3
+\&        int main (void)
+\&        {
+\&            extern int func_4 (void);
+\&        
+\&            /* Call function at byte address 0x4 */
+\&            return func_4();
+\&        }
+.Ve
+.Sp
+and the application be linked with \f(CW\*(C`\-Wl,\-\-defsym,func_4=0x4\*(C'\fR.
+Alternatively, \f(CW\*(C`func_4\*(C'\fR can be defined in the linker script.
 .PP
 \fIBlackfin Options\fR
 .IX Subsection "Blackfin Options"

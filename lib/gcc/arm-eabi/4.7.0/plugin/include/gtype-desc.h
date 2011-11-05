@@ -135,6 +135,7 @@ enum gt_types_enum {
  gt_ggc_e_17named_label_entry,
  gt_ggc_e_19c_language_function,
  gt_ggc_e_11stmt_tree_s,
+ gt_ggc_e_20tree_userdef_literal,
  gt_ggc_e_18tree_template_info,
  gt_ggc_e_32VEC_qualified_typedef_usage_t_gc,
  gt_ggc_e_34VEC_qualified_typedef_usage_t_base,
@@ -1603,6 +1604,14 @@ enum gt_types_enum {
 #define ggc_alloc_zone_cleared_stmt_tree_s(z) ((struct stmt_tree_s *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct stmt_tree_s) MEM_STAT_INFO)))
 #define ggc_alloc_zone_vec_stmt_tree_s(n, z) ((struct stmt_tree_s *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct stmt_tree_s), n MEM_STAT_INFO)))
 #define ggc_alloc_zone_cleared_vec_stmt_tree_s(n, z) ((struct stmt_tree_s *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct stmt_tree_s), n MEM_STAT_INFO)))
+#define ggc_alloc_tree_userdef_literal() ((struct tree_userdef_literal *)(ggc_internal_alloc_stat (sizeof (struct tree_userdef_literal) MEM_STAT_INFO)))
+#define ggc_alloc_cleared_tree_userdef_literal() ((struct tree_userdef_literal *)(ggc_internal_cleared_alloc_stat (sizeof (struct tree_userdef_literal) MEM_STAT_INFO)))
+#define ggc_alloc_vec_tree_userdef_literal(n) ((struct tree_userdef_literal *)(ggc_internal_vec_alloc_stat (sizeof (struct tree_userdef_literal), n MEM_STAT_INFO)))
+#define ggc_alloc_cleared_vec_tree_userdef_literal(n) ((struct tree_userdef_literal *)(ggc_internal_cleared_vec_alloc_stat (sizeof (struct tree_userdef_literal), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_tree_userdef_literal(z) ((struct tree_userdef_literal *)(ggc_internal_zone_alloc_stat (z, sizeof (struct tree_userdef_literal) MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_tree_userdef_literal(z) ((struct tree_userdef_literal *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct tree_userdef_literal) MEM_STAT_INFO)))
+#define ggc_alloc_zone_vec_tree_userdef_literal(n, z) ((struct tree_userdef_literal *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct tree_userdef_literal), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_vec_tree_userdef_literal(n, z) ((struct tree_userdef_literal *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct tree_userdef_literal), n MEM_STAT_INFO)))
 #define ggc_alloc_tree_template_info() ((struct tree_template_info *)(ggc_internal_alloc_stat (sizeof (struct tree_template_info) MEM_STAT_INFO)))
 #define ggc_alloc_cleared_tree_template_info() ((struct tree_template_info *)(ggc_internal_cleared_alloc_stat (sizeof (struct tree_template_info) MEM_STAT_INFO)))
 #define ggc_alloc_vec_tree_template_info(n) ((struct tree_template_info *)(ggc_internal_vec_alloc_stat (sizeof (struct tree_template_info), n MEM_STAT_INFO)))

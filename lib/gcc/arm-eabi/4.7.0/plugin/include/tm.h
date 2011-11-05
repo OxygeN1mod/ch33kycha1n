@@ -25,8 +25,5 @@
 #if defined IN_GCC && !defined GENERATOR_FILE && !defined USED_FOR_TARGET
 # include "insn-flags.h"
 #endif
-#ifdef USED_FOR_TARGET
-# include "libgcc_tm.h"
-#endif
 # include "defaults.h"
 #endif /* GCC_TM_H */

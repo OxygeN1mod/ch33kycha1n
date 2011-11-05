@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "AS 1"
-.TH AS 1 "2011-10-23" "binutils-2.22.51" "GNU Development Tools"
+.TH AS 1 "2011-11-05" "binutils-2.22.51" "GNU Development Tools"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -188,6 +188,9 @@ as [\fB\-a\fR[\fBcdghlns\fR][=\fIfile\fR]] [\fB\-\-alternate\fR] [\fB\-D\fR]
 .PP
 \&\fITarget D30V options:\fR
    [\fB\-O\fR|\fB\-n\fR|\fB\-N\fR]
+.PP
+\&\fITarget \s-1EPIPHANY\s0 options:\fR
+   [\fB\-mepiphany\fR|\fB\-mepiphany16\fR]
 .PP
 \&\fITarget H8/300 options:\fR
    [\-h\-tick\-hex]
@@ -809,6 +812,16 @@ Warn when nops are generated.
 .IP "\fB\-N\fR" 4
 .IX Item "-N"
 Warn when a nop after a 32\-bit multiply instruction is generated.
+.PP
+The following options are available when as is configured for
+an Epiphany processor.
+.IP "\fB\-mepiphany\fR" 4
+.IX Item "-mepiphany"
+Specifies that the both 32 and 16 bit instructions are allowed.  This is the
+default behavior.
+.IP "\fB\-mepiphany16\fR" 4
+.IX Item "-mepiphany16"
+Restricts the permitted instructions to just the 16 bit set.
 .PP
 The following options are available when as is configured for
 an i386 processor.

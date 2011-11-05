@@ -61,7 +61,7 @@ Introduction
 This manual documents the internals of the GNU compilers, including how
 to port them to new targets and some information about how to write
 front ends for new languages.  It corresponds to the compilers
-(ch33kycha1n|20111023) version 4.7.0.  The use of the GNU compilers is
+(ch33kycha1n|20111105) version 4.7.0.  The use of the GNU compilers is
 documented in a separate manual.  *Note Introduction: (gcc)Top.
 
  This manual is mainly a reference manual rather than a tutorial.  It
@@ -31074,8 +31074,8 @@ This is about addressing modes.
      Return true if vector alignment is reachable (by peeling N
      iterations) for the given type.
 
- -- Target Hook: bool TARGET_VECTORIZE_VEC_PERM_CONST_OK (tree
-          VEC_TYPE, tree MASK)
+ -- Target Hook: bool TARGET_VECTORIZE_VEC_PERM_CONST_OK (enum
+          MACHINE_MODE, const unsigned char *SEL)
      Return true if a vector created for `vec_perm_const' is valid.
 
  -- Target Hook: tree TARGET_VECTORIZE_BUILTIN_CONVERSION (unsigned
@@ -48095,67 +48095,67 @@ Node: Varargs1308608
 Node: Trampolines1315304
 Node: Library Calls1321347
 Node: Addressing Modes1325955
-Node: Anchored Addresses1344860
-Node: Condition Code1347509
-Node: CC0 Condition Codes1349638
-Node: MODE_CC Condition Codes1352884
-Node: Cond Exec Macros1359111
-Node: Costs1360088
-Node: Scheduling1376506
-Node: Sections1395912
-Node: PIC1411452
-Node: Assembler Format1413512
-Node: File Framework1414650
-Ref: TARGET_HAVE_SWITCHABLE_BSS_SECTIONS1421546
-Node: Data Output1424811
-Node: Uninitialized Data1432587
-Node: Label Output1437598
-Node: Initialization1460670
-Node: Macros for Initialization1466632
-Node: Instruction Output1473355
-Node: Dispatch Tables1483857
-Node: Exception Region Output1488235
-Node: Alignment Output1494593
-Node: Debugging Info1499138
-Node: All Debuggers1499808
-Node: DBX Options1502663
-Node: DBX Hooks1508112
-Node: File Names and DBX1510038
-Node: SDB and DWARF1512150
-Node: VMS Debug1517997
-Node: Floating Point1518584
-Node: Mode Switching1523407
-Node: Target Attributes1527333
-Node: Emulated TLS1535245
-Node: MIPS Coprocessors1538635
-Node: PCH Target1540204
-Node: C++ ABI1541746
-Node: Named Address Spaces1546538
-Node: Misc1551477
-Ref: TARGET_SHIFT_TRUNCATION_MASK1558905
-Node: Host Config1601836
-Node: Host Common1602904
-Node: Filesystem1605283
-Node: Host Misc1609398
-Node: Fragments1611847
-Node: Target Fragment1613042
-Node: Host Fragment1617929
-Node: Collect21618169
-Node: Header Dirs1620805
-Node: Type Information1622228
-Node: GTY Options1624585
-Node: GGC Roots1638413
-Node: Files1639133
-Node: Invoking the garbage collector1641879
-Node: Troubleshooting1643382
-Node: Plugins1644458
-Node: LTO1661336
-Node: Funding1686382
-Node: GNU Project1688865
-Node: Copying1689514
-Node: GNU Free Documentation License1727045
-Node: Contributors1752185
-Node: Option Index1789189
-Node: Concept Index1789993
+Node: Anchored Addresses1344879
+Node: Condition Code1347528
+Node: CC0 Condition Codes1349657
+Node: MODE_CC Condition Codes1352903
+Node: Cond Exec Macros1359130
+Node: Costs1360107
+Node: Scheduling1376525
+Node: Sections1395931
+Node: PIC1411471
+Node: Assembler Format1413531
+Node: File Framework1414669
+Ref: TARGET_HAVE_SWITCHABLE_BSS_SECTIONS1421565
+Node: Data Output1424830
+Node: Uninitialized Data1432606
+Node: Label Output1437617
+Node: Initialization1460689
+Node: Macros for Initialization1466651
+Node: Instruction Output1473374
+Node: Dispatch Tables1483876
+Node: Exception Region Output1488254
+Node: Alignment Output1494612
+Node: Debugging Info1499157
+Node: All Debuggers1499827
+Node: DBX Options1502682
+Node: DBX Hooks1508131
+Node: File Names and DBX1510057
+Node: SDB and DWARF1512169
+Node: VMS Debug1518016
+Node: Floating Point1518603
+Node: Mode Switching1523426
+Node: Target Attributes1527352
+Node: Emulated TLS1535264
+Node: MIPS Coprocessors1538654
+Node: PCH Target1540223
+Node: C++ ABI1541765
+Node: Named Address Spaces1546557
+Node: Misc1551496
+Ref: TARGET_SHIFT_TRUNCATION_MASK1558924
+Node: Host Config1601855
+Node: Host Common1602923
+Node: Filesystem1605302
+Node: Host Misc1609417
+Node: Fragments1611866
+Node: Target Fragment1613061
+Node: Host Fragment1617948
+Node: Collect21618188
+Node: Header Dirs1620824
+Node: Type Information1622247
+Node: GTY Options1624604
+Node: GGC Roots1638432
+Node: Files1639152
+Node: Invoking the garbage collector1641898
+Node: Troubleshooting1643401
+Node: Plugins1644477
+Node: LTO1661355
+Node: Funding1686401
+Node: GNU Project1688884
+Node: Copying1689533
+Node: GNU Free Documentation License1727064
+Node: Contributors1752204
+Node: Option Index1789208
+Node: Concept Index1790012
 
 End Tag Table
