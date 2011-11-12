@@ -998,6 +998,11 @@ option.
      Specify if the compiler should default to `-marm' or `-mthumb'.
      This option is only supported on ARM targets.
 
+`--with-stack-offset=NUM'
+     This option sets the default for the -mstack-offset=NUM option,
+     and will thus generally also control the setting of this option for
+     libraries.  This option is only supported on Epiphany targets.
+
 `--with-fpmath=ISA'
      This options sets `-mfpmath=sse' by default and specifies the
      default ISA for floating-point arithmetics.  You can select either
@@ -2705,6 +2710,11 @@ Please have a look at the binaries page.
 any MSDOS compiler except itself.  You need to get the complete
 compilation package DJGPP, which includes binaries as well as sources,
 and includes all the necessary compilation tools and libraries.
+
+epiphany-*-elf
+==============
+
+Adapteva Epiphany.  This configuration is intended for embedded systems.
 
 *-*-freebsd*
 ============
@@ -4532,7 +4542,7 @@ Concept Index
 * Menu:
 
 * Binaries:                              Binaries.           (line    6)
-* build_configargs:                      Configuration.      (line 1435)
+* build_configargs:                      Configuration.      (line 1440)
 * Configuration:                         Configuration.      (line    6)
 * configurations supported by GCC:       Configurations.     (line    6)
 * Downloading GCC:                       Downloading the source.
@@ -4542,7 +4552,7 @@ Concept Index
 * FDL, GNU Free Documentation License:   GNU Free Documentation License.
                                                              (line    6)
 * Host specific installation:            Specific.           (line    6)
-* host_configargs:                       Configuration.      (line 1439)
+* host_configargs:                       Configuration.      (line 1444)
 * Installing GCC: Binaries:              Binaries.           (line    6)
 * Installing GCC: Building:              Building.           (line    6)
 * Installing GCC: Configuration:         Configuration.      (line    6)
@@ -4552,7 +4562,7 @@ Concept Index
 * Specific installation notes:           Specific.           (line    6)
 * Target specific installation:          Specific.           (line    6)
 * Target specific installation notes:    Specific.           (line    6)
-* target_configargs:                     Configuration.      (line 1443)
+* target_configargs:                     Configuration.      (line 1448)
 * Testing:                               Testing.            (line    6)
 * Testsuite:                             Testing.            (line    6)
 
@@ -4567,80 +4577,81 @@ Node: Configuration16042
 Ref: with-gnu-as31048
 Ref: with-as31946
 Ref: with-gnu-ld33359
-Node: Building79424
-Node: Testing94909
-Node: Final install102606
-Node: Binaries107920
-Node: Specific109521
-Ref: alpha-x-x110027
-Ref: alpha-dec-osf51110516
-Ref: amd64-x-solaris210113052
-Ref: arm-x-elf113155
-Ref: avr113375
-Ref: bfin114015
-Ref: cris114257
-Ref: dos115073
-Ref: x-x-freebsd115396
-Ref: h8300-hms117233
-Ref: hppa-hp-hpux117585
-Ref: hppa-hp-hpux10119956
-Ref: hppa-hp-hpux11120369
-Ref: x-x-linux-gnu126028
-Ref: ix86-x-linux126221
-Ref: ix86-x-solaris289126534
-Ref: ix86-x-solaris210127378
-Ref: ia64-x-linux128638
-Ref: ia64-x-hpux129408
-Ref: x-ibm-aix129963
-Ref: iq2000-x-elf136733
-Ref: lm32-x-elf136873
-Ref: lm32-x-uclinux136977
-Ref: m32c-x-elf137105
-Ref: m32r-x-elf137207
-Ref: m68k-x-x137309
-Ref: m68k-x-uclinux138347
-Ref: mep-x-elf138593
-Ref: microblaze-x-elf138703
-Ref: mips-x-x138822
-Ref: mips-sgi-irix5141218
-Ref: mips-sgi-irix6141298
-Ref: moxie-x-elf144522
-Ref: powerpc-x-x144642
-Ref: powerpc-x-darwin144847
-Ref: powerpc-x-elf145341
-Ref: powerpc-x-linux-gnu145426
-Ref: powerpc-x-netbsd145521
-Ref: powerpc-x-eabisim145609
-Ref: powerpc-x-eabi145735
-Ref: powerpcle-x-elf145811
-Ref: powerpcle-x-eabisim145903
-Ref: powerpcle-x-eabi146036
-Ref: rx-x-elf146119
-Ref: s390-x-linux146318
-Ref: s390x-x-linux146390
-Ref: s390x-ibm-tpf146477
-Ref: x-x-solaris2146608
-Ref: sparc-x-x151913
-Ref: sparc-sun-solaris2152415
-Ref: sparc-sun-solaris210155169
-Ref: sparc-x-linux155545
-Ref: sparc64-x-solaris2155770
-Ref: sparcv9-x-solaris2156406
-Ref: c6x-x-x156493
-Ref: x-x-vxworks156584
-Ref: x86-64-x-x158106
-Ref: x86-64-x-solaris2.10158434
-Ref: xtensa-x-elf159096
-Ref: xtensa-x-linux159767
-Ref: windows160108
-Ref: x-x-cygwin162065
-Ref: x-x-interix162618
-Ref: x-x-mingw32162927
-Ref: older163153
-Ref: elf165270
-Node: Old165528
-Node: Configurations168665
-Node: GNU Free Documentation License172206
-Node: Concept Index197353
+Node: Building79661
+Node: Testing95146
+Node: Final install102843
+Node: Binaries108157
+Node: Specific109758
+Ref: alpha-x-x110264
+Ref: alpha-dec-osf51110753
+Ref: amd64-x-solaris210113289
+Ref: arm-x-elf113392
+Ref: avr113612
+Ref: bfin114252
+Ref: cris114494
+Ref: dos115310
+Ref: epiphany-x-elf115633
+Ref: x-x-freebsd115738
+Ref: h8300-hms117575
+Ref: hppa-hp-hpux117927
+Ref: hppa-hp-hpux10120298
+Ref: hppa-hp-hpux11120711
+Ref: x-x-linux-gnu126370
+Ref: ix86-x-linux126563
+Ref: ix86-x-solaris289126876
+Ref: ix86-x-solaris210127720
+Ref: ia64-x-linux128980
+Ref: ia64-x-hpux129750
+Ref: x-ibm-aix130305
+Ref: iq2000-x-elf137075
+Ref: lm32-x-elf137215
+Ref: lm32-x-uclinux137319
+Ref: m32c-x-elf137447
+Ref: m32r-x-elf137549
+Ref: m68k-x-x137651
+Ref: m68k-x-uclinux138689
+Ref: mep-x-elf138935
+Ref: microblaze-x-elf139045
+Ref: mips-x-x139164
+Ref: mips-sgi-irix5141560
+Ref: mips-sgi-irix6141640
+Ref: moxie-x-elf144864
+Ref: powerpc-x-x144984
+Ref: powerpc-x-darwin145189
+Ref: powerpc-x-elf145683
+Ref: powerpc-x-linux-gnu145768
+Ref: powerpc-x-netbsd145863
+Ref: powerpc-x-eabisim145951
+Ref: powerpc-x-eabi146077
+Ref: powerpcle-x-elf146153
+Ref: powerpcle-x-eabisim146245
+Ref: powerpcle-x-eabi146378
+Ref: rx-x-elf146461
+Ref: s390-x-linux146660
+Ref: s390x-x-linux146732
+Ref: s390x-ibm-tpf146819
+Ref: x-x-solaris2146950
+Ref: sparc-x-x152255
+Ref: sparc-sun-solaris2152757
+Ref: sparc-sun-solaris210155511
+Ref: sparc-x-linux155887
+Ref: sparc64-x-solaris2156112
+Ref: sparcv9-x-solaris2156748
+Ref: c6x-x-x156835
+Ref: x-x-vxworks156926
+Ref: x86-64-x-x158448
+Ref: x86-64-x-solaris2.10158776
+Ref: xtensa-x-elf159438
+Ref: xtensa-x-linux160109
+Ref: windows160450
+Ref: x-x-cygwin162407
+Ref: x-x-interix162960
+Ref: x-x-mingw32163269
+Ref: older163495
+Ref: elf165612
+Node: Old165870
+Node: Configurations169007
+Node: GNU Free Documentation License172548
+Node: Concept Index197695
 
 End Tag Table

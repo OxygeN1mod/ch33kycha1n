@@ -212,7 +212,9 @@ enum gt_types_enum {
  gt_ggc_e_26VEC_mem_addr_template_base,
  gt_ggc_e_17mem_addr_template,
  gt_ggc_e_12ssa_operands,
+ gt_ggc_e_15tm_restart_node,
  gt_ggc_e_26gimple_type_leader_entry_s,
+ gt_ggc_e_28gimple_statement_transaction,
  gt_ggc_e_33gimple_statement_omp_atomic_store,
  gt_ggc_e_32gimple_statement_omp_atomic_load,
  gt_ggc_e_27gimple_statement_omp_single,
@@ -229,6 +231,7 @@ enum gt_types_enum {
  gt_ggc_e_24gimple_statement_eh_ctrl,
  gt_ggc_e_20gimple_statement_phi,
  gt_ggc_e_23gimple_statement_eh_mnt,
+ gt_ggc_e_24gimple_statement_eh_else,
  gt_ggc_e_26gimple_statement_eh_filter,
  gt_ggc_e_22gimple_statement_catch,
  gt_ggc_e_21gimple_statement_bind,
@@ -383,6 +386,7 @@ enum gt_types_enum {
  gt_ggc_e_17tree_priority_map,
  gt_ggc_e_12tree_int_map,
  gt_ggc_e_13tree_decl_map,
+ gt_ggc_e_8tree_map,
  gt_ggc_e_13tree_map_base,
  gt_ggc_e_14lang_tree_node,
  gt_ggc_e_18tree_target_option,
@@ -597,6 +601,7 @@ enum gt_types_enum {
  gt_ggc_e_12object_block,
  gt_ggc_e_9reg_attrs,
  gt_ggc_e_9mem_attrs,
+ gt_ggc_e_13function_list,
  gt_ggc_e_14bitmap_obstack,
  gt_ggc_e_18bitmap_element_def,
  gt_ggc_e_12splay_tree_s,
@@ -660,7 +665,9 @@ enum gt_types_enum {
  gt_e_P9tree_nodeP9tree_node12splay_tree_s,
  gt_e_P12varpool_node4htab,
  gt_e_P13scev_info_str4htab,
+ gt_e_P15tm_restart_node4htab,
  gt_e_P12tree_int_map4htab,
+ gt_e_P8tree_map4htab,
  gt_e_P23constant_descriptor_rtx4htab,
  gt_e_P24constant_descriptor_tree4htab,
  gt_e_P12object_block4htab,
@@ -2220,6 +2227,14 @@ enum gt_types_enum {
 #define ggc_alloc_zone_cleared_ssa_operands(z) ((struct ssa_operands *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct ssa_operands) MEM_STAT_INFO)))
 #define ggc_alloc_zone_vec_ssa_operands(n, z) ((struct ssa_operands *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct ssa_operands), n MEM_STAT_INFO)))
 #define ggc_alloc_zone_cleared_vec_ssa_operands(n, z) ((struct ssa_operands *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct ssa_operands), n MEM_STAT_INFO)))
+#define ggc_alloc_tm_restart_node() ((struct tm_restart_node *)(ggc_internal_alloc_stat (sizeof (struct tm_restart_node) MEM_STAT_INFO)))
+#define ggc_alloc_cleared_tm_restart_node() ((struct tm_restart_node *)(ggc_internal_cleared_alloc_stat (sizeof (struct tm_restart_node) MEM_STAT_INFO)))
+#define ggc_alloc_vec_tm_restart_node(n) ((struct tm_restart_node *)(ggc_internal_vec_alloc_stat (sizeof (struct tm_restart_node), n MEM_STAT_INFO)))
+#define ggc_alloc_cleared_vec_tm_restart_node(n) ((struct tm_restart_node *)(ggc_internal_cleared_vec_alloc_stat (sizeof (struct tm_restart_node), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_tm_restart_node(z) ((struct tm_restart_node *)(ggc_internal_zone_alloc_stat (z, sizeof (struct tm_restart_node) MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_tm_restart_node(z) ((struct tm_restart_node *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct tm_restart_node) MEM_STAT_INFO)))
+#define ggc_alloc_zone_vec_tm_restart_node(n, z) ((struct tm_restart_node *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct tm_restart_node), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_vec_tm_restart_node(n, z) ((struct tm_restart_node *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct tm_restart_node), n MEM_STAT_INFO)))
 #define ggc_alloc_gimple_type_leader_entry_s() ((struct gimple_type_leader_entry_s *)(ggc_internal_alloc_stat (sizeof (struct gimple_type_leader_entry_s) MEM_STAT_INFO)))
 #define ggc_alloc_cleared_gimple_type_leader_entry_s() ((struct gimple_type_leader_entry_s *)(ggc_internal_cleared_alloc_stat (sizeof (struct gimple_type_leader_entry_s) MEM_STAT_INFO)))
 #define ggc_alloc_vec_gimple_type_leader_entry_s(n) ((struct gimple_type_leader_entry_s *)(ggc_internal_vec_alloc_stat (sizeof (struct gimple_type_leader_entry_s), n MEM_STAT_INFO)))
@@ -2228,6 +2243,14 @@ enum gt_types_enum {
 #define ggc_alloc_zone_cleared_gimple_type_leader_entry_s(z) ((struct gimple_type_leader_entry_s *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct gimple_type_leader_entry_s) MEM_STAT_INFO)))
 #define ggc_alloc_zone_vec_gimple_type_leader_entry_s(n, z) ((struct gimple_type_leader_entry_s *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct gimple_type_leader_entry_s), n MEM_STAT_INFO)))
 #define ggc_alloc_zone_cleared_vec_gimple_type_leader_entry_s(n, z) ((struct gimple_type_leader_entry_s *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct gimple_type_leader_entry_s), n MEM_STAT_INFO)))
+#define ggc_alloc_gimple_statement_transaction() ((struct gimple_statement_transaction *)(ggc_internal_alloc_stat (sizeof (struct gimple_statement_transaction) MEM_STAT_INFO)))
+#define ggc_alloc_cleared_gimple_statement_transaction() ((struct gimple_statement_transaction *)(ggc_internal_cleared_alloc_stat (sizeof (struct gimple_statement_transaction) MEM_STAT_INFO)))
+#define ggc_alloc_vec_gimple_statement_transaction(n) ((struct gimple_statement_transaction *)(ggc_internal_vec_alloc_stat (sizeof (struct gimple_statement_transaction), n MEM_STAT_INFO)))
+#define ggc_alloc_cleared_vec_gimple_statement_transaction(n) ((struct gimple_statement_transaction *)(ggc_internal_cleared_vec_alloc_stat (sizeof (struct gimple_statement_transaction), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_gimple_statement_transaction(z) ((struct gimple_statement_transaction *)(ggc_internal_zone_alloc_stat (z, sizeof (struct gimple_statement_transaction) MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_gimple_statement_transaction(z) ((struct gimple_statement_transaction *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct gimple_statement_transaction) MEM_STAT_INFO)))
+#define ggc_alloc_zone_vec_gimple_statement_transaction(n, z) ((struct gimple_statement_transaction *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct gimple_statement_transaction), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_vec_gimple_statement_transaction(n, z) ((struct gimple_statement_transaction *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct gimple_statement_transaction), n MEM_STAT_INFO)))
 #define ggc_alloc_gimple_statement_omp_atomic_store() ((struct gimple_statement_omp_atomic_store *)(ggc_internal_alloc_stat (sizeof (struct gimple_statement_omp_atomic_store) MEM_STAT_INFO)))
 #define ggc_alloc_cleared_gimple_statement_omp_atomic_store() ((struct gimple_statement_omp_atomic_store *)(ggc_internal_cleared_alloc_stat (sizeof (struct gimple_statement_omp_atomic_store) MEM_STAT_INFO)))
 #define ggc_alloc_vec_gimple_statement_omp_atomic_store(n) ((struct gimple_statement_omp_atomic_store *)(ggc_internal_vec_alloc_stat (sizeof (struct gimple_statement_omp_atomic_store), n MEM_STAT_INFO)))
@@ -2356,6 +2379,14 @@ enum gt_types_enum {
 #define ggc_alloc_zone_cleared_gimple_statement_eh_mnt(z) ((struct gimple_statement_eh_mnt *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct gimple_statement_eh_mnt) MEM_STAT_INFO)))
 #define ggc_alloc_zone_vec_gimple_statement_eh_mnt(n, z) ((struct gimple_statement_eh_mnt *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct gimple_statement_eh_mnt), n MEM_STAT_INFO)))
 #define ggc_alloc_zone_cleared_vec_gimple_statement_eh_mnt(n, z) ((struct gimple_statement_eh_mnt *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct gimple_statement_eh_mnt), n MEM_STAT_INFO)))
+#define ggc_alloc_gimple_statement_eh_else() ((struct gimple_statement_eh_else *)(ggc_internal_alloc_stat (sizeof (struct gimple_statement_eh_else) MEM_STAT_INFO)))
+#define ggc_alloc_cleared_gimple_statement_eh_else() ((struct gimple_statement_eh_else *)(ggc_internal_cleared_alloc_stat (sizeof (struct gimple_statement_eh_else) MEM_STAT_INFO)))
+#define ggc_alloc_vec_gimple_statement_eh_else(n) ((struct gimple_statement_eh_else *)(ggc_internal_vec_alloc_stat (sizeof (struct gimple_statement_eh_else), n MEM_STAT_INFO)))
+#define ggc_alloc_cleared_vec_gimple_statement_eh_else(n) ((struct gimple_statement_eh_else *)(ggc_internal_cleared_vec_alloc_stat (sizeof (struct gimple_statement_eh_else), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_gimple_statement_eh_else(z) ((struct gimple_statement_eh_else *)(ggc_internal_zone_alloc_stat (z, sizeof (struct gimple_statement_eh_else) MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_gimple_statement_eh_else(z) ((struct gimple_statement_eh_else *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct gimple_statement_eh_else) MEM_STAT_INFO)))
+#define ggc_alloc_zone_vec_gimple_statement_eh_else(n, z) ((struct gimple_statement_eh_else *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct gimple_statement_eh_else), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_vec_gimple_statement_eh_else(n, z) ((struct gimple_statement_eh_else *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct gimple_statement_eh_else), n MEM_STAT_INFO)))
 #define ggc_alloc_gimple_statement_eh_filter() ((struct gimple_statement_eh_filter *)(ggc_internal_alloc_stat (sizeof (struct gimple_statement_eh_filter) MEM_STAT_INFO)))
 #define ggc_alloc_cleared_gimple_statement_eh_filter() ((struct gimple_statement_eh_filter *)(ggc_internal_cleared_alloc_stat (sizeof (struct gimple_statement_eh_filter) MEM_STAT_INFO)))
 #define ggc_alloc_vec_gimple_statement_eh_filter(n) ((struct gimple_statement_eh_filter *)(ggc_internal_vec_alloc_stat (sizeof (struct gimple_statement_eh_filter), n MEM_STAT_INFO)))
@@ -3588,6 +3619,14 @@ enum gt_types_enum {
 #define ggc_alloc_zone_cleared_tree_decl_map(z) ((struct tree_decl_map *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct tree_decl_map) MEM_STAT_INFO)))
 #define ggc_alloc_zone_vec_tree_decl_map(n, z) ((struct tree_decl_map *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct tree_decl_map), n MEM_STAT_INFO)))
 #define ggc_alloc_zone_cleared_vec_tree_decl_map(n, z) ((struct tree_decl_map *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct tree_decl_map), n MEM_STAT_INFO)))
+#define ggc_alloc_tree_map() ((struct tree_map *)(ggc_internal_alloc_stat (sizeof (struct tree_map) MEM_STAT_INFO)))
+#define ggc_alloc_cleared_tree_map() ((struct tree_map *)(ggc_internal_cleared_alloc_stat (sizeof (struct tree_map) MEM_STAT_INFO)))
+#define ggc_alloc_vec_tree_map(n) ((struct tree_map *)(ggc_internal_vec_alloc_stat (sizeof (struct tree_map), n MEM_STAT_INFO)))
+#define ggc_alloc_cleared_vec_tree_map(n) ((struct tree_map *)(ggc_internal_cleared_vec_alloc_stat (sizeof (struct tree_map), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_tree_map(z) ((struct tree_map *)(ggc_internal_zone_alloc_stat (z, sizeof (struct tree_map) MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_tree_map(z) ((struct tree_map *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct tree_map) MEM_STAT_INFO)))
+#define ggc_alloc_zone_vec_tree_map(n, z) ((struct tree_map *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct tree_map), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_vec_tree_map(n, z) ((struct tree_map *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct tree_map), n MEM_STAT_INFO)))
 #define ggc_alloc_tree_map_base() ((struct tree_map_base *)(ggc_internal_alloc_stat (sizeof (struct tree_map_base) MEM_STAT_INFO)))
 #define ggc_alloc_cleared_tree_map_base() ((struct tree_map_base *)(ggc_internal_cleared_alloc_stat (sizeof (struct tree_map_base) MEM_STAT_INFO)))
 #define ggc_alloc_vec_tree_map_base(n) ((struct tree_map_base *)(ggc_internal_vec_alloc_stat (sizeof (struct tree_map_base), n MEM_STAT_INFO)))
@@ -5300,6 +5339,14 @@ enum gt_types_enum {
 #define ggc_alloc_zone_cleared_mem_attrs(z) ((struct mem_attrs *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct mem_attrs) MEM_STAT_INFO)))
 #define ggc_alloc_zone_vec_mem_attrs(n, z) ((struct mem_attrs *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct mem_attrs), n MEM_STAT_INFO)))
 #define ggc_alloc_zone_cleared_vec_mem_attrs(n, z) ((struct mem_attrs *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct mem_attrs), n MEM_STAT_INFO)))
+#define ggc_alloc_function_list() ((struct function_list *)(ggc_internal_alloc_stat (sizeof (struct function_list) MEM_STAT_INFO)))
+#define ggc_alloc_cleared_function_list() ((struct function_list *)(ggc_internal_cleared_alloc_stat (sizeof (struct function_list) MEM_STAT_INFO)))
+#define ggc_alloc_vec_function_list(n) ((struct function_list *)(ggc_internal_vec_alloc_stat (sizeof (struct function_list), n MEM_STAT_INFO)))
+#define ggc_alloc_cleared_vec_function_list(n) ((struct function_list *)(ggc_internal_cleared_vec_alloc_stat (sizeof (struct function_list), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_function_list(z) ((struct function_list *)(ggc_internal_zone_alloc_stat (z, sizeof (struct function_list) MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_function_list(z) ((struct function_list *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (struct function_list) MEM_STAT_INFO)))
+#define ggc_alloc_zone_vec_function_list(n, z) ((struct function_list *)(ggc_internal_zone_vec_alloc_stat (z, sizeof (struct function_list), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_vec_function_list(n, z) ((struct function_list *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (struct function_list), n MEM_STAT_INFO)))
 #define ggc_alloc_bitmap_obstack() ((struct bitmap_obstack *)(ggc_internal_alloc_stat (sizeof (struct bitmap_obstack) MEM_STAT_INFO)))
 #define ggc_alloc_cleared_bitmap_obstack() ((struct bitmap_obstack *)(ggc_internal_cleared_alloc_stat (sizeof (struct bitmap_obstack) MEM_STAT_INFO)))
 #define ggc_alloc_vec_bitmap_obstack(n) ((struct bitmap_obstack *)(ggc_internal_vec_alloc_stat (sizeof (struct bitmap_obstack), n MEM_STAT_INFO)))
@@ -5879,6 +5926,13 @@ enum gt_types_enum {
 #define ggc_alloc_zone_lto_in_decl_state_ptr(z) ((lto_in_decl_state_ptr *)(ggc_internal_zone_alloc_stat (z, sizeof (lto_in_decl_state_ptr) MEM_STAT_INFO)))
 #define ggc_alloc_zone_cleared_lto_in_decl_state_ptr(z) ((lto_in_decl_state_ptr *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (lto_in_decl_state_ptr) MEM_STAT_INFO)))
 #define ggc_alloc_zone_cleared_vec_lto_in_decl_state_ptr(n, z) ((lto_in_decl_state_ptr *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (lto_in_decl_state_ptr), n MEM_STAT_INFO)))
+#define ggc_alloc_cgraph_node_p() ((cgraph_node_p *)(ggc_internal_alloc_stat (sizeof (cgraph_node_p) MEM_STAT_INFO)))
+#define ggc_alloc_cleared_cgraph_node_p() ((cgraph_node_p *)(ggc_internal_cleared_alloc_stat (sizeof (cgraph_node_p) MEM_STAT_INFO)))
+#define ggc_alloc_vec_cgraph_node_p(n) ((cgraph_node_p *)(ggc_internal_vec_alloc_stat (sizeof (cgraph_node_p), n MEM_STAT_INFO)))
+#define ggc_alloc_cleared_vec_cgraph_node_p(n) ((cgraph_node_p *)(ggc_internal_cleared_vec_alloc_stat (sizeof (cgraph_node_p), n MEM_STAT_INFO)))
+#define ggc_alloc_zone_cgraph_node_p(z) ((cgraph_node_p *)(ggc_internal_zone_alloc_stat (z, sizeof (cgraph_node_p) MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_cgraph_node_p(z) ((cgraph_node_p *)(ggc_internal_zone_cleared_alloc_stat (z, sizeof (cgraph_node_p) MEM_STAT_INFO)))
+#define ggc_alloc_zone_cleared_vec_cgraph_node_p(n, z) ((cgraph_node_p *)(ggc_internal_zone_cleared_vec_alloc_stat (z, sizeof (cgraph_node_p), n MEM_STAT_INFO)))
 #define ggc_alloc_ipa_edge_args_t() ((ipa_edge_args_t *)(ggc_internal_alloc_stat (sizeof (ipa_edge_args_t) MEM_STAT_INFO)))
 #define ggc_alloc_cleared_ipa_edge_args_t() ((ipa_edge_args_t *)(ggc_internal_cleared_alloc_stat (sizeof (ipa_edge_args_t) MEM_STAT_INFO)))
 #define ggc_alloc_vec_ipa_edge_args_t(n) ((ipa_edge_args_t *)(ggc_internal_vec_alloc_stat (sizeof (ipa_edge_args_t), n MEM_STAT_INFO)))
@@ -6847,6 +6901,10 @@ extern void gt_ggc_mx_scev_info_str (void *);
   if (X != NULL) gt_ggc_mx_VEC_mem_addr_template_gc (X);\
   } while (0)
 extern void gt_ggc_mx_VEC_mem_addr_template_gc (void *);
+#define gt_ggc_m_15tm_restart_node(X) do { \
+  if (X != NULL) gt_ggc_mx_tm_restart_node (X);\
+  } while (0)
+extern void gt_ggc_mx_tm_restart_node (void *);
 #define gt_ggc_m_26gimple_type_leader_entry_s(X) do { \
   if (X != NULL) gt_ggc_mx_gimple_type_leader_entry_s (X);\
   } while (0)
@@ -7159,6 +7217,10 @@ extern void gt_ggc_mx_tree_int_map (void *);
   if (X != NULL) gt_ggc_mx_tree_decl_map (X);\
   } while (0)
 extern void gt_ggc_mx_tree_decl_map (void *);
+#define gt_ggc_m_8tree_map(X) do { \
+  if (X != NULL) gt_ggc_mx_tree_map (X);\
+  } while (0)
+extern void gt_ggc_mx_tree_map (void *);
 #define gt_ggc_m_14lang_tree_node(X) do { \
   if (X != NULL) gt_ggc_mx_lang_tree_node (X);\
   } while (0)
@@ -7223,6 +7285,10 @@ extern void gt_ggc_mx_reg_attrs (void *);
   if (X != NULL) gt_ggc_mx_mem_attrs (X);\
   } while (0)
 extern void gt_ggc_mx_mem_attrs (void *);
+#define gt_ggc_m_13function_list(X) do { \
+  if (X != NULL) gt_ggc_mx_function_list (X);\
+  } while (0)
+extern void gt_ggc_mx_function_list (void *);
 #define gt_ggc_m_14bitmap_obstack(X) do { \
   if (X != NULL) gt_ggc_mx_bitmap_obstack (X);\
   } while (0)
@@ -7321,7 +7387,9 @@ extern void gt_ggc_m_P20lto_symtab_entry_def4htab (void *);
 extern void gt_ggc_m_P9tree_nodeP9tree_node12splay_tree_s (void *);
 extern void gt_ggc_m_P12varpool_node4htab (void *);
 extern void gt_ggc_m_P13scev_info_str4htab (void *);
+extern void gt_ggc_m_P15tm_restart_node4htab (void *);
 extern void gt_ggc_m_P12tree_int_map4htab (void *);
+extern void gt_ggc_m_P8tree_map4htab (void *);
 extern void gt_ggc_m_P23constant_descriptor_rtx4htab (void *);
 extern void gt_ggc_m_P24constant_descriptor_tree4htab (void *);
 extern void gt_ggc_m_P12object_block4htab (void *);
@@ -7681,6 +7749,10 @@ extern void gt_pch_nx_scev_info_str (void *);
   if (X != NULL) gt_pch_nx_VEC_mem_addr_template_gc (X);\
   } while (0)
 extern void gt_pch_nx_VEC_mem_addr_template_gc (void *);
+#define gt_pch_n_15tm_restart_node(X) do { \
+  if (X != NULL) gt_pch_nx_tm_restart_node (X);\
+  } while (0)
+extern void gt_pch_nx_tm_restart_node (void *);
 #define gt_pch_n_26gimple_type_leader_entry_s(X) do { \
   if (X != NULL) gt_pch_nx_gimple_type_leader_entry_s (X);\
   } while (0)
@@ -7993,6 +8065,10 @@ extern void gt_pch_nx_tree_int_map (void *);
   if (X != NULL) gt_pch_nx_tree_decl_map (X);\
   } while (0)
 extern void gt_pch_nx_tree_decl_map (void *);
+#define gt_pch_n_8tree_map(X) do { \
+  if (X != NULL) gt_pch_nx_tree_map (X);\
+  } while (0)
+extern void gt_pch_nx_tree_map (void *);
 #define gt_pch_n_14lang_tree_node(X) do { \
   if (X != NULL) gt_pch_nx_lang_tree_node (X);\
   } while (0)
@@ -8057,6 +8133,10 @@ extern void gt_pch_nx_reg_attrs (void *);
   if (X != NULL) gt_pch_nx_mem_attrs (X);\
   } while (0)
 extern void gt_pch_nx_mem_attrs (void *);
+#define gt_pch_n_13function_list(X) do { \
+  if (X != NULL) gt_pch_nx_function_list (X);\
+  } while (0)
+extern void gt_pch_nx_function_list (void *);
 #define gt_pch_n_14bitmap_obstack(X) do { \
   if (X != NULL) gt_pch_nx_bitmap_obstack (X);\
   } while (0)
@@ -8155,7 +8235,9 @@ extern void gt_pch_n_P20lto_symtab_entry_def4htab (void *);
 extern void gt_pch_n_P9tree_nodeP9tree_node12splay_tree_s (void *);
 extern void gt_pch_n_P12varpool_node4htab (void *);
 extern void gt_pch_n_P13scev_info_str4htab (void *);
+extern void gt_pch_n_P15tm_restart_node4htab (void *);
 extern void gt_pch_n_P12tree_int_map4htab (void *);
+extern void gt_pch_n_P8tree_map4htab (void *);
 extern void gt_pch_n_P23constant_descriptor_rtx4htab (void *);
 extern void gt_pch_n_P24constant_descriptor_tree4htab (void *);
 extern void gt_pch_n_P12object_block4htab (void *);
@@ -8350,6 +8432,8 @@ extern void gt_pch_p_13scev_info_str
     (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_24VEC_mem_addr_template_gc
     (void *, void *, gt_pointer_operator, void *);
+extern void gt_pch_p_15tm_restart_node
+    (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_26gimple_type_leader_entry_s
     (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_17gimple_seq_node_d
@@ -8506,6 +8590,8 @@ extern void gt_pch_p_12tree_int_map
     (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_13tree_decl_map
     (void *, void *, gt_pointer_operator, void *);
+extern void gt_pch_p_8tree_map
+    (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_14lang_tree_node
     (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_24tree_statement_list_node
@@ -8537,6 +8623,8 @@ extern void gt_pch_p_12object_block
 extern void gt_pch_p_9reg_attrs
     (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_9mem_attrs
+    (void *, void *, gt_pointer_operator, void *);
+extern void gt_pch_p_13function_list
     (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_14bitmap_obstack
     (void *, void *, gt_pointer_operator, void *);
@@ -8613,7 +8701,11 @@ extern void gt_pch_p_P12varpool_node4htab
     (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_P13scev_info_str4htab
     (void *, void *, gt_pointer_operator, void *);
+extern void gt_pch_p_P15tm_restart_node4htab
+    (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_P12tree_int_map4htab
+    (void *, void *, gt_pointer_operator, void *);
+extern void gt_pch_p_P8tree_map4htab
     (void *, void *, gt_pointer_operator, void *);
 extern void gt_pch_p_P23constant_descriptor_rtx4htab
     (void *, void *, gt_pointer_operator, void *);
@@ -8687,7 +8779,9 @@ extern void * ggc_alloc_splay_tree_lto_symtab_entry_def_htab (int, void *);
 extern void * ggc_alloc_splay_tree_tree_node_tree_node_splay_tree_s (int, void *);
 extern void * ggc_alloc_splay_tree_varpool_node_htab (int, void *);
 extern void * ggc_alloc_splay_tree_scev_info_str_htab (int, void *);
+extern void * ggc_alloc_splay_tree_tm_restart_node_htab (int, void *);
 extern void * ggc_alloc_splay_tree_tree_int_map_htab (int, void *);
+extern void * ggc_alloc_splay_tree_tree_map_htab (int, void *);
 extern void * ggc_alloc_splay_tree_constant_descriptor_rtx_htab (int, void *);
 extern void * ggc_alloc_splay_tree_constant_descriptor_tree_htab (int, void *);
 extern void * ggc_alloc_splay_tree_object_block_htab (int, void *);

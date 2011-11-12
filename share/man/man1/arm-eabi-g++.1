@@ -124,7 +124,7 @@
 .\" ========================================================================
 .\"
 .IX Title "GCC 1"
-.TH GCC 1 "2011-11-05" "gcc-4.7.0" "GNU"
+.TH GCC 1 "2011-11-12" "gcc-4.7.0" "GNU"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -223,7 +223,7 @@ in the following sections.
 \&\-Weffc++  \-Wstrict\-null\-sentinel 
 \&\-Wno\-non\-template\-friend  \-Wold\-style\-cast 
 \&\-Woverloaded\-virtual  \-Wno\-pmf\-conversions 
-\&\-Wsign\-promo\fR
+\&\-Wsign\-promo \-Wzero\-as\-null\-pointer\-constant\fR
 .IP "\fIObjective-C and Objective\-\*(C+ Language Options\fR" 4
 .IX Item "Objective-C and Objective- Language Options"
 \&\fB\-fconstant\-string\-class=\fR\fIclass-name\fR 
@@ -466,6 +466,14 @@ in the following sections.
 \&\-\-sysroot=\fR\fIdir\fR
 .IP "\fIMachine Dependent Options\fR" 4
 .IX Item "Machine Dependent Options"
+\&\fIAdapteva Epiphany Options\fR
+\&\fB\-mhalf\-reg\-file \-mprefer\-short\-insn\-regs 
+\&\-mbranch\-cost=\fR\fInum\fR \fB\-mcmove \-mnops=\fR\fInum\fR \fB\-msoft\-cmpsf 
+\&\-msplit\-lohi \-mpost\-inc \-mpost\-modify \-mstack\-offset=\fR\fInum\fR 
+\&\fB\-mround\-nearest \-mlong\-calls \-mshort\-calls \-msmall16 
+\&\-mfp\-mode=\fR\fImode\fR \fB\-mvect\-double \-max\-vect\-align=\fR\fInum\fR 
+\&\fB\-msplit\-vecmove\-early \-m1reg\-\fR\fIreg\fR
+.Sp
 \&\fI\s-1ARM\s0 Options\fR
 \&\fB\-mapcs\-frame  \-mno\-apcs\-frame 
 \&\-mabi=\fR\fIname\fR 
@@ -1693,6 +1701,16 @@ compiler generates parallel code according to the OpenMP Application
 Program Interface v3.0 <\fBhttp://www.openmp.org/\fR>.  This option
 implies \fB\-pthread\fR, and thus is only supported on targets that
 have support for \fB\-pthread\fR.
+.IP "\fB\-fgnu\-tm\fR" 4
+.IX Item "-fgnu-tm"
+When the option \fB\-fgnu\-tm\fR is specified, the compiler will
+generate code for the Linux variant of Intel's current Transactional
+Memory \s-1ABI\s0 specification document (Revision 1.1, May 6 2009).  This is
+an experimental feature whose interface may change in future versions
+of \s-1GCC\s0, as the official specification changes.  Please note that not
+all architectures are supported for this feature.
+.Sp
+For more information on \s-1GCC\s0's support for transactional memory,
 .IP "\fB\-fms\-extensions\fR" 4
 .IX Item "-fms-extensions"
 Accept some non-standard constructs used in Microsoft header files.
@@ -8350,6 +8368,13 @@ IPA-SRA will replace a pointer to an aggregate with one or more new
 parameters only when their cumulative size is less or equal to
 \&\fBipa-sra-ptr-growth-factor\fR times the size of the original
 pointer parameter.
+.IP "\fBtm-max-aggregate-size\fR" 4
+.IX Item "tm-max-aggregate-size"
+When making copies of thread-local variables in a transaction, this
+parameter specifies the size in bytes after which variables will be
+saved with the logging functions as opposed to save/restore code
+sequence pairs.  This option only applies when using
+\&\fB\-fgnu\-tm\fR.
 .IP "\fBgraphite-max-nb-scop-params\fR" 4
 .IX Item "graphite-max-nb-scop-params"
 To avoid exponential effects in the Graphite loop transforms, the
@@ -8400,9 +8425,24 @@ statements with memory operands as those are even more profitable so sink.
 The maximum number of conditional stores paires that can be sunk.  Set to 0
 if either vectorization (\fB\-ftree\-vectorize\fR) or if-conversion
 (\fB\-ftree\-loop\-if\-convert\fR) is disabled.  The default is 2.
+.IP "\fBallow-load-data-races\fR" 4
+.IX Item "allow-load-data-races"
+Allow optimizers to introduce new data races on loads.
+Set to 1 to allow, otherwise to 0.  This option is enabled by default
+unless implicitly set by the \fB\-fmemory\-model=\fR option.
 .IP "\fBallow-store-data-races\fR" 4
 .IX Item "allow-store-data-races"
 Allow optimizers to introduce new data races on stores.
+Set to 1 to allow, otherwise to 0.  This option is enabled by default
+unless implicitly set by the \fB\-fmemory\-model=\fR option.
+.IP "\fBallow-packed-load-data-races\fR" 4
+.IX Item "allow-packed-load-data-races"
+Allow optimizers to introduce new data races on packed data loads.
+Set to 1 to allow, otherwise to 0.  This option is enabled by default
+unless implicitly set by the \fB\-fmemory\-model=\fR option.
+.IP "\fBallow-packed-store-data-races\fR" 4
+.IX Item "allow-packed-store-data-races"
+Allow optimizers to introduce new data races on packed data stores.
 Set to 1 to allow, otherwise to 0.  This option is enabled by default
 unless implicitly set by the \fB\-fmemory\-model=\fR option.
 .IP "\fBcase-values-threshold\fR" 4
@@ -9567,6 +9607,145 @@ Some configurations of the compiler also support additional special
 options, usually for compatibility with other compilers on the same
 platform.
 .PP
+\fIAdapteva Epiphany Options\fR
+.IX Subsection "Adapteva Epiphany Options"
+.PP
+These \fB\-m\fR options are defined for Adapteva Epiphany:
+.IP "\fB\-mhalf\-reg\-file\fR" 4
+.IX Item "-mhalf-reg-file"
+Don't allocate any register in the range \f(CW\*(C`r32\*(C'\fR...\f(CW\*(C`r63\*(C'\fR.
+That allows code to run on hardware variants that lack these registers.
+.IP "\fB\-mprefer\-short\-insn\-regs\fR" 4
+.IX Item "-mprefer-short-insn-regs"
+Preferrentially allocate registers that allow short instruction generation.
+This can result in increasesd instruction count, so if this reduces or
+increases code size might vary from case to case.
+.IP "\fB\-mbranch\-cost=\fR\fInum\fR" 4
+.IX Item "-mbranch-cost=num"
+Set the cost of branches to roughly \fInum\fR \*(L"simple\*(R" instructions.
+This cost is only a heuristic and is not guaranteed to produce
+consistent results across releases.
+.IP "\fB\-mcmove\fR" 4
+.IX Item "-mcmove"
+Enable the generation of conditional moves.
+.IP "\fB\-mnops=\fR\fInum\fR" 4
+.IX Item "-mnops=num"
+Emit \fInum\fR nops before every other generated instruction.
+.IP "\fB\-mno\-soft\-cmpsf\fR" 4
+.IX Item "-mno-soft-cmpsf"
+For single-precision floating point comparisons, emit an fsub instruction
+and test the flags.  This is faster than a software comparison, but can
+get incorrect results in the presence of NaNs, or when two different small
+numbers are compared such that their difference is calculated as zero.
+The default is \fB\-msoft\-cmpsf\fR, which uses slower, but IEEE-compliant,
+software comparisons.
+.IP "\fB\-mstack\-offset=\fR\fInum\fR" 4
+.IX Item "-mstack-offset=num"
+Set the offset between the top of the stack and the stack pointer.
+E.g., a value of 8 means that the eight bytes in the range sp+0...sp+7
+can be used by leaf functions without stack allocation.
+Values other than \fB8\fR or \fB16\fR are untested and unlikely to work.
+Note also that this option changes the \s-1ABI\s0, compiling a program with a
+different stack offset than the libraries have been compiled with
+will generally not work.
+This option can be useful if you want to evaluate if a different stack
+offset would give you better code, but to actually use a different stack
+offset to build working programs, it is recommended to configure the
+toolchain with the appropriate \fB\-\-with\-stack\-offset=\fR\fInum\fR option.
+.IP "\fB\-mno\-round\-nearest\fR" 4
+.IX Item "-mno-round-nearest"
+Make the scheduler assume that the rounding mode has been set to
+truncating.  The default is \fB\-mround\-nearest\fR.
+.IP "\fB\-mlong\-calls\fR" 4
+.IX Item "-mlong-calls"
+If not otherwise specified by an attribute, assume all calls might be beyond
+the offset range of the b / bl instructions, and therefore load the
+function address into a register before performing a (otherwise direct) call.
+This is the default.
+.IP "\fB\-mshort\-calls\fR" 4
+.IX Item "-mshort-calls"
+If not otherwise specified by an attribute, assume all direct calls are
+in the range of the b / bl instructions, so use these instructions
+for direct calls.  The default is \fB\-mlong\-calls\fR.
+.IP "\fB\-msmall16\fR" 4
+.IX Item "-msmall16"
+Assume addresses can be loaded as 16 bit unsigned values.  This does not
+apply to function addresses for which \fB\-mlong\-calls\fR semantics
+are in effect.
+.IP "\fB\-mfp\-mode=\fR\fImode\fR" 4
+.IX Item "-mfp-mode=mode"
+Set the prevailing mode of the floating point unit.
+This determines the floating point mode that is provided and expected
+at function call and return time.  Making this mode match the mode you
+predominantly need at function start can make your programs smaller and
+faster by avoiding unnecessary mode switches.
+.Sp
+\&\fImode\fR can be set to one the following values:
+.RS 4
+.IP "\fBcaller\fR" 4
+.IX Item "caller"
+Any mode at function entry is valid, and retained or restored when
+the function returns, and when it calls other functions.
+This mode is useful for compiling libraries or other compilation units
+you might want to incorporate into different programs with different
+prevailing \s-1FPU\s0 modes, and the convenience of being able to use a single
+object file outweighs the size and speed overhead for any extra
+mode switching that might be needed, compared with what would be needed
+with a more specific choice of prevailing \s-1FPU\s0 mode.
+.IP "\fBtruncate\fR" 4
+.IX Item "truncate"
+This is the mode used for floating point calculations with
+truncating (i.e. round towards zero) rounding mode.  That includes
+conversion from floating point to integer.
+.IP "\fBround-nearest\fR" 4
+.IX Item "round-nearest"
+This is the mode used for floating point calculations with
+round-to-nearest-or-even rounding mode.
+.IP "\fBint\fR" 4
+.IX Item "int"
+This is the mode used to perform integer calculations in the \s-1FPU\s0, e.g.
+integer multiply, or integer multiply-and-accumulate.
+.RE
+.RS 4
+.Sp
+The default is \fB\-mfp\-mode=caller\fR
+.RE
+.IP "\fB\-mnosplit\-lohi\fR" 4
+.IX Item "-mnosplit-lohi"
+.PD 0
+.IP "\fB\-mno\-postinc\fR" 4
+.IX Item "-mno-postinc"
+.IP "\fB\-mno\-postmodify\fR" 4
+.IX Item "-mno-postmodify"
+.PD
+Code generation tweaks that disable, respectively, splitting of 32
+bit loads, generation of post-increment addresses, and generation of
+post-modify addresses.  The defaults are \fBmsplit-lohi\fR,
+\&\fB\-mpost\-inc\fR, and \fB\-mpost\-modify\fR.
+.IP "\fB\-mnovect\-double\fR" 4
+.IX Item "-mnovect-double"
+Change the preferred \s-1SIMD\s0 mode to SImode.  The default is
+\&\fB\-mvect\-double\fR, which uses DImode as preferred \s-1SIMD\s0 mode.
+.IP "\fB\-max\-vect\-align=\fR\fInum\fR" 4
+.IX Item "-max-vect-align=num"
+The maximum alignment for \s-1SIMD\s0 vector mode types.
+\&\fInum\fR may be 4 or 8.  The default is 8.
+Note that this is an \s-1ABI\s0 change, even though many library function
+interfaces will be unaffected, if they don't use \s-1SIMD\s0 vector modes
+in places where they affect size and/or alignment of relevant types.
+.IP "\fB\-msplit\-vecmove\-early\fR" 4
+.IX Item "-msplit-vecmove-early"
+Split vector moves into single word moves before reload.  In theory this
+could give better register allocation, but so far the reverse seems to be
+generally the case.
+.IP "\fB\-m1reg\-\fR\fIreg\fR" 4
+.IX Item "-m1reg-reg"
+Specify a register to hold the constant \-1, which makes loading small negative
+constants and certain bitmasks faster.
+Allowable values for reg are r43 and r63, which specify to use that register
+as a fixed register, and none, which means that no register is used for this
+purpose.  The default is \fB\-m1reg\-none\fR.
+.PP
 \fI\s-1ARM\s0 Options\fR
 .IX Subsection "ARM Options"
 .PP
@@ -9656,8 +9835,8 @@ assembly code.  Permissible names are: \fBarm2\fR, \fBarm250\fR,
 \&\fBarm10e\fR, \fBarm1020e\fR, \fBarm1022e\fR,
 \&\fBarm1136j\-s\fR, \fBarm1136jf\-s\fR, \fBmpcore\fR, \fBmpcorenovfp\fR,
 \&\fBarm1156t2\-s\fR, \fBarm1156t2f\-s\fR, \fBarm1176jz\-s\fR, \fBarm1176jzf\-s\fR,
-\&\fBcortex\-a5\fR, \fBcortex\-a8\fR, \fBcortex\-a9\fR, \fBcortex\-a15\fR,
-\&\fBcortex\-r4\fR, \fBcortex\-r4f\fR, \fBcortex\-r5\fR,
+\&\fBcortex\-a5\fR, \fBcortex\-a7\fR, \fBcortex\-a8\fR, \fBcortex\-a9\fR, 
+\&\fBcortex\-a15\fR, \fBcortex\-r4\fR, \fBcortex\-r4f\fR, \fBcortex\-r5\fR,
 \&\fBcortex\-m4\fR, \fBcortex\-m3\fR,
 \&\fBcortex\-m1\fR,
 \&\fBcortex\-m0\fR,
@@ -12126,7 +12305,8 @@ This option will enable \s-1GCC\s0 to use \s-1CMPXCHG16B\s0 instruction in gener
 \&\s-1CMPXCHG16B\s0 allows for atomic operations on 128\-bit double quadword (or oword)
 data types.  This is useful for high resolution counters that could be updated
 by multiple processors (or cores).  This instruction is generated as part of
-atomic built-in functions: see \fBAtomic Builtins\fR for details.
+atomic built-in functions: see \fB_\|_sync Builtins\fR or
+\&\fB_\|_atomic Builtins\fR for details.
 .IP "\fB\-msahf\fR" 4
 .IX Item "-msahf"
 This option will enable \s-1GCC\s0 to use \s-1SAHF\s0 instruction in generated 64\-bit code.

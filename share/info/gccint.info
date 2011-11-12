@@ -61,7 +61,7 @@ Introduction
 This manual documents the internals of the GNU compilers, including how
 to port them to new targets and some information about how to write
 front ends for new languages.  It corresponds to the compilers
-(ch33kycha1n|20111105) version 4.7.0.  The use of the GNU compilers is
+(ch33kycha1n|20111112) version 4.7.0.  The use of the GNU compilers is
 documented in a separate manual.  *Note Introduction: (gcc)Top.
 
  This manual is mainly a reference manual rather than a tutorial.  It
@@ -19568,6 +19568,77 @@ _AVR family--`config/avr/constraints.md'_
     `C04'
           Constant integer 4
 
+_Epiphany--`config/epiphany/constraints.md'_
+
+    `U16'
+          An unsigned 16-bit constant.
+
+    `K'
+          An unsigned 5-bit constant.
+
+    `L'
+          A signed 11-bit constant.
+
+    `Cm1'
+          A signed 11-bit constant added to -1.  Can only match when
+          the `-m1reg-REG' option is active.
+
+    `Cl1'
+          Left-shift of -1, i.e., a bit mask with a block of leading
+          ones, the rest being a block of trailing zeroes.  Can only
+          match when the `-m1reg-REG' option is active.
+
+    `Cr1'
+          Right-shift of -1, i.e., a bit mask with a trailing block of
+          ones, the rest being zeroes.  Or to put it another way, one
+          less than a power of two.  Can only match when the
+          `-m1reg-REG' option is active.
+
+    `Cal'
+          Constant for arithmetic/logical operations.  This is like
+          `i', except that for position independent code, no symbols /
+          expressions needing relocations are allowed.
+
+    `Csy'
+          Symbolic constant for call/jump instruction.
+
+    `Rcs'
+          The register class usable in short insns.  This is a register
+          class constraint, and can thus drive register allocation.
+          This constraint won't match unless `-mprefer-short-insn-regs'
+          is in effect.
+
+    `Rsc'
+          The the register class of registers that can be used to hold a
+          sibcall call address.  I.e., a caller-saved register.
+
+    `Rct'
+          Core control register class.
+
+    `Rgs'
+          The register group usable in short insns.  This constraint
+          does not use a register class, so that it only passively
+          matches suitable registers, and doesn't drive register
+          allocation.
+
+    `Car'
+          Constant suitable for the addsi3_r pattern.  This is a valid
+          offset For byte, halfword, or word addressing.
+
+    `Rra'
+          Matches the return address if it can be replaced with the
+          link register.
+
+    `Rcc'
+          Matches the integer condition code register.
+
+    `Sra'
+          Matches the return address if it is in a stack slot.
+
+    `Cfm'
+          Matches control register values to switch fp mode, which are
+          encapsulated in `UNSPEC_FP_MODE'.
+
 _Hewlett-Packard PA-RISC--`config/pa/pa.h'_
 
     `a'
@@ -23070,6 +23141,16 @@ pattern to accomplish a certain task.
      `cbranchcc4' or `cstorecc4' pattern as the first operand of the
      comparison (the second will be `(const_int 0)').
 
+     For targets where the operating system may provide support for this
+     operation via library calls, the `sync_compare_and_swap_optab' may
+     be initialized to a function with the same interface as the
+     `__sync_val_compare_and_swap_N' built-in.  If the entire set of
+     __SYNC builtins are supported via library calls, the target can
+     initialize all of the optabs at once with `init_sync_libfuncs'.
+     For the purposes of C++11 `std::atomic::is_lock_free', it is
+     assumed that these library calls do _not_ use any kind of
+     interruptable locking.
+
 `sync_addMODE', `sync_subMODE'
 `sync_iorMODE', `sync_andMODE'
 `sync_xorMODE', `sync_nandMODE'
@@ -23153,6 +23234,136 @@ pattern to accomplish a certain task.
      If this pattern is not defined, then a `memory_barrier' pattern
      will be emitted, followed by a store of the value to the memory
      operand.
+
+`atomic_compare_and_swapMODE'
+     This pattern, if defined, emits code for an atomic compare-and-swap
+     operation with memory model semantics.  Operand 2 is the memory on
+     which the atomic operation is performed.  Operand 0 is an output
+     operand which is set to true or false based on whether the
+     operation succeeded.  Operand 1 is an output operand which is set
+     to the contents of the memory before the operation was attempted.
+     Operand 3 is the value that is expected to be in memory.  Operand
+     4 is the value to put in memory if the expected value is found
+     there.  Operand 5 is set to 1 if this compare and swap is to be
+     treated as a weak operation.  Operand 6 is the memory model to be
+     used if the operation is a success.  Operand 7 is the memory model
+     to be used if the operation fails.
+
+     If memory referred to in operand 2 contains the value in operand
+     3, then operand 4 is stored in memory pointed to by operand 2 and
+     fencing based on the memory model in operand 6 is issued.
+
+     If memory referred to in operand 2 does not contain the value in
+     operand 3, then fencing based on the memory model in operand 7 is
+     issued.
+
+     If a target does not support weak compare-and-swap operations, or
+     the port elects not to implement weak operations, the argument in
+     operand 5 can be ignored.  Note a strong implementation must be
+     provided.
+
+     If this pattern is not provided, the `__atomic_compare_exchange'
+     built-in functions will utilize the legacy `sync_compare_and_swap'
+     pattern with an `__ATOMIC_SEQ_CST' memory model.
+
+`atomic_loadMODE'
+     This pattern implements an atomic load operation with memory model
+     semantics.  Operand 1 is the memory address being loaded from.
+     Operand 0 is the result of the load.  Operand 2 is the memory
+     model to be used for the load operation.
+
+     If not present, the `__atomic_load' built-in function will either
+     resort to a normal load with memory barriers, or a compare-and-swap
+     operation if a normal load would not be atomic.
+
+`atomic_storeMODE'
+     This pattern implements an atomic store operation with memory model
+     semantics.  Operand 0 is the memory address being stored to.
+     Operand 1 is the value to be written.  Operand 2 is the memory
+     model to be used for the operation.
+
+     If not present, the `__atomic_store' built-in function will
+     attempt to perform a normal store and surround it with any
+     required memory fences.  If the store would not be atomic, then an
+     `__atomic_exchange' is attempted with the result being ignored.
+
+`atomic_exchangeMODE'
+     This pattern implements an atomic exchange operation with memory
+     model semantics.  Operand 1 is the memory location the operation
+     is performed on.  Operand 0 is an output operand which is set to
+     the original value contained in the memory pointed to by operand
+     1.  Operand 2 is the value to be stored.  Operand 3 is the memory
+     model to be used.
+
+     If this pattern is not present, the built-in function
+     `__atomic_exchange' will attempt to preform the operation with a
+     compare and swap loop.
+
+`atomic_addMODE', `atomic_subMODE'
+`atomic_orMODE', `atomic_andMODE'
+`atomic_xorMODE', `atomic_nandMODE'
+     These patterns emit code for an atomic operation on memory with
+     memory model semantics. Operand 0 is the memory on which the
+     atomic operation is performed.  Operand 1 is the second operand to
+     the binary operator.  Operand 2 is the memory model to be used by
+     the operation.
+
+     If these patterns are not defined, attempts will be made to use
+     legacy `sync' patterns, or equivilent patterns which return a
+     result.  If none of these are available a compare-and-swap loop
+     will be used.
+
+`atomic_fetch_addMODE', `atomic_fetch_subMODE'
+`atomic_fetch_orMODE', `atomic_fetch_andMODE'
+`atomic_fetch_xorMODE', `atomic_fetch_nandMODE'
+     These patterns emit code for an atomic operation on memory with
+     memory model semantics, and return the original value. Operand 0
+     is an output operand which contains the value of the memory
+     location before the operation was performed.  Operand 1 is the
+     memory on which the atomic operation is performed.  Operand 2 is
+     the second operand to the binary operator.  Operand 3 is the
+     memory model to be used by the operation.
+
+     If these patterns are not defined, attempts will be made to use
+     legacy `sync' patterns.  If none of these are available a
+     compare-and-swap loop will be used.
+
+`atomic_add_fetchMODE', `atomic_sub_fetchMODE'
+`atomic_or_fetchMODE', `atomic_and_fetchMODE'
+`atomic_xor_fetchMODE', `atomic_nand_fetchMODE'
+     These patterns emit code for an atomic operation on memory with
+     memory model semantics and return the result after the operation
+     is performed.  Operand 0 is an output operand which contains the
+     value after the operation.  Operand 1 is the memory on which the
+     atomic operation is performed.  Operand 2 is the second operand to
+     the binary operator.  Operand 3 is the memory model to be used by
+     the operation.
+
+     If these patterns are not defined, attempts will be made to use
+     legacy `sync' patterns, or equivilent patterns which return the
+     result before the operation followed by the arithmetic operation
+     required to produce the result.  If none of these are available a
+     compare-and-swap loop will be used.
+
+`mem_thread_fenceMODE'
+     This pattern emits code required to implement a thread fence with
+     memory model semantics.  Operand 0 is the memory model to be used.
+
+     If this pattern is not specified, all memory models except
+     `__ATOMIC_RELAXED' will result in issuing a `sync_synchronize'
+     barrier pattern.
+
+`mem_signal_fenceMODE'
+     This pattern emits code required to implement a signal fence with
+     memory model semantics.  Operand 0 is the memory model to be used.
+
+     This pattern should impact the compiler optimizers the same way
+     that mem_signal_fence does, but it does not need to issue any
+     barrier instructions.
+
+     If this pattern is not specified, all memory models except
+     `__ATOMIC_RELAXED' will result in issuing a `sync_synchronize'
+     barrier pattern.
 
 `stack_protect_set'
      This pattern, if defined, moves a `ptr_mode' value from the memory
@@ -27952,9 +28163,11 @@ return.
      addresses have different requirements than other base register
      uses.
 
- -- Macro: MODE_CODE_BASE_REG_CLASS (MODE, OUTER_CODE, INDEX_CODE)
+ -- Macro: MODE_CODE_BASE_REG_CLASS (MODE, ADDRESS_SPACE, OUTER_CODE,
+          INDEX_CODE)
      A C expression whose value is the register class to which a valid
-     base register must belong.  OUTER_CODE and INDEX_CODE define the
+     base register for a memory reference in mode MODE to address space
+     ADDRESS_SPACE must belong.  OUTER_CODE and INDEX_CODE define the
      context in which the base register occurs.  OUTER_CODE is the code
      of the immediately enclosing expression (`MEM' for the top level
      of an address, `ADDRESS' for something that occurs in an
@@ -27993,17 +28206,20 @@ return.
      Use of this macro is deprecated; please use the more general
      `REGNO_MODE_CODE_OK_FOR_BASE_P'.
 
- -- Macro: REGNO_MODE_CODE_OK_FOR_BASE_P (NUM, MODE, OUTER_CODE,
-          INDEX_CODE)
-     A C expression that is just like `REGNO_MODE_OK_FOR_BASE_P', except
-     that that expression may examine the context in which the register
-     appears in the memory reference.  OUTER_CODE is the code of the
-     immediately enclosing expression (`MEM' if at the top level of the
-     address, `ADDRESS' for something that occurs in an
-     `address_operand').  INDEX_CODE is the code of the corresponding
-     index expression if OUTER_CODE is `PLUS'; `SCRATCH' otherwise.
-     The mode may be `VOIDmode' for addresses that appear outside a
-     `MEM', i.e., as an `address_operand'.
+ -- Macro: REGNO_MODE_CODE_OK_FOR_BASE_P (NUM, MODE, ADDRESS_SPACE,
+          OUTER_CODE, INDEX_CODE)
+     A C expression which is nonzero if register number NUM is suitable
+     for use as a base register in operand addresses, accessing memory
+     in mode MODE in address space ADDRESS_SPACE.  This is similar to
+     `REGNO_MODE_OK_FOR_BASE_P', except that that expression may
+     examine the context in which the register appears in the memory
+     reference.  OUTER_CODE is the code of the immediately enclosing
+     expression (`MEM' if at the top level of the address, `ADDRESS'
+     for something that occurs in an `address_operand').  INDEX_CODE is
+     the code of the corresponding index expression if OUTER_CODE is
+     `PLUS'; `SCRATCH' otherwise.  The mode may be `VOIDmode' for
+     addresses that appear outside a `MEM', i.e., as an
+     `address_operand'.
 
  -- Macro: REGNO_OK_FOR_INDEX_P (NUM)
      A C expression which is nonzero if register number NUM is suitable
@@ -31123,6 +31339,21 @@ TARGET_VECTORIZE_AUTOVECTORIZE_VECTOR_SIZES (void)
      from the mode returned by `TARGET_VECTORIZE_PREFERRED_SIMD_MODE'.
      The default is zero which means to not iterate over other vector
      sizes.
+
+ -- Target Hook: tree TARGET_VECTORIZE_BUILTIN_TM_LOAD (tree)
+     This hook should return the built-in decl needed to load a vector
+     of the given type within a transaction.
+
+ -- Target Hook: tree TARGET_VECTORIZE_BUILTIN_TM_STORE (tree)
+     This hook should return the built-in decl needed to store a vector
+     of the given type within a transaction.
+
+ -- Target Hook: tree TARGET_VECTORIZE_BUILTIN_GATHER (const_tree
+          MEM_VECTYPE, const_tree INDEX_TYPE, int SCALE)
+     Target builtin that implements vector gather operation.
+     MEM_VECTYPE is the vector type of the load and INDEX_TYPE is
+     scalar type of the index, scaled by SCALE.  The default is
+     `NULL_TREE' which means to not vectorize gather loads.
 
 
 File: gccint.info,  Node: Anchored Addresses,  Next: Condition Code,  Prev: Addressing Modes,  Up: Target Macros
@@ -40118,7 +40349,7 @@ alphabetical order.
    * Volker Reichelt for keeping up with the problem reports.
 
    * Joern Rennecke for maintaining the sh port, loop, regmove & reload
-     hacking.
+     hacking and developing and maintaining the Epiphany port.
 
    * Loren J. Rittle for improvements to libstdc++-v3 including the
      FreeBSD port, threading fixes, thread-related configury changes,
@@ -44236,6 +44467,29 @@ Concept Index
 * asterisk in template:                  Output Statement.   (line   29)
 * atan2M3 instruction pattern:           Standard Names.     (line  631)
 * atomic:                                GTY Options.        (line  249)
+* atomic_add_fetchMODE instruction pattern: Standard Names.  (line 1747)
+* atomic_addMODE instruction pattern:    Standard Names.     (line 1718)
+* atomic_and_fetchMODE instruction pattern: Standard Names.  (line 1747)
+* atomic_andMODE instruction pattern:    Standard Names.     (line 1718)
+* atomic_compare_and_swapMODE instruction pattern: Standard Names.
+                                                             (line 1654)
+* atomic_exchangeMODE instruction pattern: Standard Names.   (line 1706)
+* atomic_fetch_addMODE instruction pattern: Standard Names.  (line 1732)
+* atomic_fetch_andMODE instruction pattern: Standard Names.  (line 1732)
+* atomic_fetch_nandMODE instruction pattern: Standard Names. (line 1732)
+* atomic_fetch_orMODE instruction pattern: Standard Names.   (line 1732)
+* atomic_fetch_subMODE instruction pattern: Standard Names.  (line 1732)
+* atomic_fetch_xorMODE instruction pattern: Standard Names.  (line 1732)
+* atomic_loadMODE instruction pattern:   Standard Names.     (line 1685)
+* atomic_nand_fetchMODE instruction pattern: Standard Names. (line 1747)
+* atomic_nandMODE instruction pattern:   Standard Names.     (line 1718)
+* atomic_or_fetchMODE instruction pattern: Standard Names.   (line 1747)
+* atomic_orMODE instruction pattern:     Standard Names.     (line 1718)
+* atomic_storeMODE instruction pattern:  Standard Names.     (line 1695)
+* atomic_sub_fetchMODE instruction pattern: Standard Names.  (line 1747)
+* atomic_subMODE instruction pattern:    Standard Names.     (line 1718)
+* atomic_xor_fetchMODE instruction pattern: Standard Names.  (line 1747)
+* atomic_xorMODE instruction pattern:    Standard Names.     (line 1718)
 * attr <1>:                              Tagging Insns.      (line   54)
 * attr:                                  Expressions.        (line  175)
 * attr_flag:                             Expressions.        (line  140)
@@ -44395,7 +44649,7 @@ Concept Index
 * can_create_pseudo_p:                   Standard Names.     (line   75)
 * can_fallthru:                          Basic Blocks.       (line   57)
 * canadian:                              Configure Terms.    (line    6)
-* CANNOT_CHANGE_MODE_CLASS:              Register Classes.   (line  535)
+* CANNOT_CHANGE_MODE_CLASS:              Register Classes.   (line  540)
 * CANNOT_CHANGE_MODE_CLASS and subreg semantics: Regs and Memory.
                                                              (line  280)
 * canonicalization of instructions:      Insn Canonicalizations.
@@ -44447,7 +44701,7 @@ Concept Index
 * class definitions, register:           Register Classes.   (line    6)
 * class preference constraints:          Class Preferences.  (line    6)
 * class, scope:                          Classes.            (line    6)
-* CLASS_MAX_NREGS:                       Register Classes.   (line  523)
+* CLASS_MAX_NREGS:                       Register Classes.   (line  528)
 * CLASS_TYPE_P:                          Types for C++.      (line   65)
 * classes of RTX codes:                  RTL Classes.        (line    6)
 * CLASSTYPE_DECLARED_CLASS:              Classes.            (line    6)
@@ -44460,7 +44714,7 @@ Concept Index
 * CLEANUP_STMT:                          Statements for C++. (line    6)
 * Cleanups:                              Cleanups.           (line    6)
 * CLEAR_BY_PIECES_P:                     Costs.              (line  188)
-* clear_cache instruction pattern:       Standard Names.     (line 1663)
+* clear_cache instruction pattern:       Standard Names.     (line 1803)
 * CLEAR_INSN_CACHE:                      Trampolines.        (line   99)
 * CLEAR_RATIO:                           Costs.              (line  176)
 * clobber:                               Side Effects.       (line  106)
@@ -45707,7 +45961,7 @@ Concept Index
 * INCOMING_REGNO:                        Register Basics.    (line   88)
 * INCOMING_RETURN_ADDR_RTX:              Frame Layout.       (line  139)
 * INCOMING_STACK_BOUNDARY:               Storage Layout.     (line  161)
-* INDEX_REG_CLASS:                       Register Classes.   (line  141)
+* INDEX_REG_CLASS:                       Register Classes.   (line  143)
 * indirect_jump instruction pattern:     Standard Names.     (line 1174)
 * indirect_operand:                      Machine-Independent Predicates.
                                                              (line   71)
@@ -45893,7 +46147,7 @@ Concept Index
 * LIBGCC_SPEC:                           Driver.             (line  116)
 * library subroutine names:              Library Calls.      (line    6)
 * LIBRARY_PATH_ENV:                      Misc.               (line  520)
-* LIMIT_RELOAD_CLASS:                    Register Classes.   (line  295)
+* LIMIT_RELOAD_CLASS:                    Register Classes.   (line  300)
 * Linear loop transformations framework: Lambda.             (line    6)
 * LINK_COMMAND_SPEC:                     Driver.             (line  237)
 * LINK_EH_SPEC:                          Driver.             (line  143)
@@ -46038,8 +46292,10 @@ Concept Index
 * MEM_READONLY_P:                        Flags.              (line  152)
 * MEM_REF:                               Storage References. (line    6)
 * MEM_SCALAR_P:                          Flags.              (line   85)
+* mem_signal_fenceMODE instruction pattern: Standard Names.  (line 1772)
 * MEM_SIZE:                              Special Accessors.  (line   40)
 * MEM_SIZE_KNOWN_P:                      Special Accessors.  (line   36)
+* mem_thread_fenceMODE instruction pattern: Standard Names.  (line 1764)
 * MEM_VOLATILE_P:                        Flags.              (line   94)
 * MEMBER_TYPE_FORCES_BLK:                Storage Layout.     (line  405)
 * memory model:                          Memory model.       (line    6)
@@ -46073,7 +46329,7 @@ Concept Index
 * MODE_CC <1>:                           MODE_CC Condition Codes.
                                                              (line    6)
 * MODE_CC:                               Machine Modes.      (line  268)
-* MODE_CODE_BASE_REG_CLASS:              Register Classes.   (line  132)
+* MODE_CODE_BASE_REG_CLASS:              Register Classes.   (line  133)
 * MODE_COMPLEX_FLOAT:                    Machine Modes.      (line  260)
 * MODE_COMPLEX_INT:                      Machine Modes.      (line  257)
 * MODE_DECIMAL_FLOAT:                    Machine Modes.      (line  237)
@@ -46372,7 +46628,7 @@ Concept Index
 * predict.def:                           Profile information.
                                                              (line   24)
 * PREFERRED_DEBUGGING_TYPE:              All Debuggers.      (line   42)
-* PREFERRED_RELOAD_CLASS:                Register Classes.   (line  248)
+* PREFERRED_RELOAD_CLASS:                Register Classes.   (line  253)
 * PREFERRED_STACK_BOUNDARY:              Storage Layout.     (line  154)
 * prefetch:                              Side Effects.       (line  318)
 * prefetch and /v:                       Flags.              (line  232)
@@ -46557,11 +46813,11 @@ Concept Index
 * registers in constraints:              Simple Constraints. (line   66)
 * REGMODE_NATURAL_SIZE:                  Values in Registers.
                                                              (line   50)
-* REGNO_MODE_CODE_OK_FOR_BASE_P:         Register Classes.   (line  174)
-* REGNO_MODE_OK_FOR_BASE_P:              Register Classes.   (line  151)
-* REGNO_MODE_OK_FOR_REG_BASE_P:          Register Classes.   (line  161)
-* REGNO_OK_FOR_BASE_P:                   Register Classes.   (line  147)
-* REGNO_OK_FOR_INDEX_P:                  Register Classes.   (line  185)
+* REGNO_MODE_CODE_OK_FOR_BASE_P:         Register Classes.   (line  176)
+* REGNO_MODE_OK_FOR_BASE_P:              Register Classes.   (line  153)
+* REGNO_MODE_OK_FOR_REG_BASE_P:          Register Classes.   (line  163)
+* REGNO_OK_FOR_BASE_P:                   Register Classes.   (line  149)
+* REGNO_OK_FOR_INDEX_P:                  Register Classes.   (line  190)
 * REGNO_REG_CLASS:                       Register Classes.   (line  108)
 * regs_ever_live:                        Function Entry.     (line   21)
 * regular expressions:                   Processor pipeline description.
@@ -46703,12 +46959,12 @@ Concept Index
 * SDmode:                                Machine Modes.      (line   85)
 * sdot_prodM instruction pattern:        Standard Names.     (line  366)
 * search options:                        Including Patterns. (line   44)
-* SECONDARY_INPUT_RELOAD_CLASS:          Register Classes.   (line  391)
-* SECONDARY_MEMORY_NEEDED:               Register Classes.   (line  447)
-* SECONDARY_MEMORY_NEEDED_MODE:          Register Classes.   (line  466)
-* SECONDARY_MEMORY_NEEDED_RTX:           Register Classes.   (line  457)
-* SECONDARY_OUTPUT_RELOAD_CLASS:         Register Classes.   (line  392)
-* SECONDARY_RELOAD_CLASS:                Register Classes.   (line  390)
+* SECONDARY_INPUT_RELOAD_CLASS:          Register Classes.   (line  396)
+* SECONDARY_MEMORY_NEEDED:               Register Classes.   (line  452)
+* SECONDARY_MEMORY_NEEDED_MODE:          Register Classes.   (line  471)
+* SECONDARY_MEMORY_NEEDED_RTX:           Register Classes.   (line  462)
+* SECONDARY_OUTPUT_RELOAD_CLASS:         Register Classes.   (line  397)
+* SECONDARY_RELOAD_CLASS:                Register Classes.   (line  395)
 * SELECT_CC_MODE:                        MODE_CC Condition Codes.
                                                              (line    7)
 * sequence:                              Side Effects.       (line  260)
@@ -46826,8 +47082,8 @@ Concept Index
 * STACK_POINTER_REGNUM and virtual registers: Regs and Memory.
                                                              (line   83)
 * stack_pointer_rtx:                     Frame Registers.    (line  104)
-* stack_protect_set instruction pattern: Standard Names.     (line 1644)
-* stack_protect_test instruction pattern: Standard Names.    (line 1654)
+* stack_protect_set instruction pattern: Standard Names.     (line 1784)
+* stack_protect_test instruction pattern: Standard Names.    (line 1794)
 * STACK_PUSH_CODE:                       Frame Layout.       (line   17)
 * STACK_REG_COVER_CLASS:                 Stack Registers.    (line   23)
 * STACK_REGS:                            Stack Registers.    (line   20)
@@ -46928,29 +47184,29 @@ Concept Index
 * SYMBOL_REF_USED:                       Flags.              (line  215)
 * SYMBOL_REF_WEAK:                       Flags.              (line  220)
 * symbolic label:                        Sharing.            (line   20)
-* sync_addMODE instruction pattern:      Standard Names.     (line 1560)
-* sync_andMODE instruction pattern:      Standard Names.     (line 1560)
+* sync_addMODE instruction pattern:      Standard Names.     (line 1570)
+* sync_andMODE instruction pattern:      Standard Names.     (line 1570)
 * sync_compare_and_swapMODE instruction pattern: Standard Names.
                                                              (line 1530)
-* sync_iorMODE instruction pattern:      Standard Names.     (line 1560)
-* sync_lock_releaseMODE instruction pattern: Standard Names. (line 1625)
+* sync_iorMODE instruction pattern:      Standard Names.     (line 1570)
+* sync_lock_releaseMODE instruction pattern: Standard Names. (line 1635)
 * sync_lock_test_and_setMODE instruction pattern: Standard Names.
-                                                             (line 1599)
-* sync_nandMODE instruction pattern:     Standard Names.     (line 1560)
-* sync_new_addMODE instruction pattern:  Standard Names.     (line 1592)
-* sync_new_andMODE instruction pattern:  Standard Names.     (line 1592)
-* sync_new_iorMODE instruction pattern:  Standard Names.     (line 1592)
-* sync_new_nandMODE instruction pattern: Standard Names.     (line 1592)
-* sync_new_subMODE instruction pattern:  Standard Names.     (line 1592)
-* sync_new_xorMODE instruction pattern:  Standard Names.     (line 1592)
-* sync_old_addMODE instruction pattern:  Standard Names.     (line 1575)
-* sync_old_andMODE instruction pattern:  Standard Names.     (line 1575)
-* sync_old_iorMODE instruction pattern:  Standard Names.     (line 1575)
-* sync_old_nandMODE instruction pattern: Standard Names.     (line 1575)
-* sync_old_subMODE instruction pattern:  Standard Names.     (line 1575)
-* sync_old_xorMODE instruction pattern:  Standard Names.     (line 1575)
-* sync_subMODE instruction pattern:      Standard Names.     (line 1560)
-* sync_xorMODE instruction pattern:      Standard Names.     (line 1560)
+                                                             (line 1609)
+* sync_nandMODE instruction pattern:     Standard Names.     (line 1570)
+* sync_new_addMODE instruction pattern:  Standard Names.     (line 1602)
+* sync_new_andMODE instruction pattern:  Standard Names.     (line 1602)
+* sync_new_iorMODE instruction pattern:  Standard Names.     (line 1602)
+* sync_new_nandMODE instruction pattern: Standard Names.     (line 1602)
+* sync_new_subMODE instruction pattern:  Standard Names.     (line 1602)
+* sync_new_xorMODE instruction pattern:  Standard Names.     (line 1602)
+* sync_old_addMODE instruction pattern:  Standard Names.     (line 1585)
+* sync_old_andMODE instruction pattern:  Standard Names.     (line 1585)
+* sync_old_iorMODE instruction pattern:  Standard Names.     (line 1585)
+* sync_old_nandMODE instruction pattern: Standard Names.     (line 1585)
+* sync_old_subMODE instruction pattern:  Standard Names.     (line 1585)
+* sync_old_xorMODE instruction pattern:  Standard Names.     (line 1585)
+* sync_subMODE instruction pattern:      Standard Names.     (line 1570)
+* sync_xorMODE instruction pattern:      Standard Names.     (line 1570)
 * SYSROOT_HEADERS_SUFFIX_SPEC:           Driver.             (line  177)
 * SYSROOT_SUFFIX_SPEC:                   Driver.             (line  172)
 * t-TARGET:                              Target Fragment.    (line    6)
@@ -47077,8 +47333,8 @@ Concept Index
                                                              (line  116)
 * TARGET_CHECK_PCH_TARGET_FLAGS:         PCH Target.         (line   28)
 * TARGET_CHECK_STRING_OBJECT_FORMAT_ARG: Run-time Target.    (line  111)
-* TARGET_CLASS_LIKELY_SPILLED_P:         Register Classes.   (line  489)
-* TARGET_CLASS_MAX_NREGS:                Register Classes.   (line  508)
+* TARGET_CLASS_LIKELY_SPILLED_P:         Register Classes.   (line  494)
+* TARGET_CLASS_MAX_NREGS:                Register Classes.   (line  513)
 * TARGET_COMMUTATIVE_P:                  Misc.               (line  679)
 * TARGET_COMP_TYPE_ATTRIBUTES:           Target Attributes.  (line   27)
 * TARGET_CONDITIONAL_REGISTER_USAGE:     Register Basics.    (line   60)
@@ -47244,9 +47500,9 @@ Concept Index
 * TARGET_PASS_BY_REFERENCE:              Register Arguments. (line  104)
 * TARGET_PCH_VALID_P:                    PCH Target.         (line   13)
 * TARGET_POSIX_IO:                       Misc.               (line  527)
-* TARGET_PREFERRED_OUTPUT_RELOAD_CLASS:  Register Classes.   (line  284)
-* TARGET_PREFERRED_RELOAD_CLASS:         Register Classes.   (line  213)
-* TARGET_PREFERRED_RENAME_CLASS:         Register Classes.   (line  201)
+* TARGET_PREFERRED_OUTPUT_RELOAD_CLASS:  Register Classes.   (line  289)
+* TARGET_PREFERRED_RELOAD_CLASS:         Register Classes.   (line  218)
+* TARGET_PREFERRED_RENAME_CLASS:         Register Classes.   (line  206)
 * TARGET_PRETEND_OUTGOING_VARARGS_NAMED: Varargs.            (line  128)
 * TARGET_PROFILE_BEFORE_PROLOGUE:        Sections.           (line  298)
 * TARGET_PROMOTE_FUNCTION_MODE:          Storage Layout.     (line  118)
@@ -47308,7 +47564,7 @@ Concept Index
 * TARGET_SCHED_SMS_RES_MII:              Scheduling.         (line  346)
 * TARGET_SCHED_SPECULATE_INSN:           Scheduling.         (line  297)
 * TARGET_SCHED_VARIABLE_ISSUE:           Scheduling.         (line   24)
-* TARGET_SECONDARY_RELOAD:               Register Classes.   (line  313)
+* TARGET_SECONDARY_RELOAD:               Register Classes.   (line  318)
 * TARGET_SECTION_TYPE_FLAGS:             File Framework.     (line  151)
 * TARGET_SET_CURRENT_FUNCTION:           Misc.               (line  713)
 * TARGET_SET_DEFAULT_TYPE_ATTRIBUTES:    Target Attributes.  (line   34)
@@ -47348,9 +47604,12 @@ Concept Index
 * TARGET_VECTORIZE_AUTOVECTORIZE_VECTOR_SIZES: Addressing Modes.
                                                              (line  382)
 * TARGET_VECTORIZE_BUILTIN_CONVERSION:   Addressing Modes.   (line  344)
+* TARGET_VECTORIZE_BUILTIN_GATHER:       Addressing Modes.   (line  398)
 * TARGET_VECTORIZE_BUILTIN_MASK_FOR_LOAD: Addressing Modes.  (line  278)
 * TARGET_VECTORIZE_BUILTIN_MUL_WIDEN_EVEN: Addressing Modes. (line  304)
 * TARGET_VECTORIZE_BUILTIN_MUL_WIDEN_ODD: Addressing Modes.  (line  316)
+* TARGET_VECTORIZE_BUILTIN_TM_LOAD:      Addressing Modes.   (line  389)
+* TARGET_VECTORIZE_BUILTIN_TM_STORE:     Addressing Modes.   (line  393)
 * TARGET_VECTORIZE_BUILTIN_VECTORIZATION_COST: Addressing Modes.
                                                              (line  329)
 * TARGET_VECTORIZE_BUILTIN_VECTORIZED_FUNCTION: Addressing Modes.
@@ -48021,141 +48280,141 @@ Node: Multi-Alternative842378
 Node: Class Preferences845219
 Node: Modifiers846111
 Node: Machine Constraints850243
-Node: Disable Insn Alternatives889839
-Node: Define Constraints892732
-Node: C Constraint Interface899513
-Node: Standard Names903154
-Ref: shift patterns926985
-Ref: prologue instruction pattern968363
-Ref: window_save instruction pattern968856
-Ref: epilogue instruction pattern969131
-Node: Pattern Ordering978853
-Node: Dependent Patterns980089
-Node: Jump Patterns981709
-Ref: Jump Patterns-Footnote-1983853
-Node: Looping Patterns983899
-Node: Insn Canonicalizations988627
-Node: Expander Definitions993218
-Node: Insn Splitting1001336
-Node: Including Patterns1010938
-Node: Peephole Definitions1012718
-Node: define_peephole1013971
-Node: define_peephole21020302
-Node: Insn Attributes1023369
-Node: Defining Attributes1024475
-Ref: define_enum_attr1027512
-Node: Expressions1028547
-Node: Tagging Insns1035817
-Node: Attr Example1040170
-Node: Insn Lengths1042544
-Node: Constant Attributes1045603
-Node: Delay Slots1046772
-Node: Processor pipeline description1049996
-Ref: Processor pipeline description-Footnote-11068809
-Node: Conditional Execution1069131
-Node: Constant Definitions1072201
-Ref: define_enum1075992
-Node: Iterators1076480
-Node: Mode Iterators1076927
-Node: Defining Mode Iterators1077905
-Node: Substitutions1079399
-Node: Examples1081640
-Node: Code Iterators1083088
-Node: Target Macros1085345
-Node: Target Structure1088433
-Node: Driver1090548
-Node: Run-time Target1109616
-Node: Per-Function Data1118400
-Node: Storage Layout1121165
-Node: Type Layout1146776
-Node: Registers1161658
-Node: Register Basics1162632
-Node: Allocation Order1168137
-Node: Values in Registers1170583
-Node: Leaf Functions1178072
-Node: Stack Registers1180930
-Node: Register Classes1182202
-Node: Old Constraints1210523
-Node: Stack and Calling1217675
-Node: Frame Layout1218209
-Node: Exception Handling1229089
-Node: Stack Checking1235295
-Node: Frame Registers1240108
-Node: Elimination1248367
-Node: Stack Arguments1252596
-Node: Register Arguments1259493
-Node: Scalar Return1279809
-Node: Aggregate Return1285895
-Node: Caller Saves1290105
-Node: Function Entry1291283
-Node: Profiling1303911
-Node: Tail Calls1305610
-Node: Stack Smashing Protection1306976
-Node: Varargs1308608
-Node: Trampolines1315304
-Node: Library Calls1321347
-Node: Addressing Modes1325955
-Node: Anchored Addresses1344879
-Node: Condition Code1347528
-Node: CC0 Condition Codes1349657
-Node: MODE_CC Condition Codes1352903
-Node: Cond Exec Macros1359130
-Node: Costs1360107
-Node: Scheduling1376525
-Node: Sections1395931
-Node: PIC1411471
-Node: Assembler Format1413531
-Node: File Framework1414669
-Ref: TARGET_HAVE_SWITCHABLE_BSS_SECTIONS1421565
-Node: Data Output1424830
-Node: Uninitialized Data1432606
-Node: Label Output1437617
-Node: Initialization1460689
-Node: Macros for Initialization1466651
-Node: Instruction Output1473374
-Node: Dispatch Tables1483876
-Node: Exception Region Output1488254
-Node: Alignment Output1494612
-Node: Debugging Info1499157
-Node: All Debuggers1499827
-Node: DBX Options1502682
-Node: DBX Hooks1508131
-Node: File Names and DBX1510057
-Node: SDB and DWARF1512169
-Node: VMS Debug1518016
-Node: Floating Point1518603
-Node: Mode Switching1523426
-Node: Target Attributes1527352
-Node: Emulated TLS1535264
-Node: MIPS Coprocessors1538654
-Node: PCH Target1540223
-Node: C++ ABI1541765
-Node: Named Address Spaces1546557
-Node: Misc1551496
-Ref: TARGET_SHIFT_TRUNCATION_MASK1558924
-Node: Host Config1601855
-Node: Host Common1602923
-Node: Filesystem1605302
-Node: Host Misc1609417
-Node: Fragments1611866
-Node: Target Fragment1613061
-Node: Host Fragment1617948
-Node: Collect21618188
-Node: Header Dirs1620824
-Node: Type Information1622247
-Node: GTY Options1624604
-Node: GGC Roots1638432
-Node: Files1639152
-Node: Invoking the garbage collector1641898
-Node: Troubleshooting1643401
-Node: Plugins1644477
-Node: LTO1661355
-Node: Funding1686401
-Node: GNU Project1688884
-Node: Copying1689533
-Node: GNU Free Documentation License1727064
-Node: Contributors1752204
-Node: Option Index1789208
-Node: Concept Index1790012
+Node: Disable Insn Alternatives892070
+Node: Define Constraints894963
+Node: C Constraint Interface901744
+Node: Standard Names905385
+Ref: shift patterns929216
+Ref: prologue instruction pattern970594
+Ref: window_save instruction pattern971087
+Ref: epilogue instruction pattern971362
+Node: Pattern Ordering987963
+Node: Dependent Patterns989199
+Node: Jump Patterns990819
+Ref: Jump Patterns-Footnote-1992963
+Node: Looping Patterns993009
+Node: Insn Canonicalizations997737
+Node: Expander Definitions1002328
+Node: Insn Splitting1010446
+Node: Including Patterns1020048
+Node: Peephole Definitions1021828
+Node: define_peephole1023081
+Node: define_peephole21029412
+Node: Insn Attributes1032479
+Node: Defining Attributes1033585
+Ref: define_enum_attr1036622
+Node: Expressions1037657
+Node: Tagging Insns1044927
+Node: Attr Example1049280
+Node: Insn Lengths1051654
+Node: Constant Attributes1054713
+Node: Delay Slots1055882
+Node: Processor pipeline description1059106
+Ref: Processor pipeline description-Footnote-11077919
+Node: Conditional Execution1078241
+Node: Constant Definitions1081311
+Ref: define_enum1085102
+Node: Iterators1085590
+Node: Mode Iterators1086037
+Node: Defining Mode Iterators1087015
+Node: Substitutions1088509
+Node: Examples1090750
+Node: Code Iterators1092198
+Node: Target Macros1094455
+Node: Target Structure1097543
+Node: Driver1099658
+Node: Run-time Target1118726
+Node: Per-Function Data1127510
+Node: Storage Layout1130275
+Node: Type Layout1155886
+Node: Registers1170768
+Node: Register Basics1171742
+Node: Allocation Order1177247
+Node: Values in Registers1179693
+Node: Leaf Functions1187182
+Node: Stack Registers1190040
+Node: Register Classes1191312
+Node: Old Constraints1219926
+Node: Stack and Calling1227078
+Node: Frame Layout1227612
+Node: Exception Handling1238492
+Node: Stack Checking1244698
+Node: Frame Registers1249511
+Node: Elimination1257770
+Node: Stack Arguments1261999
+Node: Register Arguments1268896
+Node: Scalar Return1289212
+Node: Aggregate Return1295298
+Node: Caller Saves1299508
+Node: Function Entry1300686
+Node: Profiling1313314
+Node: Tail Calls1315013
+Node: Stack Smashing Protection1316379
+Node: Varargs1318011
+Node: Trampolines1324707
+Node: Library Calls1330750
+Node: Addressing Modes1335358
+Node: Anchored Addresses1355017
+Node: Condition Code1357666
+Node: CC0 Condition Codes1359795
+Node: MODE_CC Condition Codes1363041
+Node: Cond Exec Macros1369268
+Node: Costs1370245
+Node: Scheduling1386663
+Node: Sections1406069
+Node: PIC1421609
+Node: Assembler Format1423669
+Node: File Framework1424807
+Ref: TARGET_HAVE_SWITCHABLE_BSS_SECTIONS1431703
+Node: Data Output1434968
+Node: Uninitialized Data1442744
+Node: Label Output1447755
+Node: Initialization1470827
+Node: Macros for Initialization1476789
+Node: Instruction Output1483512
+Node: Dispatch Tables1494014
+Node: Exception Region Output1498392
+Node: Alignment Output1504750
+Node: Debugging Info1509295
+Node: All Debuggers1509965
+Node: DBX Options1512820
+Node: DBX Hooks1518269
+Node: File Names and DBX1520195
+Node: SDB and DWARF1522307
+Node: VMS Debug1528154
+Node: Floating Point1528741
+Node: Mode Switching1533564
+Node: Target Attributes1537490
+Node: Emulated TLS1545402
+Node: MIPS Coprocessors1548792
+Node: PCH Target1550361
+Node: C++ ABI1551903
+Node: Named Address Spaces1556695
+Node: Misc1561634
+Ref: TARGET_SHIFT_TRUNCATION_MASK1569062
+Node: Host Config1611993
+Node: Host Common1613061
+Node: Filesystem1615440
+Node: Host Misc1619555
+Node: Fragments1622004
+Node: Target Fragment1623199
+Node: Host Fragment1628086
+Node: Collect21628326
+Node: Header Dirs1630962
+Node: Type Information1632385
+Node: GTY Options1634742
+Node: GGC Roots1648570
+Node: Files1649290
+Node: Invoking the garbage collector1652036
+Node: Troubleshooting1653539
+Node: Plugins1654615
+Node: LTO1671493
+Node: Funding1696539
+Node: GNU Project1699022
+Node: Copying1699671
+Node: GNU Free Documentation License1737202
+Node: Contributors1762342
+Node: Option Index1799395
+Node: Concept Index1800199
 
 End Tag Table
