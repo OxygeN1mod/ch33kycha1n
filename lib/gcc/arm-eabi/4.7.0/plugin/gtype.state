@@ -6105,22 +6105,22 @@ nil 0 nil )
 (!type union 266 
 (!type already_seen 265)
  gc_pointed_to "section"
-(!srcfileloc  "output.h" 565)
+(!srcfileloc  "output.h" 564)
 
 (!fields 4 
 (!pair  "common"
 (!type struct 267 nil  gc_used "section_common"
-(!srcfileloc  "output.h" 507)
+(!srcfileloc  "output.h" 506)
 
 (!fields 1 
 (!pair  "flags"
 (!type already_seen 11)
 
-(!srcfileloc  "output.h" 506)
+(!srcfileloc  "output.h" 505)
 nil ))
 nil 511 nil )
 
-(!srcfileloc  "output.h" 561)
+(!srcfileloc  "output.h" 560)
 
 (!options 
 (!option skip string  "")
@@ -6128,27 +6128,27 @@ nil 511 nil )
 )
 (!pair  "named"
 (!type struct 268 nil  gc_used "named_section"
-(!srcfileloc  "output.h" 519)
+(!srcfileloc  "output.h" 518)
 
 (!fields 3 
 (!pair  "common"
 (!type already_seen 267)
 
-(!srcfileloc  "output.h" 511)
+(!srcfileloc  "output.h" 510)
 nil )
 (!pair  "name"
 (!type already_seen 2)
 
-(!srcfileloc  "output.h" 514)
+(!srcfileloc  "output.h" 513)
 nil )
 (!pair  "decl"
 (!type already_seen 26)
 
-(!srcfileloc  "output.h" 518)
+(!srcfileloc  "output.h" 517)
 nil ))
 nil 511 nil )
 
-(!srcfileloc  "output.h" 562)
+(!srcfileloc  "output.h" 561)
 
 (!options 
 (!option tag string  "SECTION_NAMED")
@@ -6156,18 +6156,18 @@ nil 511 nil )
 )
 (!pair  "unnamed"
 (!type struct 269 nil  gc_used "unnamed_section"
-(!srcfileloc  "output.h" 536)
+(!srcfileloc  "output.h" 535)
 
 (!fields 4 
 (!pair  "common"
 (!type already_seen 267)
 
-(!srcfileloc  "output.h" 527)
+(!srcfileloc  "output.h" 526)
 nil )
 (!pair  "callback"
 (!type already_seen 11)
 
-(!srcfileloc  "output.h" 531)
+(!srcfileloc  "output.h" 530)
 
 (!options 
 (!option skip string  "")
@@ -6176,7 +6176,7 @@ nil )
 (!pair  "data"
 (!type already_seen 12)
 
-(!srcfileloc  "output.h" 532)
+(!srcfileloc  "output.h" 531)
 
 (!options 
 (!option skip string  "")
@@ -6185,11 +6185,11 @@ nil )
 (!pair  "next"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 535)
+(!srcfileloc  "output.h" 534)
 nil ))
 nil 511 nil )
 
-(!srcfileloc  "output.h" 563)
+(!srcfileloc  "output.h" 562)
 
 (!options 
 (!option tag string  "SECTION_UNNAMED")
@@ -6197,18 +6197,18 @@ nil 511 nil )
 )
 (!pair  "noswitch"
 (!type struct 270 nil  gc_used "noswitch_section"
-(!srcfileloc  "output.h" 557)
+(!srcfileloc  "output.h" 556)
 
 (!fields 2 
 (!pair  "common"
 (!type already_seen 267)
 
-(!srcfileloc  "output.h" 553)
+(!srcfileloc  "output.h" 552)
 nil )
 (!pair  "callback"
 (!type already_seen 11)
 
-(!srcfileloc  "output.h" 556)
+(!srcfileloc  "output.h" 555)
 
 (!options 
 (!option skip string  "")
@@ -6216,7 +6216,7 @@ nil )
 ))
 nil 511 nil )
 
-(!srcfileloc  "output.h" 564)
+(!srcfileloc  "output.h" 563)
 
 (!options 
 (!option tag string  "SECTION_NOSWITCH")
@@ -13916,7 +13916,7 @@ nil )
 (!type struct 576 
 (!type already_seen 575)
  gc_pointed_to "binding_table_s"
-(!srcfileloc  "cp/name-lookup.c" 140)
+(!srcfileloc  "cp/name-lookup.c" 141)
 
 (!fields 3 
 (!pair  "chain"
@@ -13949,7 +13949,7 @@ nil 130 nil )
 )
 )
 
-(!srcfileloc  "cp/name-lookup.c" 132)
+(!srcfileloc  "cp/name-lookup.c" 133)
 
 (!options 
 (!option length string  "%h.chain_count")
@@ -13958,12 +13958,12 @@ nil 130 nil )
 (!pair  "chain_count"
 (!type already_seen 11)
 
-(!srcfileloc  "cp/name-lookup.c" 136)
+(!srcfileloc  "cp/name-lookup.c" 137)
 nil )
 (!pair  "entry_count"
 (!type already_seen 11)
 
-(!srcfileloc  "cp/name-lookup.c" 139)
+(!srcfileloc  "cp/name-lookup.c" 140)
 nil ))
 nil 130 nil )
 )
@@ -18313,27 +18313,27 @@ nil 0 nil )
 nil 0 nil )
 
 (!type struct 773 nil  gc_unused "VEC_pragma_ns_name_heap"
-(!srcfileloc  "c-family/c-pragma.c" 1180)
+(!srcfileloc  "c-family/c-pragma.c" 1181)
 
 (!fields 1 
 (!pair  "base"
 (!type struct 774 nil  gc_unused "VEC_pragma_ns_name_base"
-(!srcfileloc  "c-family/c-pragma.c" 1179)
+(!srcfileloc  "c-family/c-pragma.c" 1180)
 
 (!fields 2 
 (!pair  "prefix"
 (!type already_seen 56)
 
-(!srcfileloc  "c-family/c-pragma.c" 1179)
+(!srcfileloc  "c-family/c-pragma.c" 1180)
 nil )
 (!pair  "vec"
 (!type array 775 nil  gc_unused "1" 
-(!type struct 776 nil  gc_unused "anonymous:../../../build/../gcc/gcc-master/gcc/c-family/c-pragma.c:1174"nil 
+(!type struct 776 nil  gc_unused "anonymous:../../../build/../gcc/gcc-master/gcc/c-family/c-pragma.c:1175"nil 
 (!fields 0 )
 nil 0 nil )
 )
 
-(!srcfileloc  "c-family/c-pragma.c" 1179)
+(!srcfileloc  "c-family/c-pragma.c" 1180)
 
 (!options 
 (!option length string  "%h.prefix.num")
@@ -18341,18 +18341,18 @@ nil 0 nil )
 ))
 nil 450 nil )
 
-(!srcfileloc  "c-family/c-pragma.c" 1180)
+(!srcfileloc  "c-family/c-pragma.c" 1181)
 nil ))
 nil 450 nil )
 
 (!type struct 777 nil  gc_unused "VEC_pragma_ns_name_none"
-(!srcfileloc  "c-family/c-pragma.c" 1179)
+(!srcfileloc  "c-family/c-pragma.c" 1180)
 
 (!fields 1 
 (!pair  "base"
 (!type already_seen 774)
 
-(!srcfileloc  "c-family/c-pragma.c" 1179)
+(!srcfileloc  "c-family/c-pragma.c" 1180)
 nil ))
 nil 450 nil )
 
@@ -18361,18 +18361,18 @@ nil 450 nil )
 (!type already_seen 776)
 
 (!type struct 778 nil  gc_unused "VEC_internal_pragma_handler_heap"
-(!srcfileloc  "c-family/c-pragma.c" 1169)
+(!srcfileloc  "c-family/c-pragma.c" 1170)
 
 (!fields 1 
 (!pair  "base"
 (!type struct 779 nil  gc_unused "VEC_internal_pragma_handler_base"
-(!srcfileloc  "c-family/c-pragma.c" 1168)
+(!srcfileloc  "c-family/c-pragma.c" 1169)
 
 (!fields 2 
 (!pair  "prefix"
 (!type already_seen 56)
 
-(!srcfileloc  "c-family/c-pragma.c" 1168)
+(!srcfileloc  "c-family/c-pragma.c" 1169)
 nil )
 (!pair  "vec"
 (!type array 780 nil  gc_unused "1" 
@@ -18381,7 +18381,7 @@ nil )
 nil 0 nil )
 )
 
-(!srcfileloc  "c-family/c-pragma.c" 1168)
+(!srcfileloc  "c-family/c-pragma.c" 1169)
 
 (!options 
 (!option length string  "%h.prefix.num")
@@ -18389,18 +18389,18 @@ nil 0 nil )
 ))
 nil 450 nil )
 
-(!srcfileloc  "c-family/c-pragma.c" 1169)
+(!srcfileloc  "c-family/c-pragma.c" 1170)
 nil ))
 nil 450 nil )
 
 (!type struct 782 nil  gc_unused "VEC_internal_pragma_handler_none"
-(!srcfileloc  "c-family/c-pragma.c" 1168)
+(!srcfileloc  "c-family/c-pragma.c" 1169)
 
 (!fields 1 
 (!pair  "base"
 (!type already_seen 779)
 
-(!srcfileloc  "c-family/c-pragma.c" 1168)
+(!srcfileloc  "c-family/c-pragma.c" 1169)
 nil ))
 nil 450 nil )
 
@@ -18411,33 +18411,33 @@ nil 450 nil )
 (!type already_seen 783)
 )
  gc_pointed_to "opt_stack"
-(!srcfileloc  "c-family/c-pragma.c" 905)
+(!srcfileloc  "c-family/c-pragma.c" 906)
 
 (!fields 5 
 (!pair  "prev"
 (!type already_seen 784)
 
-(!srcfileloc  "c-family/c-pragma.c" 900)
+(!srcfileloc  "c-family/c-pragma.c" 901)
 nil )
 (!pair  "target_binary"
 (!type already_seen 26)
 
-(!srcfileloc  "c-family/c-pragma.c" 901)
+(!srcfileloc  "c-family/c-pragma.c" 902)
 nil )
 (!pair  "target_strings"
 (!type already_seen 26)
 
-(!srcfileloc  "c-family/c-pragma.c" 902)
+(!srcfileloc  "c-family/c-pragma.c" 903)
 nil )
 (!pair  "optimize_binary"
 (!type already_seen 26)
 
-(!srcfileloc  "c-family/c-pragma.c" 903)
+(!srcfileloc  "c-family/c-pragma.c" 904)
 nil )
 (!pair  "optimize_strings"
 (!type already_seen 26)
 
-(!srcfileloc  "c-family/c-pragma.c" 904)
+(!srcfileloc  "c-family/c-pragma.c" 905)
 nil ))
 nil 450 nil )
 
@@ -19408,7 +19408,7 @@ nil 0 nil )
 (!type already_seen 867)
 )
  gc_pointed_to "constexpr_call"
-(!srcfileloc  "cp/semantics.c" 6105)
+(!srcfileloc  "cp/semantics.c" 6125)
 
 (!fields 4 
 (!pair  "fundef"
@@ -19416,38 +19416,38 @@ nil 0 nil )
 (!type struct 870 
 (!type already_seen 869)
  gc_pointed_to "constexpr_fundef"
-(!srcfileloc  "cp/semantics.c" 5592)
+(!srcfileloc  "cp/semantics.c" 5612)
 
 (!fields 2 
 (!pair  "decl"
 (!type already_seen 26)
 
-(!srcfileloc  "cp/semantics.c" 5590)
+(!srcfileloc  "cp/semantics.c" 5610)
 nil )
 (!pair  "body"
 (!type already_seen 26)
 
-(!srcfileloc  "cp/semantics.c" 5591)
+(!srcfileloc  "cp/semantics.c" 5611)
 nil ))
 nil 130 nil )
 )
 
-(!srcfileloc  "cp/semantics.c" 6089)
+(!srcfileloc  "cp/semantics.c" 6109)
 nil )
 (!pair  "bindings"
 (!type already_seen 26)
 
-(!srcfileloc  "cp/semantics.c" 6096)
+(!srcfileloc  "cp/semantics.c" 6116)
 nil )
 (!pair  "result"
 (!type already_seen 26)
 
-(!srcfileloc  "cp/semantics.c" 6101)
+(!srcfileloc  "cp/semantics.c" 6121)
 nil )
 (!pair  "hash"
 (!type already_seen 11)
 
-(!srcfileloc  "cp/semantics.c" 6104)
+(!srcfileloc  "cp/semantics.c" 6124)
 nil ))
 nil 130 nil )
 
@@ -22693,18 +22693,18 @@ nil 0 nil )
 (!type already_seen 1140)
 )
  gc_unused "VEC_ipa_parm_adjustment_t_heap"
-(!srcfileloc  "ipa-prop.h" 423)
+(!srcfileloc  "ipa-prop.h" 426)
 
 (!fields 1 
 (!pair  "base"
 (!type struct 1142 nil  gc_unused "VEC_ipa_parm_adjustment_t_base"
-(!srcfileloc  "ipa-prop.h" 422)
+(!srcfileloc  "ipa-prop.h" 425)
 
 (!fields 2 
 (!pair  "prefix"
 (!type already_seen 56)
 
-(!srcfileloc  "ipa-prop.h" 422)
+(!srcfileloc  "ipa-prop.h" 425)
 nil )
 (!pair  "vec"
 (!type array 1143 nil  gc_unused "1" 
@@ -22713,7 +22713,7 @@ nil )
 nil 0 nil )
 )
 
-(!srcfileloc  "ipa-prop.h" 422)
+(!srcfileloc  "ipa-prop.h" 425)
 
 (!options 
 (!option length string  "%h.prefix.num")
@@ -22721,18 +22721,18 @@ nil 0 nil )
 ))
 nil 511 nil )
 
-(!srcfileloc  "ipa-prop.h" 423)
+(!srcfileloc  "ipa-prop.h" 426)
 nil ))
 nil 511 nil )
 
 (!type struct 1145 nil  gc_unused "VEC_ipa_parm_adjustment_t_none"
-(!srcfileloc  "ipa-prop.h" 422)
+(!srcfileloc  "ipa-prop.h" 425)
 
 (!fields 1 
 (!pair  "base"
 (!type already_seen 1142)
 
-(!srcfileloc  "ipa-prop.h" 422)
+(!srcfileloc  "ipa-prop.h" 425)
 nil ))
 nil 511 nil )
 
@@ -23265,7 +23265,7 @@ nil 0 nil )
 (!fields 0 )
 nil 0 nil )
 
-(!type struct 1192 nil  gc_unused "anonymous:../../../build/../gcc/gcc-master/gcc/config/arm/arm.c:24148"nil 
+(!type struct 1192 nil  gc_unused "anonymous:../../../build/../gcc/gcc-master/gcc/config/arm/arm.c:24153"nil 
 (!fields 0 )
 nil 0 nil )
 
@@ -23273,7 +23273,7 @@ nil 0 nil )
 (!fields 0 )
 nil 0 nil )
 
-(!type struct 1194 nil  gc_unused "anonymous:../../../build/../gcc/gcc-master/gcc/config/arm/arm.c:18849"nil 
+(!type struct 1194 nil  gc_unused "anonymous:../../../build/../gcc/gcc-master/gcc/config/arm/arm.c:18854"nil 
 (!fields 0 )
 nil 0 nil )
 
@@ -23397,25 +23397,25 @@ nil ))
 nil 511 nil )
 
 (!type struct 1220 nil  gc_unused "VEC_char_p_heap"
-(!srcfileloc  "gimplify.c" 7983)
+(!srcfileloc  "gimplify.c" 8017)
 
 (!fields 1 
 (!pair  "base"
 (!type struct 1221 nil  gc_unused "VEC_char_p_base"
-(!srcfileloc  "gimplify.c" 7982)
+(!srcfileloc  "gimplify.c" 8016)
 
 (!fields 2 
 (!pair  "prefix"
 (!type already_seen 56)
 
-(!srcfileloc  "gimplify.c" 7982)
+(!srcfileloc  "gimplify.c" 8016)
 nil )
 (!pair  "vec"
 (!type array 1222 nil  gc_unused "1" 
 (!type already_seen 2)
 )
 
-(!srcfileloc  "gimplify.c" 7982)
+(!srcfileloc  "gimplify.c" 8016)
 
 (!options 
 (!option length string  "%h.prefix.num")
@@ -23423,18 +23423,18 @@ nil )
 ))
 nil 511 nil )
 
-(!srcfileloc  "gimplify.c" 7983)
+(!srcfileloc  "gimplify.c" 8017)
 nil ))
 nil 511 nil )
 
 (!type struct 1223 nil  gc_unused "VEC_char_p_none"
-(!srcfileloc  "gimplify.c" 7982)
+(!srcfileloc  "gimplify.c" 8016)
 
 (!fields 1 
 (!pair  "base"
 (!type already_seen 1221)
 
-(!srcfileloc  "gimplify.c" 7982)
+(!srcfileloc  "gimplify.c" 8016)
 nil ))
 nil 511 nil )
 
@@ -26146,23 +26146,23 @@ nil 0 nil )
 (!type already_seen 1522)
 )
  gc_pointed_to "constant_descriptor_tree"
-(!srcfileloc  "cgraph.h" 908)
+(!srcfileloc  "cgraph.h" 910)
 
 (!fields 3 
 (!pair  "rtl"
 (!type already_seen 156)
 
-(!srcfileloc  "cgraph.h" 899)
+(!srcfileloc  "cgraph.h" 901)
 nil )
 (!pair  "value"
 (!type already_seen 26)
 
-(!srcfileloc  "cgraph.h" 902)
+(!srcfileloc  "cgraph.h" 904)
 nil )
 (!pair  "hash"
 (!type already_seen 11)
 
-(!srcfileloc  "cgraph.h" 907)
+(!srcfileloc  "cgraph.h" 909)
 nil ))
 nil 511 nil )
 
@@ -29457,12 +29457,12 @@ nil )
 (!pair  "secondary_vptr_vtt_init_data"
 (!type already_seen 767)
 
-(!srcfileloc  "cp/class.c" 7773)
+(!srcfileloc  "cp/class.c" 7768)
 nil )
 (!pair  "find_final_overrider_data"
 (!type already_seen 768)
 
-(!srcfileloc  "cp/class.c" 1943)
+(!srcfileloc  "cp/class.c" 1938)
 nil )
 (!pair  "subobject_offset_fn"
 (!type already_seen 11)
@@ -29482,42 +29482,42 @@ nil )
 (!pair  "VEC_pragma_ns_name_heap"
 (!type already_seen 773)
 
-(!srcfileloc  "c-family/c-pragma.c" 1180)
+(!srcfileloc  "c-family/c-pragma.c" 1181)
 nil )
 (!pair  "VEC_pragma_ns_name_none"
 (!type already_seen 777)
 
-(!srcfileloc  "c-family/c-pragma.c" 1179)
+(!srcfileloc  "c-family/c-pragma.c" 1180)
 nil )
 (!pair  "VEC_pragma_ns_name_base"
 (!type already_seen 774)
 
-(!srcfileloc  "c-family/c-pragma.c" 1179)
+(!srcfileloc  "c-family/c-pragma.c" 1180)
 nil )
 (!pair  "pragma_ns_name"
 (!type already_seen 776)
 
-(!srcfileloc  "c-family/c-pragma.c" 1177)
+(!srcfileloc  "c-family/c-pragma.c" 1178)
 nil )
 (!pair  "VEC_internal_pragma_handler_heap"
 (!type already_seen 778)
 
-(!srcfileloc  "c-family/c-pragma.c" 1169)
+(!srcfileloc  "c-family/c-pragma.c" 1170)
 nil )
 (!pair  "VEC_internal_pragma_handler_none"
 (!type already_seen 782)
 
-(!srcfileloc  "c-family/c-pragma.c" 1168)
+(!srcfileloc  "c-family/c-pragma.c" 1169)
 nil )
 (!pair  "VEC_internal_pragma_handler_base"
 (!type already_seen 779)
 
-(!srcfileloc  "c-family/c-pragma.c" 1168)
+(!srcfileloc  "c-family/c-pragma.c" 1169)
 nil )
 (!pair  "opt_stack"
 (!type already_seen 783)
 
-(!srcfileloc  "c-family/c-pragma.c" 905)
+(!srcfileloc  "c-family/c-pragma.c" 906)
 nil )
 (!pair  "VEC_pending_redefinition_gc"
 (!type already_seen 785)
@@ -29879,12 +29879,12 @@ nil )
 (!pair  "constexpr_call"
 (!type already_seen 867)
 
-(!srcfileloc  "cp/semantics.c" 6105)
+(!srcfileloc  "cp/semantics.c" 6125)
 nil )
 (!pair  "constexpr_fundef"
 (!type already_seen 870)
 
-(!srcfileloc  "cp/semantics.c" 5592)
+(!srcfileloc  "cp/semantics.c" 5612)
 nil )
 (!pair  "VEC_deferred_access_gc"
 (!type already_seen 871)
@@ -30694,27 +30694,27 @@ nil )
 (!pair  "ipa_parm_adjustment_vec"
 (!type already_seen 1141)
 
-(!srcfileloc  "ipa-prop.h" 425)
+(!srcfileloc  "ipa-prop.h" 428)
 nil )
 (!pair  "VEC_ipa_parm_adjustment_t_heap"
 (!type already_seen 1140)
 
-(!srcfileloc  "ipa-prop.h" 423)
+(!srcfileloc  "ipa-prop.h" 426)
 nil )
 (!pair  "VEC_ipa_parm_adjustment_t_none"
 (!type already_seen 1145)
 
-(!srcfileloc  "ipa-prop.h" 422)
+(!srcfileloc  "ipa-prop.h" 425)
 nil )
 (!pair  "VEC_ipa_parm_adjustment_t_base"
 (!type already_seen 1142)
 
-(!srcfileloc  "ipa-prop.h" 422)
+(!srcfileloc  "ipa-prop.h" 425)
 nil )
 (!pair  "ipa_parm_adjustment_t"
 (!type already_seen 1144)
 
-(!srcfileloc  "ipa-prop.h" 421)
+(!srcfileloc  "ipa-prop.h" 424)
 nil )
 (!pair  "VEC_ipa_edge_args_t_gc"
 (!type already_seen 1146)
@@ -30849,32 +30849,32 @@ nil )
 (!pair  "emit_f"
 (!type already_seen 11)
 
-(!srcfileloc  "config/arm/arm.c" 24284)
+(!srcfileloc  "config/arm/arm.c" 24289)
 nil )
 (!pair  "arm_mangle_map_entry"
 (!type already_seen 1192)
 
-(!srcfileloc  "config/arm/arm.c" 24152)
+(!srcfileloc  "config/arm/arm.c" 24157)
 nil )
 (!pair  "builtin_arg"
 (!type already_seen 11)
 
-(!srcfileloc  "config/arm/arm.c" 20389)
+(!srcfileloc  "config/arm/arm.c" 20394)
 nil )
 (!pair  "neon_builtin_datum"
 (!type already_seen 1194)
 
-(!srcfileloc  "config/arm/arm.c" 18855)
+(!srcfileloc  "config/arm/arm.c" 18860)
 nil )
 (!pair  "neon_itype"
 (!type already_seen 11)
 
-(!srcfileloc  "config/arm/arm.c" 18847)
+(!srcfileloc  "config/arm/arm.c" 18852)
 nil )
 (!pair  "neon_builtin_type_mode"
 (!type already_seen 11)
 
-(!srcfileloc  "config/arm/arm.c" 18782)
+(!srcfileloc  "config/arm/arm.c" 18787)
 nil )
 (!pair  "arm_pragma_enum"
 (!type already_seen 11)
@@ -30944,22 +30944,22 @@ nil )
 (!pair  "VEC_char_p_heap"
 (!type already_seen 1220)
 
-(!srcfileloc  "gimplify.c" 7983)
+(!srcfileloc  "gimplify.c" 8017)
 nil )
 (!pair  "VEC_char_p_none"
 (!type already_seen 1223)
 
-(!srcfileloc  "gimplify.c" 7982)
+(!srcfileloc  "gimplify.c" 8016)
 nil )
 (!pair  "VEC_char_p_base"
 (!type already_seen 1221)
 
-(!srcfileloc  "gimplify.c" 7982)
+(!srcfileloc  "gimplify.c" 8016)
 nil )
 (!pair  "char_p"
 (!type already_seen 15)
 
-(!srcfileloc  "gimplify.c" 7981)
+(!srcfileloc  "gimplify.c" 8015)
 nil )
 (!pair  "elt_t"
 (!type already_seen 1225)
@@ -32199,12 +32199,12 @@ nil )
 (!pair  "noswitch_section_callback"
 (!type already_seen 11)
 
-(!srcfileloc  "output.h" 549)
+(!srcfileloc  "output.h" 548)
 nil )
 (!pair  "unnamed_section_callback"
 (!type already_seen 11)
 
-(!srcfileloc  "output.h" 523)
+(!srcfileloc  "output.h" 522)
 nil )
 (!pair  "__gcc_host_wide_int__"
 (!type already_seen 11)
@@ -34598,7 +34598,7 @@ nil )
 (!pair  "module_htab"
 (!type already_seen 1732)
 
-(!srcfileloc  "fortran/trans-decl.c" 3809)
+(!srcfileloc  "fortran/trans-decl.c" 3821)
 
 (!options 
 (!option param_is type 
@@ -34682,7 +34682,7 @@ nil )
 (!pair  "abort_fndecl_addr"
 (!type already_seen 26)
 
-(!srcfileloc  "cp/class.c" 8147)
+(!srcfileloc  "cp/class.c" 8142)
 nil )
 (!pair  "sizeof_biggest_empty_class"
 (!type already_seen 26)
@@ -34692,12 +34692,7 @@ nil )
 (!pair  "options_stack"
 (!type already_seen 784)
 
-(!srcfileloc  "c-family/c-pragma.c" 907)
-nil )
-(!pair  "pragma_extern_prefix"
-(!type already_seen 26)
-
-(!srcfileloc  "c-family/c-pragma.c" 497)
+(!srcfileloc  "c-family/c-pragma.c" 908)
 nil )
 (!pair  "pending_redefine_extname"
 (!type already_seen 786)
@@ -34713,6 +34708,11 @@ nil )
 (!type already_seen 798)
 
 (!srcfileloc  "c-family/c-pragma.c" 54)
+nil )
+(!pair  "pragma_extern_prefix"
+(!type already_seen 26)
+
+(!srcfileloc  "c-family/c-pragma.h" 149)
 nil )
 (!pair  "pending_lang_change"
 (!type already_seen 11)
@@ -34847,7 +34847,7 @@ nil )
 (!pair  "constexpr_call_table"
 (!type already_seen 1736)
 
-(!srcfileloc  "cp/semantics.c" 6110)
+(!srcfileloc  "cp/semantics.c" 6130)
 
 (!options 
 (!option param_is type 
@@ -34858,7 +34858,7 @@ nil )
 (!pair  "constexpr_fundef_table"
 (!type already_seen 1738)
 
-(!srcfileloc  "cp/semantics.c" 5597)
+(!srcfileloc  "cp/semantics.c" 5617)
 
 (!options 
 (!option param_is type 
@@ -35058,17 +35058,17 @@ nil )
 (!pair  "lambda_cnt"
 (!type already_seen 11)
 
-(!srcfileloc  "cp/name-lookup.c" 1952)
+(!srcfileloc  "cp/name-lookup.c" 1997)
 nil )
 (!pair  "anon_cnt"
 (!type already_seen 11)
 
-(!srcfileloc  "cp/name-lookup.c" 1932)
+(!srcfileloc  "cp/name-lookup.c" 1977)
 nil )
 (!pair  "free_binding_level"
 (!type already_seen 112)
 
-(!srcfileloc  "cp/name-lookup.c" 1397)
+(!srcfileloc  "cp/name-lookup.c" 1442)
 
 (!options 
 (!option deletable string  "")
@@ -35077,7 +35077,7 @@ nil )
 (!pair  "free_bindings"
 (!type already_seen 119)
 
-(!srcfileloc  "cp/name-lookup.c" 272)
+(!srcfileloc  "cp/name-lookup.c" 273)
 
 (!options 
 (!option deletable string  "")
@@ -35086,7 +35086,7 @@ nil )
 (!pair  "free_binding_entry"
 (!type already_seen 578)
 
-(!srcfileloc  "cp/name-lookup.c" 92)
+(!srcfileloc  "cp/name-lookup.c" 93)
 
 (!options 
 (!option deletable string  "")
@@ -35095,7 +35095,7 @@ nil )
 (!pair  "anonymous_namespace_name"
 (!type already_seen 26)
 
-(!srcfileloc  "cp/name-lookup.c" 63)
+(!srcfileloc  "cp/name-lookup.c" 64)
 nil )
 (!pair  "global_type_node"
 (!type already_seen 26)
@@ -35440,7 +35440,7 @@ nil )
 (!type already_seen 26)
 )
 
-(!srcfileloc  "config/arm/arm.c" 19265)
+(!srcfileloc  "config/arm/arm.c" 19270)
 nil )
 (!pair  "tls_get_addr_libfunc"
 (!type already_seen 156)
@@ -35779,12 +35779,12 @@ nil )
 (!pair  "elf_fini_array_section"
 (!type already_seen 265)
 
-(!srcfileloc  "varasm.c" 7649)
+(!srcfileloc  "varasm.c" 7637)
 nil )
 (!pair  "elf_init_array_section"
 (!type already_seen 265)
 
-(!srcfileloc  "varasm.c" 7648)
+(!srcfileloc  "varasm.c" 7636)
 nil )
 (!pair  "tm_clone_hash"
 (!type already_seen 1752)
@@ -36180,7 +36180,7 @@ nil )
 (!pair  "block_clear_fn"
 (!type already_seen 26)
 
-(!srcfileloc  "expr.h" 289)
+(!srcfileloc  "expr.h" 288)
 nil )
 (!pair  "block_move_fn"
 (!type already_seen 26)
@@ -36878,12 +36878,12 @@ nil )
 (!pair  "varpool_nodes"
 (!type already_seen 1108)
 
-(!srcfileloc  "cgraph.h" 651)
+(!srcfileloc  "cgraph.h" 652)
 nil )
 (!pair  "varpool_nodes_queue"
 (!type already_seen 1108)
 
-(!srcfileloc  "cgraph.h" 650)
+(!srcfileloc  "cgraph.h" 651)
 nil )
 (!pair  "cgraph_order"
 (!type already_seen 11)
@@ -36928,82 +36928,82 @@ nil )
 (!pair  "in_cold_section_p"
 (!type already_seen 11)
 
-(!srcfileloc  "output.h" 589)
+(!srcfileloc  "output.h" 588)
 nil )
 (!pair  "in_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 588)
+(!srcfileloc  "output.h" 587)
 nil )
 (!pair  "bss_noswitch_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 586)
+(!srcfileloc  "output.h" 585)
 nil )
 (!pair  "lcomm_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 585)
+(!srcfileloc  "output.h" 584)
 nil )
 (!pair  "comm_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 584)
+(!srcfileloc  "output.h" 583)
 nil )
 (!pair  "tls_comm_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 583)
+(!srcfileloc  "output.h" 582)
 nil )
 (!pair  "eh_frame_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 582)
+(!srcfileloc  "output.h" 581)
 nil )
 (!pair  "exception_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 581)
+(!srcfileloc  "output.h" 580)
 nil )
 (!pair  "sbss_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 580)
+(!srcfileloc  "output.h" 579)
 nil )
 (!pair  "bss_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 579)
+(!srcfileloc  "output.h" 578)
 nil )
 (!pair  "dtors_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 578)
+(!srcfileloc  "output.h" 577)
 nil )
 (!pair  "ctors_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 577)
+(!srcfileloc  "output.h" 576)
 nil )
 (!pair  "sdata_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 576)
+(!srcfileloc  "output.h" 575)
 nil )
 (!pair  "readonly_data_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 575)
+(!srcfileloc  "output.h" 574)
 nil )
 (!pair  "data_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 574)
+(!srcfileloc  "output.h" 573)
 nil )
 (!pair  "text_section"
 (!type already_seen 265)
 
-(!srcfileloc  "output.h" 573)
+(!srcfileloc  "output.h" 572)
 nil )
 (!pair  "types_used_by_cur_var_decl"
 (!type already_seen 53)

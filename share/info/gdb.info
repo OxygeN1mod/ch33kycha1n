@@ -24,8 +24,8 @@ developing GNU and promoting software freedom."
    This file documents the GNU debugger GDB.
 
    This is the Tenth Edition, of `Debugging with GDB: the GNU
-Source-Level Debugger' for GDB (ch33kycha1n|20111112) Version
-7.3.50.20111112-cvs.
+Source-Level Debugger' for GDB (ch33kycha1n|20111118) Version
+7.3.50.20111118-cvs.
 
    Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
@@ -50,8 +50,8 @@ Debugging with GDB
 
 This file describes GDB, the GNU symbolic debugger.
 
-   This is the Tenth Edition, for GDB (ch33kycha1n|20111112) Version
-7.3.50.20111112-cvs.
+   This is the Tenth Edition, for GDB (ch33kycha1n|20111118) Version
+7.3.50.20111118-cvs.
 
    Copyright (C) 1988-2010 Free Software Foundation, Inc.
 
@@ -492,7 +492,7 @@ Let us use GDB to try to see what is going on.
      There is absolutely no warranty for GDB; type "show warranty"
       for details.
 
-     GDB 7.3.50.20111112-cvs, Copyright 1999 Free Software Foundation, Inc...
+     GDB 7.3.50.20111118-cvs, Copyright 1999 Free Software Foundation, Inc...
      (gdb)
 
 GDB reads only enough symbol data to know where to find the rest when
@@ -1101,9 +1101,11 @@ If you need to execute occasional shell commands during your debugging
 session, there is no need to leave or suspend GDB; you can just use the
 `shell' command.
 
-`shell COMMAND STRING'
-     Invoke a standard shell to execute COMMAND STRING.  If it exists,
-     the environment variable `SHELL' determines which shell to run.
+`shell COMMAND-STRING'
+`!COMMAND-STRING'
+     Invoke a standard shell to execute COMMAND-STRING.  Note that no
+     space is needed between `!' and COMMAND-STRING.  If it exists, the
+     environment variable `SHELL' determines which shell to run.
      Otherwise GDB uses the default shell (`/bin/sh' on Unix systems,
      `COMMAND.COM' on MS-DOS, etc.).
 
@@ -8615,19 +8617,16 @@ commands for working with macros explicitly.
      not parse the result, EXPRESSION need not be a valid expression; it
      can be any string of tokens.
 
-`info macro MACRO'
-     Show the current definition of the named MACRO, and describe the
-     source location or compiler command-line where that definition was
-     established.
+`info macro [-a|-all] [--] MACRO'
+     Show the current definition or all definitions of the named MACRO,
+     and describe the source location or compiler command-line where
+     that definition was established.  The optional double dash is to
+     signify the end of argument processing and the beginning of MACRO
+     for non C-like macros where the macro may begin with a hyphen.
 
 `info macros LINESPEC'
      Show all macro definitions that are in effect at the location
      specified by LINESPEC,  and describe the source location or
-     compiler command-line where those definitions were established.
-
-`info definitions MACRO'
-     Show all definitions of the named MACRO that are defined in the
-     current compilation unit, and describe the source location or
      compiler command-line where those definitions were established.
 
 `macro define MACRO REPLACEMENT-LIST'
@@ -8909,10 +8908,21 @@ File: gdb.info,  Node: Create and Delete Tracepoints,  Next: Enable and Disable 
      `trace' command defines a tracepoint, which is a point in the
      target program where the debugger will briefly stop, collect some
      data, and then allow the program to continue.  Setting a
-     tracepoint or changing its actions doesn't take effect until the
-     next `tstart' command, and once a trace experiment is running,
-     further changes will not have any effect until the next trace
-     experiment starts.
+     tracepoint or changing its actions takes effect immediately if the
+     remote stub supports the `InstallInTrace' feature (*note install
+     tracepoint in tracing::).  If remote stub doesn't support the
+     `InstallInTrace' feature, all these changes don't take effect
+     until the next `tstart' command, and once a trace experiment is
+     running, further changes will not have any effect until the next
+     trace experiment starts.  In addition, GDB supports "pending
+     tracepoints"--tracepoints whose address is not yet resolved.
+     (This is similar to pending breakpoints.)  Pending tracepoints are
+     not downloaded to the target and not installed until they are
+     resolved.  The resolution of pending tracepoints requires GDB
+     support--when debugging with the remote target, and GDB
+     disconnects from the remote stub (*note disconnected tracing::),
+     pending tracepoints can not be resolved (and downloaded to the
+     remote stub) while GDB is disconnected.
 
      Here are some examples of using the `trace' command:
 
@@ -8945,6 +8955,20 @@ File: gdb.info,  Node: Create and Delete Tracepoints,  Next: Enable and Disable 
      explanatory message.
 
      GDB handles arguments to `ftrace' exactly as for `trace'.
+
+     On 32-bit x86-architecture systems, fast tracepoints normally need
+     to be placed at an instruction that is 5 bytes or longer, but can
+     be placed at 4-byte instructions if the low 64K of memory of the
+     target program is available to install trampolines.  Some
+     Unix-type systems, such as GNU/Linux, exclude low addresses from
+     the program's address space; but for instance with the Linux
+     kernel it is possible to let GDB use this area by doing a `sysctl'
+     command to set the `mmap_min_addr' kernel parameter, as in
+
+          sudo sysctl -w vm.mmap_min_addr=32768
+
+     which sets the low address to 32K, which leaves plenty of room for
+     trampolines.  The minimum address should be set to a page boundary.
 
 `strace LOCATION [ if COND ]'
      The `strace' command sets a static tracepoint.  For targets that
@@ -13579,6 +13603,27 @@ the search directories for target libraries.
           target operating system (*note Configuring the Current ABI:
           ABI.).  This is the default.
 
+   When processing file names provided by the user, GDB frequently
+needs to compare them to the file names recorded in the program's debug
+info.  Normally, GDB compares just the "base names" of the files as
+strings, which is reasonably fast even for very large programs.  (The
+base name of a file is the last portion of its name, after stripping
+all the leading directories.)  This shortcut in comparison is based
+upon the assumption that files cannot have more than one base name.
+This is usually true, but references to files that use symlinks or
+similar filesystem facilities violate that assumption.  If your program
+records files using such facilities, or if you provide file names to
+GDB using symlinks etc., you can set `basenames-may-differ' to `true'
+to instruct GDB to completely canonicalize each pair of file names it
+needs to compare.  This will make file-name comparisons accurate, but
+at a price of a significant slowdown.
+
+`set basenames-may-differ'
+     Set whether a source file may have multiple base names.
+
+`show basenames-may-differ'
+     Show whether a source file may have multiple base names.
+
    ---------- Footnotes ----------
 
    (1) If you want to specify a local system root using a directory
@@ -14883,6 +14928,9 @@ storage-address'                             `__thread'
                                              process attach
                                              state.
 `traceframe-info'    `qXfer:traceframe-info:read'Traceframe info
+`install-in-trace'   `InstallInTrace'        Install
+                                             tracepoint in
+                                             tracing
 `disable-randomization'`QDisableRandomization' `set
                                              disable-randomization'
 
@@ -29068,7 +29116,7 @@ and TeX (or `texi2roff') to typeset the printed version.
 
    GDB includes an already formatted copy of the on-line Info version
 of this manual in the `gdb' subdirectory.  The main Info file is
-`gdb-7.3.50.20111112-cvs/gdb/gdb.info', and it refers to subordinate
+`gdb-7.3.50.20111118-cvs/gdb/gdb.info', and it refers to subordinate
 files matching `gdb.info*' in the same directory.  If necessary, you
 can print out these files, or read them with any editor; but they are
 easier to read using the `info' subsystem in GNU Emacs or the
@@ -29079,8 +29127,8 @@ distribution.
 Info formatting programs, such as `texinfo-format-buffer' or `makeinfo'.
 
    If you have `makeinfo' installed, and are in the top level GDB
-source directory (`gdb-7.3.50.20111112-cvs', in the case of version
-7.3.50.20111112-cvs), you can make the Info file by typing:
+source directory (`gdb-7.3.50.20111118-cvs', in the case of version
+7.3.50.20111118-cvs), you can make the Info file by typing:
 
      cd gdb
      make gdb.info
@@ -29105,7 +29153,7 @@ format.  On its own, TeX cannot either read or typeset a Texinfo file.
 
    If you have TeX and a DVI printer program installed, you can typeset
 and print this manual.  First switch to the `gdb' subdirectory of the
-main source directory (for example, to `gdb-7.3.50.20111112-cvs/gdb')
+main source directory (for example, to `gdb-7.3.50.20111118-cvs/gdb')
 and type:
 
      make gdb.dvi
@@ -29114,8 +29162,8 @@ and type:
 
    ---------- Footnotes ----------
 
-   (1) In `gdb-7.3.50.20111112-cvs/gdb/refcard.ps' of the version
-7.3.50.20111112-cvs release.
+   (1) In `gdb-7.3.50.20111118-cvs/gdb/refcard.ps' of the version
+7.3.50.20111118-cvs release.
 
 
 File: gdb.info,  Node: Installing GDB,  Next: Maintenance Commands,  Prev: Formatting Documentation,  Up: Top
@@ -29221,39 +29269,39 @@ preparing GDB for installation; you can then use `make' to build the
 in a single directory, whose name is usually composed by appending the
 version number to `gdb'.
 
-   For example, the GDB version 7.3.50.20111112-cvs distribution is in
-the `gdb-7.3.50.20111112-cvs' directory.  That directory contains:
+   For example, the GDB version 7.3.50.20111118-cvs distribution is in
+the `gdb-7.3.50.20111118-cvs' directory.  That directory contains:
 
-`gdb-7.3.50.20111112-cvs/configure (and supporting files)'
+`gdb-7.3.50.20111118-cvs/configure (and supporting files)'
      script for configuring GDB and all its supporting libraries
 
-`gdb-7.3.50.20111112-cvs/gdb'
+`gdb-7.3.50.20111118-cvs/gdb'
      the source specific to GDB itself
 
-`gdb-7.3.50.20111112-cvs/bfd'
+`gdb-7.3.50.20111118-cvs/bfd'
      source for the Binary File Descriptor library
 
-`gdb-7.3.50.20111112-cvs/include'
+`gdb-7.3.50.20111118-cvs/include'
      GNU include files
 
-`gdb-7.3.50.20111112-cvs/libiberty'
+`gdb-7.3.50.20111118-cvs/libiberty'
      source for the `-liberty' free software library
 
-`gdb-7.3.50.20111112-cvs/opcodes'
+`gdb-7.3.50.20111118-cvs/opcodes'
      source for the library of opcode tables and disassemblers
 
-`gdb-7.3.50.20111112-cvs/readline'
+`gdb-7.3.50.20111118-cvs/readline'
      source for the GNU command-line interface
 
-`gdb-7.3.50.20111112-cvs/glob'
+`gdb-7.3.50.20111118-cvs/glob'
      source for the GNU filename pattern-matching subroutine
 
-`gdb-7.3.50.20111112-cvs/mmalloc'
+`gdb-7.3.50.20111118-cvs/mmalloc'
      source for the GNU memory-mapped malloc package
 
    The simplest way to configure and build GDB is to run `configure'
 from the `gdb-VERSION-NUMBER' source directory, which in this example
-is the `gdb-7.3.50.20111112-cvs' directory.
+is the `gdb-7.3.50.20111118-cvs' directory.
 
    First switch to the `gdb-VERSION-NUMBER' source directory if you are
 not already in it; then run `configure'.  Pass the identifier for the
@@ -29261,7 +29309,7 @@ platform on which GDB will run as an argument.
 
    For example:
 
-     cd gdb-7.3.50.20111112-cvs
+     cd gdb-7.3.50.20111118-cvs
      ./configure HOST
      make
 
@@ -29283,8 +29331,8 @@ you may need to run `sh' on it explicitly:
 
    If you run `configure' from a directory that contains source
 directories for multiple libraries or programs, such as the
-`gdb-7.3.50.20111112-cvs' source directory for version
-7.3.50.20111112-cvs, `configure' creates configuration files for every
+`gdb-7.3.50.20111118-cvs' source directory for version
+7.3.50.20111118-cvs, `configure' creates configuration files for every
 directory level underneath (unless you tell it not to, with the
 `--norecursion' option).
 
@@ -29325,13 +29373,13 @@ directory.  If the path to `configure' would be the same as the
 argument to `--srcdir', you can leave out the `--srcdir' option; it is
 assumed.)
 
-   For example, with version 7.3.50.20111112-cvs, you can build GDB in a
+   For example, with version 7.3.50.20111118-cvs, you can build GDB in a
 separate directory for a Sun 4 like this:
 
-     cd gdb-7.3.50.20111112-cvs
+     cd gdb-7.3.50.20111118-cvs
      mkdir ../gdb-sun4
      cd ../gdb-sun4
-     ../gdb-7.3.50.20111112-cvs/configure sun4
+     ../gdb-7.3.50.20111118-cvs/configure sun4
      make
 
    When `configure' builds a configuration using a remote source
@@ -29342,7 +29390,7 @@ directory `gdb-sun4/libiberty', and GDB itself in `gdb-sun4/gdb'.
 
    Make sure that your path to the `configure' script has just one
 instance of `gdb' in it.  If your path to `configure' looks like
-`../gdb-7.3.50.20111112-cvs/gdb/configure', you are configuring only
+`../gdb-7.3.50.20111118-cvs/gdb/configure', you are configuring only
 one subdirectory of GDB, not the whole package.  This leads to build
 errors about missing include files such as `bfd/bfd.h'.
 
@@ -29358,8 +29406,8 @@ called `configure' (or one of its subdirectories).
 
    The `Makefile' that `configure' generates in each source directory
 also runs recursively.  If you type `make' in a source directory such
-as `gdb-7.3.50.20111112-cvs' (or in a separate configured directory
-configured with `--srcdir=DIRNAME/gdb-7.3.50.20111112-cvs'), you will
+as `gdb-7.3.50.20111118-cvs' (or in a separate configured directory
+configured with `--srcdir=DIRNAME/gdb-7.3.50.20111118-cvs'), you will
 build all the required libraries, and then build GDB.
 
    When you have multiple hosts or targets configured in separate
@@ -29404,7 +29452,7 @@ you can use it to test your guesses on abbreviations--for example:
      Invalid configuration `i986v': machine `i986v' not recognized
 
 `config.sub' is also distributed in the GDB source directory
-(`gdb-7.3.50.20111112-cvs', for version 7.3.50.20111112-cvs).
+(`gdb-7.3.50.20111118-cvs', for version 7.3.50.20111118-cvs).
 
 
 File: gdb.info,  Node: Configure Options,  Next: System-wide configuration,  Prev: Config Names,  Up: Installing GDB
@@ -31361,6 +31409,9 @@ GDB packet uses spaces to separate its components.
     `StaticTracepoint'
           The remote stub supports static tracepoints.
 
+    `InstallInTrace'
+          The remote stub supports installing tracepoint in tracing.
+
     `EnableDisableTracepoints'
           The remote stub supports the `QTEnable' (*note QTEnable::) and
           `QTDisable' (*note QTDisable::) packets that allow tracepoints
@@ -31416,6 +31467,7 @@ GDB packet uses spaces to separate its components.
 `qTfP'
 `qTfV'
 `QTFrame'
+`qTMinFTPILen'
      *Note Tracepoint Packets::.
 
 `qThreadExtraInfo,THREAD-ID'
@@ -31907,6 +31959,33 @@ Tracepoints::).
 `QTFrame:outside:START:END'
      Like `QTFrame:range:START:END', but select the first frame
      _outside_ the given range of addresses (exclusive).
+
+`qTMinFTPILen'
+     This packet requests the minimum length of instruction at which a
+     fast tracepoint (*note Set Tracepoints::) may be placed.  For
+     instance, on the 32-bit x86 architecture, it is possible to use a
+     4-byte jump, but it depends on the target system being able to
+     create trampolines in the first 64K of memory, which might or
+     might not be possible for that system.  So the reply to this
+     packet will be 4 if it is able to arrange for that.
+
+     Replies:
+
+    `0'
+          The minimum instruction length is currently unknown.
+
+    `LENGTH'
+          The minimum instruction length is LENGTH, where LENGTH is
+          greater or equal to 1.  LENGTH is a hexadecimal number.  A
+          reply of 1 means that a fast tracepoint may be placed on any
+          instruction regardless of size.
+
+    `E'
+          An error has occurred.
+
+    `'
+          An empty reply indicates that the request is not supported by
+          the stub.
 
 `QTStart'
      Begin the tracepoint experiment.  Begin collecting data from
@@ -36427,6 +36506,7 @@ Index
  [index ]
 * Menu:
 
+* !:                                     Shell Commands.      (line  10)
 * ! packet:                              Packets.             (line  49)
 * "No symbol "foo" in current context":  Variables.           (line  74)
 * # (a comment):                         Command Syntax.      (line  38)
@@ -36448,7 +36528,7 @@ Index
 * $cdir, convenience variable:           Source Path.         (line 108)
 * $cwd, convenience variable:            Source Path.         (line 108)
 * $tpnum:                                Create and Delete Tracepoints.
-                                                              (line  98)
+                                                              (line 123)
 * $trace_file:                           Tracepoint Variables.
                                                               (line  16)
 * $trace_frame:                          Tracepoint Variables.
@@ -36862,6 +36942,7 @@ Index
 * backward-kill-word (M-<DEL>):          Commands For Killing.
                                                               (line  24)
 * backward-word (M-b):                   Commands For Moving. (line  22)
+* base name differences:                 Files.               (line 501)
 * baud rate for remote targets:          Remote Configuration.
                                                               (line  21)
 * bc packet:                             Packets.             (line  97)
@@ -37022,7 +37103,7 @@ Index
 * call stack traces:                     Backtrace.           (line   6)
 * call-last-kbd-macro (C-x e):           Keyboard Macros.     (line  13)
 * calling functions:                     Calling.             (line   6)
-* calling make:                          Shell Commands.      (line  19)
+* calling make:                          Shell Commands.      (line  21)
 * capitalize-word (M-c):                 Commands For Text.   (line  49)
 * case sensitivity in symbol names:      Symbols.             (line  27)
 * case-insensitive symbol names:         Symbols.             (line  27)
@@ -37235,7 +37316,7 @@ Index
 * define:                                Define.              (line  37)
 * define trace state variable, remote request: Tracepoint Packets.
                                                               (line 127)
-* defining macros interactively:         Macros.              (line  62)
+* defining macros interactively:         Macros.              (line  59)
 * definition of a macro, showing:        Macros.              (line  47)
 * delete:                                Delete Breaks.       (line  41)
 * delete breakpoints:                    Delete Breaks.       (line  41)
@@ -37244,7 +37325,7 @@ Index
 * delete mem:                            Memory Region Attributes.
                                                               (line  34)
 * delete tracepoint:                     Create and Delete Tracepoints.
-                                                              (line 101)
+                                                              (line 126)
 * delete tvariable:                      Trace State Variables.
                                                               (line  42)
 * delete-char (C-d):                     Commands For Text.   (line   6)
@@ -37441,7 +37522,7 @@ Index
                                                               (line   6)
 * fast tracepoints:                      Set Tracepoints.     (line  24)
 * fast tracepoints, setting:             Create and Delete Tracepoints.
-                                                              (line  40)
+                                                              (line  51)
 * fatal signal:                          Bug Criteria.        (line   9)
 * fatal signals:                         Signals.             (line  15)
 * features of the remote protocol:       General Query Packets.
@@ -37449,6 +37530,7 @@ Index
 * fg (resume foreground execution):      Continuing and Stepping.
                                                               (line  15)
 * file:                                  Files.               (line  16)
+* file name canonicalization:            Files.               (line 501)
 * file transfer:                         File Transfer.       (line   6)
 * file transfer, remote protocol:        Host I/O Packets.    (line   6)
 * file-i/o examples:                     File-I/O Examples.   (line   6)
@@ -37520,7 +37602,7 @@ Index
 * free memory information (MS-DOS):      DJGPP Native.        (line  19)
 * fstat, file-i/o system call:           stat/fstat.          (line   6)
 * ftrace:                                Create and Delete Tracepoints.
-                                                              (line  40)
+                                                              (line  51)
 * Fujitsu:                               Remote Stub.         (line  69)
 * full symbol tables, listing GDB's internal: Symbols.        (line 321)
 * Function:                              Functions In Python. (line   6)
@@ -37860,7 +37942,6 @@ Index
                                                               (line   9)
 * info copying:                          Help.                (line 136)
 * info dcache:                           Caching Remote Data. (line  34)
-* info definitions:                      Macros.              (line  57)
 * info display:                          Auto Display.        (line  78)
 * info dll:                              Cygwin Native.       (line  35)
 * info dos:                              DJGPP Native.        (line  15)
@@ -37885,7 +37966,7 @@ Index
                                                               (line   9)
 * info locals:                           Frame Info.          (line  55)
 * info macro:                            Macros.              (line  47)
-* info macros:                           Macros.              (line  52)
+* info macros:                           Macros.              (line  54)
 * info mem:                              Memory Region Attributes.
                                                               (line  45)
 * info meminfo:                          SVR4 Process Information.
@@ -38020,7 +38101,7 @@ Index
 * l (list):                              List.                (line   6)
 * languages:                             Languages.           (line   6)
 * last tracepoint number:                Create and Delete Tracepoints.
-                                                              (line  98)
+                                                              (line 123)
 * latest breakpoint:                     Set Breaks.          (line   6)
 * layout:                                TUI Commands.        (line  21)
 * lazy strings in python:                Lazy Strings In Python.
@@ -38084,17 +38165,17 @@ Index
 * m680x0:                                Remote Stub.         (line  60)
 * m68k-stub.c:                           Remote Stub.         (line  60)
 * machine instructions:                  Machine Code.        (line  36)
-* macro define:                          Macros.              (line  62)
+* macro define:                          Macros.              (line  59)
 * macro definition, showing:             Macros.              (line  47)
 * macro exp1:                            Macros.              (line  36)
 * macro expand:                          Macros.              (line  29)
 * macro expansion, showing the results of preprocessor: Macros.
                                                               (line  29)
-* macro list:                            Macros.              (line  83)
-* macro undef:                           Macros.              (line  77)
-* macros, example of debugging with:     Macros.              (line  86)
+* macro list:                            Macros.              (line  80)
+* macro undef:                           Macros.              (line  74)
+* macros, example of debugging with:     Macros.              (line  83)
 * macros, from debug info:               Macros.              (line  47)
-* macros, user-defined:                  Macros.              (line  62)
+* macros, user-defined:                  Macros.              (line  59)
 * mailing lists:                         GDB/MI Development and Front Ends.
                                                               (line  35)
 * maint agent:                           Maintenance Commands.
@@ -38197,7 +38278,7 @@ Index
                                                               (line  90)
 * maintenance commands:                  Maintenance Commands.
                                                               (line   6)
-* make:                                  Shell Commands.      (line  19)
+* make:                                  Shell Commands.      (line  21)
 * manual overlay debugging:              Overlay Commands.    (line  23)
 * map an overlay:                        Overlay Commands.    (line  30)
 * mapinfo list, QNX Neutrino:            SVR4 Process Information.
@@ -38525,7 +38606,7 @@ Index
 * printing frame argument values:        Print Settings.      (line 135)
 * printing strings:                      Output Formats.      (line  60)
 * probe static tracepoint marker:        Create and Delete Tracepoints.
-                                                              (line  51)
+                                                              (line  76)
 * probing markers, static tracepoints:   Set Tracepoints.     (line  28)
 * proc-trace-entry:                      SVR4 Process Information.
                                                               (line  70)
@@ -38598,7 +38679,7 @@ Index
 * QAllow packet:                         General Query Packets.
                                                               (line  41)
 * qAttached packet:                      General Query Packets.
-                                                              (line 898)
+                                                              (line 902)
 * qC packet:                             General Query Packets.
                                                               (line  52)
 * qCRC packet:                           General Query Packets.
@@ -38631,15 +38712,15 @@ Index
 * qSupported packet:                     General Query Packets.
                                                               (line 357)
 * qSymbol packet:                        General Query Packets.
-                                                              (line 619)
+                                                              (line 622)
 * QTDPsrc packet:                        Tracepoint Packets.  (line  96)
 * QTDV packet:                           Tracepoint Packets.  (line 127)
 * qThreadExtraInfo packet:               General Query Packets.
-                                                              (line 664)
-* qTV packet:                            Tracepoint Packets.  (line 286)
+                                                              (line 668)
+* qTV packet:                            Tracepoint Packets.  (line 313)
 * query annotation:                      Prompting.           (line  36)
 * query attached, remote request:        General Query Packets.
-                                                              (line 898)
+                                                              (line 902)
 * quit [EXPRESSION]:                     Quitting GDB.        (line   6)
 * quit annotation:                       Errors.              (line   6)
 * quoted-insert (C-q or C-v):            Commands For Text.   (line  20)
@@ -38647,7 +38728,7 @@ Index
 * quoting Ada internal identifiers:      Additions to Ada.    (line  76)
 * quoting names:                         Symbols.             (line  14)
 * qXfer packet:                          General Query Packets.
-                                                              (line 702)
+                                                              (line 706)
 * r (run):                               Starting.            (line   6)
 * r (SingleKey TUI key):                 TUI Single Key Mode. (line  25)
 * R packet:                              Packets.             (line 298)
@@ -38666,7 +38747,7 @@ Index
 * re-read-init-file (C-x C-r):           Miscellaneous Commands.
                                                               (line   6)
 * read special object, remote request:   General Query Packets.
-                                                              (line 702)
+                                                              (line 706)
 * read, file-i/o system call:            read.                (line   6)
 * read-only sections:                    Files.               (line 258)
 * reading symbols from relocatable object files: Files.       (line 132)
@@ -38681,7 +38762,7 @@ Index
                                                               (line  57)
 * receive rights, GNU Hurd:              Hurd Native.         (line  85)
 * recent tracepoint number:              Create and Delete Tracepoints.
-                                                              (line  98)
+                                                              (line 123)
 * record:                                Process Record and Replay.
                                                               (line  38)
 * record aggregates (Ada):               Omissions from Ada.  (line  44)
@@ -38876,6 +38957,7 @@ Index
 * set auto-load-scripts:                 Auto-loading.        (line  23)
 * set auto-solib-add:                    Files.               (line 303)
 * set backtrace:                         Backtrace.           (line 104)
+* set basenames-may-differ:              Files.               (line 517)
 * set board-address:                     M32R/D.              (line  21)
 * set breakpoint always-inserted:        Set Breaks.          (line 314)
 * set breakpoint auto-hw:                Set Breaks.          (line 294)
@@ -38942,7 +39024,7 @@ Index
 * set extended-prompt:                   Prompt.              (line  25)
 * set extension-language:                Show.                (line  30)
 * set fast tracepoint:                   Create and Delete Tracepoints.
-                                                              (line  40)
+                                                              (line  51)
 * set follow-exec-mode:                  Forks.               (line 101)
 * set follow-fork-mode:                  Forks.               (line  35)
 * set gnutarget:                         Target Commands.     (line  28)
@@ -39030,7 +39112,7 @@ Index
 * set spu:                               SPU.                 (line  39)
 * set stack-cache:                       Caching Remote Data. (line  26)
 * set static tracepoint:                 Create and Delete Tracepoints.
-                                                              (line  51)
+                                                              (line  76)
 * set step-mode:                         Continuing and Stepping.
                                                               (line  92)
 * set stop-on-solib-events:              Files.               (line 351)
@@ -39092,6 +39174,7 @@ Index
 * show auto-load-scripts:                Auto-loading.        (line  26)
 * show auto-solib-add:                   Files.               (line 320)
 * show backtrace:                        Backtrace.           (line 111)
+* show basenames-may-differ:             Files.               (line 520)
 * show board-address:                    M32R/D.              (line  24)
 * show breakpoint always-inserted:       Set Breaks.          (line 314)
 * show breakpoint auto-hw:               Set Breaks.          (line 294)
@@ -39335,7 +39418,7 @@ Index
 * static tracepoints, in remote protocol: General Query Packets.
                                                               (line 604)
 * static tracepoints, setting:           Create and Delete Tracepoints.
-                                                              (line  51)
+                                                              (line  76)
 * status of trace data collection:       Starting and Stopping Trace Experiments.
                                                               (line  20)
 * status output in GDB/MI:               GDB/MI Output Syntax.
@@ -39364,11 +39447,11 @@ Index
 * stopping annotation:                   Annotations for Running.
                                                               (line   6)
 * strace:                                Create and Delete Tracepoints.
-                                                              (line  51)
+                                                              (line  76)
 * stream records in GDB/MI:              GDB/MI Stream Records.
                                                               (line   6)
 * string tracing, in remote protocol:    General Query Packets.
-                                                              (line 613)
+                                                              (line 616)
 * struct return convention:              i386.                (line   7)
 * struct stat, in file-i/o protocol:     struct stat.         (line   6)
 * struct timeval, in file-i/o protocol:  struct timeval.      (line   6)
@@ -39386,7 +39469,7 @@ Index
 * symbol dump:                           Symbols.             (line 302)
 * symbol from address:                   Symbols.             (line  54)
 * symbol lookup, remote request:         General Query Packets.
-                                                              (line 619)
+                                                              (line 622)
 * symbol names:                          Symbols.             (line  14)
 * symbol table:                          Files.               (line   6)
 * symbol tables in python:               Symbol Tables In Python.
@@ -39529,7 +39612,7 @@ Index
                                                               (line  20)
 * thread apply:                          Threads.             (line 122)
 * thread attributes info, remote request: General Query Packets.
-                                                              (line 664)
+                                                              (line 668)
 * thread breakpoints:                    Thread-Specific Breakpoints.
                                                               (line  10)
 * thread breakpoints and system calls:   Interrupted System Calls.
@@ -39573,7 +39656,7 @@ Index
 * trace file format:                     Trace File Format.   (line   6)
 * trace files:                           Trace Files.         (line   6)
 * trace state variable value, remote request: Tracepoint Packets.
-                                                              (line 286)
+                                                              (line 313)
 * trace state variables:                 Trace State Variables.
                                                               (line   6)
 * traceback:                             Backtrace.           (line   6)
@@ -39584,9 +39667,9 @@ Index
                                                               (line   6)
 * tracepoint data, display:              tdump.               (line   6)
 * tracepoint deletion:                   Create and Delete Tracepoints.
-                                                              (line 101)
+                                                              (line 126)
 * tracepoint number:                     Create and Delete Tracepoints.
-                                                              (line  98)
+                                                              (line 123)
 * tracepoint packets:                    Tracepoint Packets.  (line   6)
 * tracepoint pass count:                 Tracepoint Passcounts.
                                                               (line   6)
@@ -39710,7 +39793,7 @@ Index
 * use_ib_break:                          M32R/D.              (line  61)
 * use_mon_code:                          M32R/D.              (line  57)
 * user-defined command:                  Define.              (line   6)
-* user-defined macros:                   Macros.              (line  62)
+* user-defined macros:                   Macros.              (line  59)
 * user-defined variables:                Convenience Vars.    (line   6)
 * v (SingleKey TUI key):                 TUI Single Key Mode. (line  34)
 * value history:                         Value History.       (line   6)
@@ -39797,7 +39880,7 @@ Index
 * WP_WRITE:                              Breakpoints In Python.
                                                               (line  63)
 * write data into object, remote request: General Query Packets.
-                                                              (line 844)
+                                                              (line 848)
 * write, file-i/o system call:           write.               (line   6)
 * writing a pretty-printer:              Writing a Pretty-Printer.
                                                               (line   6)
@@ -39856,524 +39939,525 @@ Node: Startup39905
 Ref: Startup-Footnote-142684
 Node: Quitting GDB42793
 Node: Shell Commands43690
-Node: Logging Output44532
-Node: Commands45378
-Node: Command Syntax46016
-Node: Completion48182
-Ref: Completion-Footnote-153546
-Node: Help53706
-Node: Running58947
-Node: Compilation60176
-Node: Starting62260
-Node: Arguments71185
-Node: Environment72455
-Node: Working Directory75723
-Node: Input/Output76831
-Node: Attach78802
-Node: Kill Process81269
-Node: Inferiors and Programs82250
-Node: Threads89495
-Node: Forks98658
-Node: Checkpoint/Restart104968
-Ref: Checkpoint/Restart-Footnote-1109497
-Node: Stopping109532
-Node: Breakpoints110795
-Node: Set Breaks114231
-Ref: Set Breaks-Footnote-1130543
-Node: Set Watchpoints130791
-Node: Set Catchpoints140194
-Node: Delete Breaks149390
-Node: Disabling151326
-Node: Conditions154179
-Node: Break Commands159128
-Node: Save Breakpoints162352
-Node: Error in Breakpoints163528
-Node: Breakpoint-related Warnings164259
-Node: Continuing and Stepping166586
-Node: Skipping Over Functions and Files175972
-Node: Signals179544
-Ref: extra signal information183826
-Node: Thread Stops185329
-Node: All-Stop Mode186428
-Node: Non-Stop Mode190326
-Node: Background Execution193803
-Node: Thread-Specific Breakpoints196372
-Node: Interrupted System Calls197694
-Node: Observer Mode199208
-Node: Reverse Execution202647
-Ref: Reverse Execution-Footnote-1207274
-Ref: Reverse Execution-Footnote-2207901
-Node: Process Record and Replay207951
-Node: Stack215198
-Node: Frames216691
-Node: Backtrace219443
-Ref: Backtrace-Footnote-1224656
-Node: Selection224844
-Node: Frame Info227708
-Node: Source230039
-Node: List231105
-Node: Specify Location233718
-Node: Edit237364
-Ref: Edit-Footnote-1238839
-Node: Search239074
-Node: Source Path239882
-Ref: set substitute-path246249
-Node: Machine Code248470
-Node: Data255144
-Node: Expressions257814
-Node: Ambiguous Expressions259906
-Node: Variables263140
-Node: Arrays267898
-Node: Output Formats270429
-Ref: Output Formats-Footnote-1273617
-Node: Memory273774
-Node: Auto Display279928
-Node: Print Settings284470
-Ref: set print entry-values291546
-Node: Pretty Printing302670
-Node: Pretty-Printer Introduction303183
-Node: Pretty-Printer Example304938
-Node: Pretty-Printer Commands305716
-Node: Value History308140
-Node: Convenience Vars310561
-Node: Registers315296
-Ref: Registers-Footnote-1319973
-Node: Floating Point Hardware320368
-Node: Vector Unit320900
-Node: OS Information321287
-Node: Memory Region Attributes323932
-Node: Dump/Restore Files328602
-Node: Core File Generation330907
-Node: Character Sets332141
-Node: Caching Remote Data338506
-Ref: Caching Remote Data-Footnote-1340771
-Node: Searching Memory341009
-Node: Optimized Code343886
-Node: Inline Functions345563
-Node: Tail Call Frames348558
-Ref: set debug entry-values350698
-Node: Macros354772
-Ref: Macros-Footnote-1362374
-Node: Tracepoints362527
-Node: Set Tracepoints364588
-Node: Create and Delete Tracepoints367526
-Node: Enable and Disable Tracepoints372414
-Node: Tracepoint Passcounts373654
-Node: Tracepoint Conditions375081
-Node: Trace State Variables376775
-Node: Tracepoint Actions378965
-Node: Listing Tracepoints384911
-Node: Listing Static Tracepoint Markers386032
-Node: Starting and Stopping Trace Experiments387878
-Ref: disconnected tracing389105
-Node: Tracepoint Restrictions392292
-Node: Analyze Collected Data396062
-Node: tfind397367
-Node: tdump401789
-Node: save tracepoints404304
-Node: Tracepoint Variables404800
-Node: Trace Files405928
-Node: Overlays407386
-Node: How Overlays Work408106
-Ref: A code overlay410666
-Node: Overlay Commands414104
-Node: Automatic Overlay Debugging418294
-Node: Overlay Sample Program420435
-Node: Languages422195
-Node: Setting423358
-Node: Filenames425060
-Node: Manually425871
-Node: Automatically427080
-Node: Show428141
-Node: Checks429463
-Node: Type Checking430853
-Node: Range Checking433586
-Node: Supported Languages435987
-Node: C437248
-Node: C Operators438212
-Node: C Constants442531
-Node: C Plus Plus Expressions445412
-Node: C Defaults448755
-Node: C Checks449438
-Node: Debugging C450161
-Node: Debugging C Plus Plus450645
-Node: Decimal Floating Point453832
-Node: D455091
-Node: Objective-C455357
-Node: Method Names in Commands455819
-Node: The Print Command with Objective-C457514
-Node: OpenCL C458165
-Node: OpenCL C Datatypes458440
-Node: OpenCL C Expressions458815
-Node: OpenCL C Operators459172
-Node: Fortran459404
-Node: Fortran Operators460126
-Node: Fortran Defaults460982
-Node: Special Fortran Commands461367
-Node: Pascal461873
-Node: Modula-2462388
-Node: M2 Operators463363
-Node: Built-In Func/Proc466362
-Node: M2 Constants469223
-Node: M2 Types470824
-Node: M2 Defaults474043
-Node: Deviations474643
-Node: M2 Checks475744
-Node: M2 Scope476562
-Node: GDB/M2477586
-Node: Ada478498
-Node: Ada Mode Intro479561
-Node: Omissions from Ada481471
-Node: Additions to Ada485825
-Node: Stopping Before Main Program489755
-Node: Ada Tasks490284
-Node: Ada Tasks and Core Files496697
-Node: Ravenscar Profile497615
-Node: Ada Glitches498685
-Node: Unsupported Languages501479
-Node: Symbols502169
-Node: Altering517906
-Node: Assignment518875
-Node: Jumping521980
-Node: Signaling524115
-Node: Returning525246
-Node: Calling528598
-Node: Patching531625
-Node: GDB Files532702
-Node: Files533347
-Ref: Shared Libraries546192
-Ref: Files-Footnote-1556426
-Node: Separate Debug Files556601
-Node: Index Files568171
-Node: Symbol Errors569514
-Node: Data Files573127
-Node: Targets574083
-Node: Active Targets575563
-Node: Target Commands576637
-Ref: load580910
-Node: Byte Order581891
-Node: Remote Debugging582868
-Node: Connecting584130
-Node: File Transfer589070
-Node: Server590010
-Ref: Monitor Commands for gdbserver599567
-Ref: Server-Footnote-1604221
-Node: Remote Configuration604341
-Ref: set remotebreak605365
-Ref: set remote hardware-watchpoint-limit606829
-Ref: set remote hardware-breakpoint-limit606829
-Ref: set remote hardware-watchpoint-length-limit607055
-Ref: set remote exec-file607470
-Node: Remote Stub613858
-Node: Stub Contents616755
-Node: Bootstrapping618866
-Node: Debug Session622675
-Node: Configurations624235
-Node: Native625004
-Node: HP-UX625639
-Node: BSD libkvm Interface625928
-Node: SVR4 Process Information626999
-Node: DJGPP Native630429
-Node: Cygwin Native637009
-Node: Non-debug DLL Symbols640958
-Node: Hurd Native645506
-Node: Neutrino650769
-Node: Darwin651159
-Node: Embedded OS652417
-Node: VxWorks652893
-Node: VxWorks Connection655110
-Node: VxWorks Download656044
-Node: VxWorks Attach657779
-Node: Embedded Processors658177
-Node: ARM659356
-Node: M32R/D663477
-Node: M68K665179
-Node: MicroBlaze665472
-Node: MIPS Embedded666922
-Node: OpenRISC 1000671872
-Node: PowerPC Embedded674727
-Node: PA678489
-Node: Sparclet678778
-Node: Sparclet File680262
-Node: Sparclet Connection681142
-Node: Sparclet Download681620
-Node: Sparclet Execution682669
-Node: Sparclite683260
-Node: Z8000683635
-Node: AVR685019
-Node: CRIS685382
-Node: Super-H686360
-Node: Architectures687475
-Node: i386687897
-Node: A29K688579
-Node: Alpha689418
-Node: MIPS689551
-Node: HPPA692163
-Node: SPU692682
-Node: PowerPC694870
-Node: Controlling GDB695588
-Node: Prompt696414
-Node: Editing698133
-Node: Command History699076
-Node: Screen Size702480
-Node: Numbers704314
-Node: ABI706291
-Node: Messages/Warnings709220
-Ref: confirmation requests710646
-Node: Debugging Output711853
-Node: Other Misc Settings718204
-Node: Extending GDB719231
-Node: Sequences720859
-Node: Define721454
-Node: Hooks725067
-Node: Command Files727434
-Node: Output732504
-Node: Python737437
-Node: Python Commands738612
-Node: Python API740391
-Node: Basic Python742199
-Ref: prompt_hook749325
-Node: Exception Handling749922
-Node: Values From Inferior752421
-Node: Types In Python761814
-Node: Pretty Printing API770553
-Node: Selecting Pretty-Printers774446
-Node: Writing a Pretty-Printer776779
-Node: Inferiors In Python782093
-Node: Events In Python785090
-Node: Threads In Python790498
-Node: Commands In Python793110
-Node: Parameters In Python802002
-Node: Functions In Python807463
-Node: Progspaces In Python809578
-Node: Objfiles In Python810930
-Node: Frames In Python812854
-Node: Blocks In Python819291
-Node: Symbols In Python822043
-Node: Symbol Tables In Python828747
-Node: Breakpoints In Python831230
-Node: Lazy Strings In Python838304
-Node: Auto-loading840532
-Node: objfile-gdb.py file842428
-Node: .debug_gdb_scripts section843683
-Node: Which flavor to choose?845060
-Node: Python modules846877
-Node: gdb.printing847256
-Node: gdb.types848331
-Node: gdb.prompt850033
-Node: Aliases851682
-Node: Interpreters854525
-Node: TUI856624
-Node: TUI Overview857591
-Node: TUI Keys860024
-Node: TUI Single Key Mode862328
-Node: TUI Commands863203
-Node: TUI Configuration865587
-Node: Emacs866883
-Node: GDB/MI872357
-Node: GDB/MI General Design874237
-Node: Context management876760
-Node: Asynchronous and non-stop modes879895
-Node: Thread groups881887
-Node: GDB/MI Command Syntax884165
-Node: GDB/MI Input Syntax884408
-Node: GDB/MI Output Syntax885962
-Node: GDB/MI Compatibility with CLI889534
-Node: GDB/MI Development and Front Ends890271
-Node: GDB/MI Output Records891928
-Node: GDB/MI Result Records892300
-Node: GDB/MI Stream Records893306
-Node: GDB/MI Async Records894571
-Node: GDB/MI Frame Information901388
-Node: GDB/MI Thread Information902466
-Node: GDB/MI Ada Exception Information903445
-Node: GDB/MI Simple Examples903868
-Node: GDB/MI Command Description Format906045
-Node: GDB/MI Breakpoint Commands906925
-Node: GDB/MI Program Context924921
-Node: GDB/MI Thread Commands929189
-Node: GDB/MI Ada Tasking Commands933145
-Node: GDB/MI Program Execution935399
-Node: GDB/MI Stack Manipulation947185
-Node: GDB/MI Variable Objects958087
-Ref: -var-set-format967815
-Ref: -var-list-children968933
-Ref: -var-update977110
-Ref: -var-set-frozen979807
-Ref: -var-set-update-range980603
-Ref: -var-set-visualizer981133
-Node: GDB/MI Data Manipulation982630
-Node: GDB/MI Tracepoint Commands1000215
-Node: GDB/MI Symbol Query1007544
-Node: GDB/MI File Commands1008233
-Node: GDB/MI Target Manipulation1011570
-Node: GDB/MI File Transfer Commands1017792
-Node: GDB/MI Miscellaneous Commands1019114
-Ref: -interpreter-exec1028856
-Node: Annotations1031165
-Node: Annotations Overview1032084
-Node: Server Prefix1034547
-Node: Prompting1035281
-Node: Errors1036798
-Node: Invalidation1037694
-Node: Annotations for Running1038171
-Node: Source Annotations1039691
-Node: JIT Interface1040616
-Node: Declarations1042334
-Node: Registering Code1043721
-Node: Unregistering Code1044693
-Node: GDB Bugs1045294
-Node: Bug Criteria1046023
-Node: Bug Reporting1046900
-Node: Command Line Editing1054523
-Node: Introduction and Notation1055175
-Node: Readline Interaction1056795
-Node: Readline Bare Essentials1057984
-Node: Readline Movement Commands1059771
-Node: Readline Killing Commands1060734
-Node: Readline Arguments1062652
-Node: Searching1063694
-Node: Readline Init File1065843
-Node: Readline Init File Syntax1066994
-Node: Conditional Init Constructs1082052
-Node: Sample Init File1084583
-Node: Bindable Readline Commands1087698
-Node: Commands For Moving1088753
-Node: Commands For History1089612
-Node: Commands For Text1093014
-Node: Commands For Killing1095738
-Node: Numeric Arguments1097878
-Node: Commands For Completion1099015
-Node: Keyboard Macros1100982
-Node: Miscellaneous Commands1101551
-Node: Readline vi Mode1105405
-Node: Using History Interactively1106315
-Node: History Interaction1106858
-Node: Event Designators1108280
-Node: Word Designators1109420
-Node: Modifiers1111057
-Node: In Memoriam1112280
-Node: Formatting Documentation1113163
-Ref: Formatting Documentation-Footnote-11116540
-Node: Installing GDB1116636
-Node: Requirements1117208
-Ref: Expat1117777
-Node: Running Configure1120222
-Node: Separate Objdir1124001
-Node: Config Names1126981
-Node: Configure Options1128458
-Node: System-wide configuration1130828
-Node: Maintenance Commands1132123
-Ref: maint info breakpoints1133307
-Node: Remote Protocol1147703
-Node: Overview1148292
-Ref: Binary Data1150854
-Node: Packets1153377
-Ref: thread-id syntax1154277
-Ref: extended mode1155722
-Ref: bc1157443
-Ref: bs1157653
-Ref: read registers packet1159257
-Ref: cycle step packet1161190
-Ref: write register packet1163066
-Ref: step with signal packet1164062
-Ref: vCont packet1165516
-Ref: vStopped packet1170432
-Ref: X packet1170775
-Ref: insert breakpoint or watchpoint packet1171061
-Node: Stop Reply Packets1173823
-Node: General Query Packets1178563
-Ref: QNonStop1188625
-Ref: QPassSignals1189249
-Ref: qSearch memory1191326
-Ref: QStartNoAckMode1191824
-Ref: qSupported1192354
-Ref: multiprocess extensions1201657
-Ref: qXfer read1206069
-Ref: qXfer auxiliary vector read1206563
-Ref: qXfer target description read1206912
-Ref: qXfer library list read1207356
-Ref: qXfer memory map read1208002
-Ref: qXfer sdata read1208388
-Ref: qXfer siginfo read1208852
-Ref: qXfer spu read1209248
-Ref: qXfer threads read1209771
-Ref: qXfer traceframe info read1210173
-Ref: qXfer fdpic loadmap read1210594
-Ref: qXfer osdata read1211009
-Ref: qXfer write1212211
-Ref: qXfer siginfo write1212768
-Ref: qXfer spu write1213164
-Ref: General Query Packets-Footnote-11215251
-Node: Architecture-Specific Protocol Details1215578
-Node: Tracepoint Packets1217091
-Ref: QTEnable1225108
-Ref: QTDisable1225304
-Node: Host I/O Packets1233942
-Node: Interrupts1238084
-Node: Notification Packets1239987
-Node: Remote Non-Stop1242258
-Node: Packet Acknowledgment1246517
-Node: Examples1248632
-Node: File-I/O Remote Protocol Extension1249258
-Node: File-I/O Overview1249720
-Node: Protocol Basics1251917
-Node: The F Request Packet1254149
-Node: The F Reply Packet1255050
-Node: The Ctrl-C Message1255968
-Node: Console I/O1257597
-Node: List of Supported Calls1258814
-Node: open1259176
-Node: close1261670
-Node: read1262052
-Node: write1262659
-Node: lseek1263426
-Node: rename1264304
-Node: unlink1265700
-Node: stat/fstat1266639
-Node: gettimeofday1267526
-Node: isatty1267961
-Node: system1268557
-Node: Protocol-specific Representation of Datatypes1270099
-Node: Integral Datatypes1270476
-Node: Pointer Values1271283
-Node: Memory Transfer1271991
-Node: struct stat1272611
-Node: struct timeval1274813
-Node: Constants1275330
-Node: Open Flags1275779
-Node: mode_t Values1276120
-Node: Errno Values1276612
-Node: Lseek Flags1277423
-Node: Limits1277608
-Node: File-I/O Examples1277968
-Node: Library List Format1279084
-Node: Memory Map Format1281848
-Node: Thread List Format1284408
-Node: Traceframe Info Format1285226
-Node: Agent Expressions1286683
-Node: General Bytecode Design1289504
-Node: Bytecode Descriptions1294304
-Node: Using Agent Expressions1306669
-Node: Varying Target Capabilities1308647
-Node: Rationale1309809
-Node: Target Descriptions1317195
-Node: Retrieving Descriptions1319071
-Node: Target Description Format1320156
-Node: Predefined Target Types1329205
-Node: Standard Target Features1330590
-Node: ARM Features1332380
-Node: i386 Features1333872
-Node: MIPS Features1334976
-Node: M68K Features1335921
-Node: PowerPC Features1336584
-Node: TIC6x Features1337891
-Node: Operating System Information1338440
-Node: Process list1339278
-Node: Trace File Format1340340
-Node: Index Section Format1342334
-Node: Copying1347117
-Node: GNU Free Documentation License1384707
-Node: Index1409865
+Node: Logging Output44617
+Node: Commands45463
+Node: Command Syntax46101
+Node: Completion48267
+Ref: Completion-Footnote-153631
+Node: Help53791
+Node: Running59032
+Node: Compilation60261
+Node: Starting62345
+Node: Arguments71270
+Node: Environment72540
+Node: Working Directory75808
+Node: Input/Output76916
+Node: Attach78887
+Node: Kill Process81354
+Node: Inferiors and Programs82335
+Node: Threads89580
+Node: Forks98743
+Node: Checkpoint/Restart105053
+Ref: Checkpoint/Restart-Footnote-1109582
+Node: Stopping109617
+Node: Breakpoints110880
+Node: Set Breaks114316
+Ref: Set Breaks-Footnote-1130628
+Node: Set Watchpoints130876
+Node: Set Catchpoints140279
+Node: Delete Breaks149475
+Node: Disabling151411
+Node: Conditions154264
+Node: Break Commands159213
+Node: Save Breakpoints162437
+Node: Error in Breakpoints163613
+Node: Breakpoint-related Warnings164344
+Node: Continuing and Stepping166671
+Node: Skipping Over Functions and Files176057
+Node: Signals179629
+Ref: extra signal information183911
+Node: Thread Stops185414
+Node: All-Stop Mode186513
+Node: Non-Stop Mode190411
+Node: Background Execution193888
+Node: Thread-Specific Breakpoints196457
+Node: Interrupted System Calls197779
+Node: Observer Mode199293
+Node: Reverse Execution202732
+Ref: Reverse Execution-Footnote-1207359
+Ref: Reverse Execution-Footnote-2207986
+Node: Process Record and Replay208036
+Node: Stack215283
+Node: Frames216776
+Node: Backtrace219528
+Ref: Backtrace-Footnote-1224741
+Node: Selection224929
+Node: Frame Info227793
+Node: Source230124
+Node: List231190
+Node: Specify Location233803
+Node: Edit237449
+Ref: Edit-Footnote-1238924
+Node: Search239159
+Node: Source Path239967
+Ref: set substitute-path246334
+Node: Machine Code248555
+Node: Data255229
+Node: Expressions257899
+Node: Ambiguous Expressions259991
+Node: Variables263225
+Node: Arrays267983
+Node: Output Formats270514
+Ref: Output Formats-Footnote-1273702
+Node: Memory273859
+Node: Auto Display280013
+Node: Print Settings284555
+Ref: set print entry-values291631
+Node: Pretty Printing302755
+Node: Pretty-Printer Introduction303268
+Node: Pretty-Printer Example305023
+Node: Pretty-Printer Commands305801
+Node: Value History308225
+Node: Convenience Vars310646
+Node: Registers315381
+Ref: Registers-Footnote-1320058
+Node: Floating Point Hardware320453
+Node: Vector Unit320985
+Node: OS Information321372
+Node: Memory Region Attributes324017
+Node: Dump/Restore Files328687
+Node: Core File Generation330992
+Node: Character Sets332226
+Node: Caching Remote Data338591
+Ref: Caching Remote Data-Footnote-1340856
+Node: Searching Memory341094
+Node: Optimized Code343971
+Node: Inline Functions345648
+Node: Tail Call Frames348643
+Ref: set debug entry-values350783
+Node: Macros354857
+Ref: Macros-Footnote-1362433
+Node: Tracepoints362586
+Node: Set Tracepoints364647
+Node: Create and Delete Tracepoints367585
+Node: Enable and Disable Tracepoints373985
+Node: Tracepoint Passcounts375225
+Node: Tracepoint Conditions376652
+Node: Trace State Variables378346
+Node: Tracepoint Actions380536
+Node: Listing Tracepoints386482
+Node: Listing Static Tracepoint Markers387603
+Node: Starting and Stopping Trace Experiments389449
+Ref: disconnected tracing390676
+Node: Tracepoint Restrictions393863
+Node: Analyze Collected Data397633
+Node: tfind398938
+Node: tdump403360
+Node: save tracepoints405875
+Node: Tracepoint Variables406371
+Node: Trace Files407499
+Node: Overlays408957
+Node: How Overlays Work409677
+Ref: A code overlay412237
+Node: Overlay Commands415675
+Node: Automatic Overlay Debugging419865
+Node: Overlay Sample Program422006
+Node: Languages423766
+Node: Setting424929
+Node: Filenames426631
+Node: Manually427442
+Node: Automatically428651
+Node: Show429712
+Node: Checks431034
+Node: Type Checking432424
+Node: Range Checking435157
+Node: Supported Languages437558
+Node: C438819
+Node: C Operators439783
+Node: C Constants444102
+Node: C Plus Plus Expressions446983
+Node: C Defaults450326
+Node: C Checks451009
+Node: Debugging C451732
+Node: Debugging C Plus Plus452216
+Node: Decimal Floating Point455403
+Node: D456662
+Node: Objective-C456928
+Node: Method Names in Commands457390
+Node: The Print Command with Objective-C459085
+Node: OpenCL C459736
+Node: OpenCL C Datatypes460011
+Node: OpenCL C Expressions460386
+Node: OpenCL C Operators460743
+Node: Fortran460975
+Node: Fortran Operators461697
+Node: Fortran Defaults462553
+Node: Special Fortran Commands462938
+Node: Pascal463444
+Node: Modula-2463959
+Node: M2 Operators464934
+Node: Built-In Func/Proc467933
+Node: M2 Constants470794
+Node: M2 Types472395
+Node: M2 Defaults475614
+Node: Deviations476214
+Node: M2 Checks477315
+Node: M2 Scope478133
+Node: GDB/M2479157
+Node: Ada480069
+Node: Ada Mode Intro481132
+Node: Omissions from Ada483042
+Node: Additions to Ada487396
+Node: Stopping Before Main Program491326
+Node: Ada Tasks491855
+Node: Ada Tasks and Core Files498268
+Node: Ravenscar Profile499186
+Node: Ada Glitches500256
+Node: Unsupported Languages503050
+Node: Symbols503740
+Node: Altering519477
+Node: Assignment520446
+Node: Jumping523551
+Node: Signaling525686
+Node: Returning526817
+Node: Calling530169
+Node: Patching533196
+Node: GDB Files534273
+Node: Files534918
+Ref: Shared Libraries547763
+Ref: Files-Footnote-1559116
+Node: Separate Debug Files559291
+Node: Index Files570861
+Node: Symbol Errors572204
+Node: Data Files575817
+Node: Targets576773
+Node: Active Targets578253
+Node: Target Commands579327
+Ref: load583600
+Node: Byte Order584581
+Node: Remote Debugging585558
+Node: Connecting586820
+Node: File Transfer591760
+Node: Server592700
+Ref: Monitor Commands for gdbserver602257
+Ref: Server-Footnote-1606911
+Node: Remote Configuration607031
+Ref: set remotebreak608055
+Ref: set remote hardware-watchpoint-limit609519
+Ref: set remote hardware-breakpoint-limit609519
+Ref: set remote hardware-watchpoint-length-limit609745
+Ref: set remote exec-file610160
+Node: Remote Stub616713
+Node: Stub Contents619610
+Node: Bootstrapping621721
+Node: Debug Session625530
+Node: Configurations627090
+Node: Native627859
+Node: HP-UX628494
+Node: BSD libkvm Interface628783
+Node: SVR4 Process Information629854
+Node: DJGPP Native633284
+Node: Cygwin Native639864
+Node: Non-debug DLL Symbols643813
+Node: Hurd Native648361
+Node: Neutrino653624
+Node: Darwin654014
+Node: Embedded OS655272
+Node: VxWorks655748
+Node: VxWorks Connection657965
+Node: VxWorks Download658899
+Node: VxWorks Attach660634
+Node: Embedded Processors661032
+Node: ARM662211
+Node: M32R/D666332
+Node: M68K668034
+Node: MicroBlaze668327
+Node: MIPS Embedded669777
+Node: OpenRISC 1000674727
+Node: PowerPC Embedded677582
+Node: PA681344
+Node: Sparclet681633
+Node: Sparclet File683117
+Node: Sparclet Connection683997
+Node: Sparclet Download684475
+Node: Sparclet Execution685524
+Node: Sparclite686115
+Node: Z8000686490
+Node: AVR687874
+Node: CRIS688237
+Node: Super-H689215
+Node: Architectures690330
+Node: i386690752
+Node: A29K691434
+Node: Alpha692273
+Node: MIPS692406
+Node: HPPA695018
+Node: SPU695537
+Node: PowerPC697725
+Node: Controlling GDB698443
+Node: Prompt699269
+Node: Editing700988
+Node: Command History701931
+Node: Screen Size705335
+Node: Numbers707169
+Node: ABI709146
+Node: Messages/Warnings712075
+Ref: confirmation requests713501
+Node: Debugging Output714708
+Node: Other Misc Settings721059
+Node: Extending GDB722086
+Node: Sequences723714
+Node: Define724309
+Node: Hooks727922
+Node: Command Files730289
+Node: Output735359
+Node: Python740292
+Node: Python Commands741467
+Node: Python API743246
+Node: Basic Python745054
+Ref: prompt_hook752180
+Node: Exception Handling752777
+Node: Values From Inferior755276
+Node: Types In Python764669
+Node: Pretty Printing API773408
+Node: Selecting Pretty-Printers777301
+Node: Writing a Pretty-Printer779634
+Node: Inferiors In Python784948
+Node: Events In Python787945
+Node: Threads In Python793353
+Node: Commands In Python795965
+Node: Parameters In Python804857
+Node: Functions In Python810318
+Node: Progspaces In Python812433
+Node: Objfiles In Python813785
+Node: Frames In Python815709
+Node: Blocks In Python822146
+Node: Symbols In Python824898
+Node: Symbol Tables In Python831602
+Node: Breakpoints In Python834085
+Node: Lazy Strings In Python841159
+Node: Auto-loading843387
+Node: objfile-gdb.py file845283
+Node: .debug_gdb_scripts section846538
+Node: Which flavor to choose?847915
+Node: Python modules849732
+Node: gdb.printing850111
+Node: gdb.types851186
+Node: gdb.prompt852888
+Node: Aliases854537
+Node: Interpreters857380
+Node: TUI859479
+Node: TUI Overview860446
+Node: TUI Keys862879
+Node: TUI Single Key Mode865183
+Node: TUI Commands866058
+Node: TUI Configuration868442
+Node: Emacs869738
+Node: GDB/MI875212
+Node: GDB/MI General Design877092
+Node: Context management879615
+Node: Asynchronous and non-stop modes882750
+Node: Thread groups884742
+Node: GDB/MI Command Syntax887020
+Node: GDB/MI Input Syntax887263
+Node: GDB/MI Output Syntax888817
+Node: GDB/MI Compatibility with CLI892389
+Node: GDB/MI Development and Front Ends893126
+Node: GDB/MI Output Records894783
+Node: GDB/MI Result Records895155
+Node: GDB/MI Stream Records896161
+Node: GDB/MI Async Records897426
+Node: GDB/MI Frame Information904243
+Node: GDB/MI Thread Information905321
+Node: GDB/MI Ada Exception Information906300
+Node: GDB/MI Simple Examples906723
+Node: GDB/MI Command Description Format908900
+Node: GDB/MI Breakpoint Commands909780
+Node: GDB/MI Program Context927776
+Node: GDB/MI Thread Commands932044
+Node: GDB/MI Ada Tasking Commands936000
+Node: GDB/MI Program Execution938254
+Node: GDB/MI Stack Manipulation950040
+Node: GDB/MI Variable Objects960942
+Ref: -var-set-format970670
+Ref: -var-list-children971788
+Ref: -var-update979965
+Ref: -var-set-frozen982662
+Ref: -var-set-update-range983458
+Ref: -var-set-visualizer983988
+Node: GDB/MI Data Manipulation985485
+Node: GDB/MI Tracepoint Commands1003070
+Node: GDB/MI Symbol Query1010399
+Node: GDB/MI File Commands1011088
+Node: GDB/MI Target Manipulation1014425
+Node: GDB/MI File Transfer Commands1020647
+Node: GDB/MI Miscellaneous Commands1021969
+Ref: -interpreter-exec1031711
+Node: Annotations1034020
+Node: Annotations Overview1034939
+Node: Server Prefix1037402
+Node: Prompting1038136
+Node: Errors1039653
+Node: Invalidation1040549
+Node: Annotations for Running1041026
+Node: Source Annotations1042546
+Node: JIT Interface1043471
+Node: Declarations1045189
+Node: Registering Code1046576
+Node: Unregistering Code1047548
+Node: GDB Bugs1048149
+Node: Bug Criteria1048878
+Node: Bug Reporting1049755
+Node: Command Line Editing1057378
+Node: Introduction and Notation1058030
+Node: Readline Interaction1059650
+Node: Readline Bare Essentials1060839
+Node: Readline Movement Commands1062626
+Node: Readline Killing Commands1063589
+Node: Readline Arguments1065507
+Node: Searching1066549
+Node: Readline Init File1068698
+Node: Readline Init File Syntax1069849
+Node: Conditional Init Constructs1084907
+Node: Sample Init File1087438
+Node: Bindable Readline Commands1090553
+Node: Commands For Moving1091608
+Node: Commands For History1092467
+Node: Commands For Text1095869
+Node: Commands For Killing1098593
+Node: Numeric Arguments1100733
+Node: Commands For Completion1101870
+Node: Keyboard Macros1103837
+Node: Miscellaneous Commands1104406
+Node: Readline vi Mode1108260
+Node: Using History Interactively1109170
+Node: History Interaction1109713
+Node: Event Designators1111135
+Node: Word Designators1112275
+Node: Modifiers1113912
+Node: In Memoriam1115135
+Node: Formatting Documentation1116018
+Ref: Formatting Documentation-Footnote-11119395
+Node: Installing GDB1119491
+Node: Requirements1120063
+Ref: Expat1120632
+Node: Running Configure1123077
+Node: Separate Objdir1126856
+Node: Config Names1129836
+Node: Configure Options1131313
+Node: System-wide configuration1133683
+Node: Maintenance Commands1134978
+Ref: maint info breakpoints1136162
+Node: Remote Protocol1150558
+Node: Overview1151147
+Ref: Binary Data1153709
+Node: Packets1156232
+Ref: thread-id syntax1157132
+Ref: extended mode1158577
+Ref: bc1160298
+Ref: bs1160508
+Ref: read registers packet1162112
+Ref: cycle step packet1164045
+Ref: write register packet1165921
+Ref: step with signal packet1166917
+Ref: vCont packet1168371
+Ref: vStopped packet1173287
+Ref: X packet1173630
+Ref: insert breakpoint or watchpoint packet1173916
+Node: Stop Reply Packets1176678
+Node: General Query Packets1181418
+Ref: QNonStop1191480
+Ref: QPassSignals1192104
+Ref: qSearch memory1194181
+Ref: QStartNoAckMode1194679
+Ref: qSupported1195209
+Ref: multiprocess extensions1204512
+Ref: install tracepoint in tracing1206183
+Ref: qXfer read1209030
+Ref: qXfer auxiliary vector read1209524
+Ref: qXfer target description read1209873
+Ref: qXfer library list read1210317
+Ref: qXfer memory map read1210963
+Ref: qXfer sdata read1211349
+Ref: qXfer siginfo read1211813
+Ref: qXfer spu read1212209
+Ref: qXfer threads read1212732
+Ref: qXfer traceframe info read1213134
+Ref: qXfer fdpic loadmap read1213555
+Ref: qXfer osdata read1213970
+Ref: qXfer write1215172
+Ref: qXfer siginfo write1215729
+Ref: qXfer spu write1216125
+Ref: General Query Packets-Footnote-11218212
+Node: Architecture-Specific Protocol Details1218539
+Node: Tracepoint Packets1220052
+Ref: QTEnable1229045
+Ref: QTDisable1229241
+Node: Host I/O Packets1237879
+Node: Interrupts1242021
+Node: Notification Packets1243924
+Node: Remote Non-Stop1246195
+Node: Packet Acknowledgment1250454
+Node: Examples1252569
+Node: File-I/O Remote Protocol Extension1253195
+Node: File-I/O Overview1253657
+Node: Protocol Basics1255854
+Node: The F Request Packet1258086
+Node: The F Reply Packet1258987
+Node: The Ctrl-C Message1259905
+Node: Console I/O1261534
+Node: List of Supported Calls1262751
+Node: open1263113
+Node: close1265607
+Node: read1265989
+Node: write1266596
+Node: lseek1267363
+Node: rename1268241
+Node: unlink1269637
+Node: stat/fstat1270576
+Node: gettimeofday1271463
+Node: isatty1271898
+Node: system1272494
+Node: Protocol-specific Representation of Datatypes1274036
+Node: Integral Datatypes1274413
+Node: Pointer Values1275220
+Node: Memory Transfer1275928
+Node: struct stat1276548
+Node: struct timeval1278750
+Node: Constants1279267
+Node: Open Flags1279716
+Node: mode_t Values1280057
+Node: Errno Values1280549
+Node: Lseek Flags1281360
+Node: Limits1281545
+Node: File-I/O Examples1281905
+Node: Library List Format1283021
+Node: Memory Map Format1285785
+Node: Thread List Format1288345
+Node: Traceframe Info Format1289163
+Node: Agent Expressions1290620
+Node: General Bytecode Design1293441
+Node: Bytecode Descriptions1298241
+Node: Using Agent Expressions1310606
+Node: Varying Target Capabilities1312584
+Node: Rationale1313746
+Node: Target Descriptions1321132
+Node: Retrieving Descriptions1323008
+Node: Target Description Format1324093
+Node: Predefined Target Types1333142
+Node: Standard Target Features1334527
+Node: ARM Features1336317
+Node: i386 Features1337809
+Node: MIPS Features1338913
+Node: M68K Features1339858
+Node: PowerPC Features1340521
+Node: TIC6x Features1341828
+Node: Operating System Information1342377
+Node: Process list1343215
+Node: Trace File Format1344277
+Node: Index Section Format1346271
+Node: Copying1351054
+Node: GNU Free Documentation License1388644
+Node: Index1413802
 
 End Tag Table

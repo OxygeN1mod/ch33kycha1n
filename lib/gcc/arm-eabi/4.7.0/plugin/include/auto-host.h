@@ -48,7 +48,7 @@
 
 /* Define if building with C++. */
 #ifndef USED_FOR_TARGET
-/* #undef ENABLE_BUILD_WITH_CXX */
+#define ENABLE_BUILD_WITH_CXX 1
 #endif
 
 
@@ -813,6 +813,13 @@
    0. */
 #ifndef USED_FOR_TARGET
 #define HAVE_DECL_SNPRINTF 1
+#endif
+
+
+/* Define to 1 if we found a declaration for 'stpcpy', otherwise define to 0.
+   */
+#ifndef USED_FOR_TARGET
+#define HAVE_DECL_STPCPY 1
 #endif
 
 
